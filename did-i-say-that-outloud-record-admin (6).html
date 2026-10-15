@@ -1,0 +1,232 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Did I Say That Outloud??? Admin</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#eee9df;color:#171827}.app{display:flex;min-height:100vh}.side{width:255px;position:fixed;inset:0 auto 0 0;background:#171827;color:#fff;padding:24px 16px}.logo{padding:5px 10px 25px}.menu-logo{display:block;width:141px;height:50px;object-fit:contain;object-position:left center}.logo b{display:block;font:700 24px Georgia;line-height:1.05}.logo small{color:#aaa;font-size:10px;letter-spacing:1px}.mark{display:inline-grid;place-items:center;background:#f4c94b;color:#171827;border-radius:12px;padding:9px;margin-bottom:12px;transform:rotate(-6deg);font-weight:bold}.nav{padding:12px;border-radius:11px;color:#bbb8c8;font-size:13px;margin:3px 0;cursor:pointer}.nav:hover,.nav.on{background:#6947d8;color:#fff}.nav span{margin-right:10px}.label{font-size:10px;color:#777386;margin:18px 10px 7px;text-transform:uppercase;letter-spacing:1px}.main{margin-left:255px;width:calc(100% - 255px)}header{height:70px;background:#fffdf8;border-bottom:1px solid #e7e2d8;padding:0 30px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5}.crumb{font-size:11px;color:#777}.user{font-size:12px}.avatar{display:inline-grid;place-items:center;width:35px;height:35px;background:#315bd8;color:#fff;border-radius:50%;margin-left:8px;font-weight:bold}.content{padding:30px;max-width:1450px}.section{display:none}.section.on{display:block}h1,h2,h3{font-family:Georgia,serif}.hero{display:flex;justify-content:space-between;align-items:end;margin-bottom:25px}.hero h1{font-size:38px;line-height:1;margin:0 0 8px}.muted{color:#777;font-size:13px}.sticker{background:#f4c94b;padding:12px 17px;border-radius:30px;font-size:11px;font-weight:bold;transform:rotate(3deg);box-shadow:3px 4px #d6ac35}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}.kpi,.panel,.game-record,.qbox,.answers{background:#fffdf8;border:1px solid #e7e2d8;border-radius:17px;box-shadow:0 12px 30px #221c4212}.kpi{padding:19px}.kpi small{color:#777;text-transform:uppercase;font-size:10px}.kpi strong{display:block;font-size:28px;margin:7px 0}.green{color:#26945f}.grid{display:grid;grid-template-columns:1.3fr .7fr;gap:18px}.panel{padding:20px}.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.ph h3{font:700 16px Arial;margin:0}.chart{height:190px;display:flex;align-items:end;gap:12px;border-bottom:1px solid #e7e2d8;padding:10px}.barwrap{height:100%;flex:1;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:6px}.bar{width:55%;background:linear-gradient(#8a6bea,#315bd8);border-radius:7px 7px 2px 2px}.barwrap small{font-size:9px;color:#777}.activity{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #e7e2d8;font-size:12px}.ico{width:35px;height:35px;background:#eeeaff;border-radius:10px;display:grid;place-items:center}.toolbar{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:20px}.toolbar h2{font-size:30px;margin:0}.btn{border:0;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:bold;cursor:pointer}.primary{background:#171827;color:white}.purple{background:#6947d8;color:#fff}.soft{background:#eeeaff;color:#6947d8}.danger{background:#fff0f0;color:#d94848}.search,.input,.select,.area{border:1px solid #e7e2d8;background:#fff;padding:11px;border-radius:10px;outline:0}.search{min-width:250px}.tabs{display:flex;gap:7px;margin-bottom:17px}.tab{border:1px solid #e7e2d8;background:#fffdf8;border-radius:20px;padding:9px 13px;font-size:11px}.tab.active{background:#171827;color:white}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.game-record{padding:18px;min-height:220px;position:relative;transition:.2s}.game-record:hover{transform:translateY(-4px) rotate(-.5deg)}.question{border-top:5px solid #6947d8}.answer{border-top:5px solid #e65353}.type{font-size:9px;color:#777;text-transform:uppercase;letter-spacing:1px;font-weight:bold}.id{float:right;color:#aaa;font-size:9px}.recordtext{font-size:18px;line-height:1.4;margin:28px 0;font-family:Arial}.answer .recordtext{font-weight:bold}.foot{position:absolute;bottom:14px;left:18px;right:18px;display:flex;justify-content:space-between;color:#777;font-size:10px}.mapintro{background:#171827;color:#fff;padding:24px;border-radius:20px;margin-bottom:18px}.mapintro h2{margin:0 0 7px;font-size:27px}.mapintro p{margin:0;color:#bbb8c8;font-size:12px}.map{display:grid;grid-template-columns:.8fr 1.5fr;gap:18px}.qbox,.answers{padding:18px}.qitem,.acard{background:#fff;border:2px solid #e7e2d8;border-radius:13px;padding:14px;cursor:pointer;margin-bottom:9px}.qitem.selected{border-color:#6947d8;background:#f4f0ff}.qid{font-size:9px;color:#6947d8;font-weight:bold}.qtxt{font-size:13px;margin-top:7px;line-height:1.4}.answergrid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.acard{min-height:125px;margin:0}.acard.selected{border-color:#e65353;background:#fff3f3;position:relative}.acard.selected:after{content:'✓';position:absolute;right:9px;top:9px;background:#e65353;color:#fff;width:23px;height:23px;border-radius:50%;display:grid;place-items:center}.atext{font-size:15px;font-weight:bold;line-height:1.4;margin-top:14px}.mapfoot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e7e2d8;margin-top:15px;padding-top:15px;font-size:11px;color:#777}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:13px;border-bottom:1px solid #e7e2d8;font-size:12px}.table th{font-size:9px;color:#777;text-transform:uppercase}.badge{padding:5px 8px;border-radius:20px;font-size:9px;font-weight:bold}.ok{background:#e8f8ef;color:#26945f}.bad{background:#fff0f0;color:#d94848}.features{display:grid;grid-template-columns:1fr 1fr;gap:18px}.coupon{padding:25px;border:1px dashed #6947d8;border-radius:20px;background:linear-gradient(135deg,#fffaf0,#f1ebff)}.code{font-size:28px;font-weight:900;color:#6947d8;letter-spacing:2px}.coupon p{font:13px Georgia;line-height:1.6;color:#666}.rule{display:flex;justify-content:space-between;gap:15px;padding:17px;background:#fffdf8;border:1px solid #e7e2d8;border-radius:15px;margin-bottom:11px}.rule h4{margin:0}.rule p{font:12px Georgia;color:#777}.modal{display:none;position:fixed;inset:0;background:#17182799;z-index:50;align-items:center;justify-content:center;padding:20px}.modal.open{display:flex}.modalbox{background:#fffdf8;border-radius:20px;padding:25px;width:min(550px,100%)}.modalhead{display:flex;justify-content:space-between}.close{border:0;border-radius:50%;width:32px;height:32px}.field{margin:14px 0}.field label{display:block;font-size:10px;font-weight:bold;margin-bottom:6px}.input,.select,.area{width:100%}.area{height:100px;resize:vertical}.actions{text-align:right;margin-top:18px}.actions .btn{margin-left:7px}
+@media(max-width:1050px){.kpis{grid-template-columns:repeat(2,1fr)}.grid,.map,.features{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}}@media(max-width:750px){.side{width:68px;padding:18px 8px}.logo b,.logo small,.label,.nav em{display:none}.nav{text-align:center}.nav span{margin:0}.main{margin-left:68px;width:calc(100% - 68px)}.content{padding:17px}.hero,.toolbar{align-items:flex-start;flex-direction:column}.cards,.answergrid{grid-template-columns:1fr}.search{width:100%;min-width:0}.kpis{grid-template-columns:1fr}}
+</style></head><body>
+<div class="app">
+<aside class="side"><div class="logo"><img class="menu-logo" src="data:image/png;base64,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" alt="Did I Say That Outloud?"></div>
+<div class="label">Playground</div><div class="nav on" onclick="go('dash',this)"><span>✦</span> Game Pulse</div><div class="nav" onclick="go('cards',this)"><span>▣</span> Record Library</div>
+<div class="label">Community</div><div class="nav" onclick="go('users',this)"><span>♙</span> Players</div><div class="nav" onclick="go('reports',this)"><span>◔</span> Game Reports</div>
+<div class="label">Business</div><div class="nav" onclick="go('pay',this)"><span>$</span> Money & Payments</div><div class="nav" onclick="go('coupon',this)"><span>%</span> Coupons</div>
+<div class="label">Rules & Setup</div><div class="nav" onclick="go('dbr',this)"><span>◇</span> DBR Rules</div><div class="nav" onclick="go('fields',this)"><span>⚙</span> Database Fields</div></aside>
+<main class="main"><header><div class="crumb">GAME ADMIN / <b id="crumb">GAME PULSE</b></div><div class="user"><b>Administrator</b><span class="avatar">A</span></div></header><div class="content">
+
+<section id="dash" class="section on"><div class="hero"><div><h1>What's happening<br>in the game? 👀</h1><p class="muted">Your playful little command center for a not-so-serious game.</p></div><div class="sticker">🔥 GAME IS HOT</div></div>
+<div class="kpis"><div class="kpi"><small>Players</small><strong>2,486</strong><span class="green">↑ 12.5% this month</span></div><div class="kpi"><small>Records in the wild</small><strong>2,107</strong><span class="green">842 questions · 1,265 answers</span></div><div class="kpi"><small>Games played</small><strong>18,942</strong><span class="green">↑ 18.2% this month</span></div><div class="kpi"><small>Revenue</small><strong>$18.4K</strong><span class="green">↑ 8.2% this month</span></div></div>
+<div class="grid"><div class="panel"><div class="ph"><h3>Games played this week</h3><small class="muted">LIVE PREVIEW</small></div><div class="chart"><div class="barwrap"><div class="bar" style="height:40%"></div><small>MON</small></div><div class="barwrap"><div class="bar" style="height:65%"></div><small>TUE</small></div><div class="barwrap"><div class="bar" style="height:48%"></div><small>WED</small></div><div class="barwrap"><div class="bar" style="height:80%"></div><small>THU</small></div><div class="barwrap"><div class="bar" style="height:62%"></div><small>FRI</small></div><div class="barwrap"><div class="bar" style="height:92%"></div><small>SAT</small></div><div class="barwrap"><div class="bar" style="height:72%"></div><small>SUN</small></div></div></div>
+<div class="panel"><div class="ph"><h3>Recent chaos</h3><small class="muted">ACTIVITY</small></div><div class="activity"><div class="ico">🃏</div><div><b>New record added</b><br><span class="muted">Q-0842 · 4 minutes ago</span></div></div><div class="activity"><div class="ico">🏆</div><div><b>A-0184 is winning</b><br><span class="muted">421 wins this month</span></div></div><div class="activity"><div class="ico">💸</div><div><b>GLIMMER used</b><br><span class="muted">10% donation triggered</span></div></div></div></div></section>
+
+<section id="cards" class="section"><div class="toolbar"><div><h2>The Record Library 🃏</h2><p class="muted">Every question and answer record, with its classification and game metadata.</p></div><button class="btn purple" onclick="openM('recordModal')">＋ Add Record</button></div><div class="tabs"><button class="tab active">All Records</button><button class="tab">Questions</button><button class="tab">Answers</button></div><div class="panel"><input class="search" placeholder="Search record text..." oninput="filterCards(this.value)" style="margin-bottom:17px"><div class="cards" id="recordsGrid">
+<div class="game-record question"><span class="type">Question</span><span class="id">Q-0248</span><div class="recordtext">What's the worst thing you could say at a job interview?</div><div class="foot"><span>🔥 1,842 plays</span><button class="btn soft">Edit</button></div></div>
+<div class="game-record answer"><span class="type">Answer</span><span class="id">A-0184</span><div class="recordtext">I have absolutely no idea.</div><div class="foot"><span>🏆 421 wins</span><button class="btn soft">Edit</button></div></div>
+<div class="game-record answer"><span class="type">Answer</span><span class="id">A-0311</span><div class="recordtext">That was not supposed to happen.</div><div class="foot"><span>🏆 365 wins</span><button class="btn soft">Edit</button></div></div>
+<div class="game-record question"><span class="type">Question</span><span class="id">Q-0182</span><div class="recordtext">Who would survive the longest on a deserted island?</div><div class="foot"><span>🔥 1,321 plays</span><button class="btn soft">Edit</button></div></div>
+<div class="game-record answer"><span class="type">Answer</span><span class="id">A-0442</span><div class="recordtext">I thought this was a meeting about snacks.</div><div class="foot"><span>🔥 311 plays</span><button class="btn soft">Edit</button></div></div>
+<div class="game-record question"><span class="type">Question</span><span class="id">Q-0409</span><div class="recordtext">What's the first thing you would do if you became famous?</div><div class="foot"><span>🔥 1,087 plays</span><button class="btn soft">Edit</button></div></div>
+</div></div></section>
+
+
+
+<section id="users" class="section"><div class="toolbar"><div><h2>The Players 👋</h2><p class="muted">Manage people playing the game.</p></div><button class="btn purple" onclick="openM('user')">＋ Add Player</button></div><div class="panel"><table class="table"><thead><tr><th>Player</th><th>Location</th><th>Games</th><th>Plan</th><th>Status</th><th>Action</th></tr></thead><tbody><tr><td><b>Michael Brown</b><br><small>michael@example.com</small></td><td>New York, USA</td><td>42</td><td>Premium</td><td><span class="badge ok">ACTIVE</span></td><td><button class="btn danger" onclick="block(this)">Block</button></td></tr><tr><td><b>Sarah Johnson</b><br><small>sarah@example.com</small></td><td>London, UK</td><td>27</td><td>Free</td><td><span class="badge ok">ACTIVE</span></td><td><button class="btn danger" onclick="block(this)">Block</button></td></tr></tbody></table></div></section>
+
+<section id="pay" class="section"><div class="toolbar"><div><h2>Money Stuff 💸</h2><p class="muted">Payments, subscriptions, refunds and donations.</p></div></div><div class="kpis"><div class="kpi"><small>Revenue</small><strong>$18,420</strong><span class="green">↑ 8.2%</span></div><div class="kpi"><small>Subscriptions</small><strong>684</strong><span class="green">↑ 31 this month</span></div><div class="kpi"><small>Refunds</small><strong>$420</strong><span>2.3% of revenue</span></div><div class="kpi"><small>Glimmer Donations</small><strong>$1,842</strong><span class="green">Thank you ❤️</span></div></div><div class="panel"><div class="ph"><h3>Recent transactions</h3></div><table class="table"><tr><th>Transaction</th><th>Player</th><th>Amount</th><th>Coupon</th><th>Status</th></tr><tr><td>#TXN-83942</td><td>Michael Brown</td><td>$29.99</td><td>GLIMMER</td><td><span class="badge ok">PAID</span></td></tr><tr><td>#TXN-83941</td><td>Sarah Johnson</td><td>$19.99</td><td>—</td><td><span class="badge ok">PAID</span></td></tr></table></div></section>
+
+<section id="coupon" class="section"><div class="toolbar"><div><h2>Coupon Mischief 🎟️</h2><p class="muted">Discounts can do more than just lower the price.</p></div><button class="btn purple" onclick="openM('coupon')">＋ New Coupon</button></div><div class="features"><div class="coupon"><div class="code">GLIMMER</div><p>Take 10% of what the player pays and designate it as a donation to the Glimmerglass Opera Festival.</p><span class="badge ok">ACTIVE · 10% DONATION</span></div><div class="panel"><div class="ph"><h3>How it works</h3></div><div class="activity"><div class="ico">1</div><div><b>Player enters code</b><br><span class="muted">GLIMMER at checkout</span></div></div><div class="activity"><div class="ico">2</div><div><b>Payment is processed</b><br><span class="muted">Donation amount is calculated</span></div></div><div class="activity"><div class="ico">3</div><div><b>Donation is recorded</b><br><span class="muted">Financial report is updated</span></div></div></div></div></section>
+
+<section class="section" id="dbr">
+<div class="sectiontop">
+  <div><div class="eyebrow">GAME LOGIC</div><h1>DBR Rules 📖</h1><p>Manage the rules used by the game engine.</p></div>
+  <button class="btn purple" onclick="openM('rule')">＋ Add DBR Rule</button>
+</div>
+
+<div class="panel">
+  <div class="ph">
+    <div><h3>DBR Rule Library</h3><div class="muted">Create, edit, or remove game rules.</div></div>
+    <span class="pill">8 RULES</span>
+  </div>
+
+  <div class="tablewrap">
+    <table class="table dbr-table">
+      <thead>
+        <tr>
+          <th style="width:90px">RULE ID</th>
+          <th style="width:28%">DESCRIPTION</th>
+          <th>COMMENT</th>
+          <th style="width:170px">ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody id="dbrTableBody">
+        <tr data-rule="DBR01">
+          <td><span class="pill">DBR01</span></td>
+          <td><b>The computer fills in a player other than the Reader</b></td>
+          <td class="muted">—</td>
+          <td><button class="btn" onclick="editRule(this)">Edit</button> <button class="btn danger" onclick="deleteRule(this)">Delete</button></td>
+        </tr>
+        <tr data-rule="DBR02">
+          <td><span class="pill">DBR02</span></td>
+          <td><b>The Reader</b></td>
+          <td class="muted">—</td>
+          <td><button class="btn" onclick="editRule(this)">Edit</button> <button class="btn danger" onclick="deleteRule(this)">Delete</button></td>
+        </tr>
+        <tr data-rule="DBR03">
+          <td><span class="pill">DBR03</span></td>
+          <td><b>The Reader names someone other than themselves</b></td>
+          <td class="muted">—</td>
+          <td><button class="btn" onclick="editRule(this)">Edit</button> <button class="btn danger" onclick="deleteRule(this)">Delete</button></td>
+        </tr>
+        <tr data-rule="DBR04">
+          <td><span class="pill">DBR04</span></td>
+          <td><b>Record1 for the players to play, displayed on the screen as “__________”</b></td>
+          <td>This is the default game mode where the Question Record calls for one Answer Record and the players all provide one, by point and click</td>
+          <td><button class="btn" onclick="editRule(this)">Edit</button> <button class="btn danger" onclick="deleteRule(this)">Delete</button></td>
+        </tr>
+        <tr data-rule="DBR05">
+          <td><span class="pill">DBR05</span></td>
+          <td><b>Record2 or the players to play, displayed on the screen as “__________”</b></td>
+          <td>This is the special game mode where the Question Record calls for two Answer Records and the players all provide two, by point and click</td>
+          <td><button class="btn" onclick="editRule(this)">Edit</button> <button class="btn danger" onclick="deleteRule(this)">Delete</button></td>
+        </tr>
+        <tr data-rule="DBR06">
+          <td><span class="pill">DBR06</span></td>
+          <td><b>Record3 or the players to play, displayed on the screen as “__________”</b></td>
+          <td>This is the special game mode where the Question Record calls for three Answer Records and the players all provide three, by point and click</td>
+          <td><button class="btn" onclick="editRule(this)">Edit</button> <button class="btn danger" onclick="deleteRule(this)">Delete</button></td>
+        </tr>
+        <tr data-rule="DBR07">
+          <td><span class="pill">DBR07</span></td>
+          <td><b>A pet the Reader names</b></td>
+          <td>This will require a text box for input</td>
+          <td><button class="btn" onclick="editRule(this)">Edit</button> <button class="btn danger" onclick="deleteRule(this)">Delete</button></td>
+        </tr>
+        <tr data-rule="DBR08">
+          <td><span class="pill">DBR08</span></td>
+          <td><b>The computer fills in a player other than the Reader and other than DBR01</b></td>
+          <td class="muted">—</td>
+          <td><button class="btn" onclick="editRule(this)">Edit</button> <button class="btn danger" onclick="deleteRule(this)">Delete</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<section id="fields" class="section"><div class="toolbar"><div><h2>Rename the Game's Vocabulary ✏️</h2><p class="muted">Change how database fields appear to administrators.</p></div></div><div class="panel"><table class="table"><tr><th>Database Field</th><th>Friendly Name</th><th>Type</th><th></th></tr><tr><td>question_text</td><td><input class="input" value="Question"></td><td>Text</td><td><button class="btn primary">Save</button></td></tr><tr><td>answer_text</td><td><input class="input" value="Answer"></td><td>Text</td><td><button class="btn primary">Save</button></td></tr><tr><td>times_played</td><td><input class="input" value="Times Played"></td><td>Number</td><td><button class="btn primary">Save</button></td></tr></table></div></section>
+
+<section id="reports" class="section"><div class="toolbar"><div><h2>Who's Winning? 📊</h2><p class="muted">See what players love, what wins and where they play.</p></div><button class="btn primary" onclick="alert('Report exported!')">↓ Export Report</button></div><div class="kpis"><div class="kpi"><small>Most Played</small><strong>Q-0248</strong><span class="green">1,842 plays</span></div><div class="kpi"><small>Most Winning</small><strong>A-0184</strong><span class="green">421 wins</span></div><div class="kpi"><small>Top Country</small><strong>USA</strong><span>61% of players</span></div><div class="kpi"><small>Avg. Game</small><strong>18m</strong><span class="green">+2m this month</span></div></div><div class="grid"><div class="panel"><div class="ph"><h3>Top records by wins</h3></div><table class="table"><tr><th>Record</th><th>Text</th><th>Wins</th></tr><tr><td>A-0184</td><td>I have absolutely no idea.</td><td><b>421</b></td></tr><tr><td>A-0311</td><td>That was not supposed to happen.</td><td><b>365</b></td></tr></table></div><div class="panel"><div class="ph"><h3>Players by location</h3></div><p>🇺🇸 United States</p><div style="height:9px;background:#eee;border-radius:10px"><div style="width:76%;height:100%;background:#6947d8;border-radius:10px"></div></div><p>🇬🇧 United Kingdom</p><div style="height:9px;background:#eee;border-radius:10px"><div style="width:48%;height:100%;background:#315bd8;border-radius:10px"></div></div><p>🇨🇦 Canada</p><div style="height:9px;background:#eee;border-radius:10px"><div style="width:32%;height:100%;background:#e65353;border-radius:10px"></div></div></div></div></section>
+
+</div></main></div>
+
+<div class="modal" id="recordModal"><div class="modalbox"><div class="modalhead"><h2>Add Record ✨</h2><button class="close" onclick="closeM('recordModal')">×</button></div>
+<div class="field"><label>RECORD TYPE</label><select id="recordType" class="select"><option>Question</option><option>Answer</option></select></div>
+<div class="field"><label>RECORD CONTENT</label><textarea id="recordContent" class="area" placeholder="Write the question or answer..."></textarea></div>
+<div class="grid2">
+<div class="field"><label>CATEGORY</label><select id="recordCategory" class="select">
+<option>General</option>
+<option>Location</option>
+<option>Goofy Assemblage</option>
+<option>Body Part</option>
+<option>Celebrity</option>
+<option>Sexual Practice</option>
+<option>Political Position</option>
+<option>Normal food</option>
+<option>Yucky food</option>
+</select></div>
+<div class="field"><label>LANGUAGE</label><select id="recordLanguage" class="select"><option>English</option><option>Hindi</option><option>Spanish</option><option>French</option><option>Other</option></select></div>
+</div>
+<div class="field"><label>POLITICAL SPECTRUM</label><select id="politicalSpectrum" class="select"><option>Liberal</option><option>More liberal</option><option>Neutral</option><option>More conservative</option><option>Conservative</option></select></div>
+<div class="field"><label>MATURE CONTENT</label><select id="matureContent" class="select"><option>Kids Safe</option><option>Strong</option><option>No Holds Barred</option></select></div>
+<div class="field"><label>ORIENTATION</label><select id="orientation" class="select">
+<option>Gay</option>
+<option>Natural</option>
+<option>Straight</option>
+</select></div>
+<div class="field"><label>STATUS</label><select id="recordStatus" class="select"><option>Active</option><option>Draft</option><option>Disabled</option></select></div>
+<div class="actions"><button class="btn soft" onclick="closeM('recordModal')">Cancel</button><button class="btn purple" onclick="createRecord()">Create Record</button></div></div></div>
+<div class="modal" id="user"><div class="modalbox"><div class="modalhead"><h2>Add a Player 👋</h2><button class="close" onclick="closeM('user')">×</button></div><div class="field"><label>NAME</label><input class="input" placeholder="Player name"></div><div class="field"><label>EMAIL</label><input class="input" placeholder="player@example.com"></div><div class="field"><label>LOCATION</label><input class="input" placeholder="City, Country"></div><div class="actions"><button class="btn soft" onclick="closeM('user')">Cancel</button><button class="btn purple" onclick="closeM('user');alert('Player added!')">Add Player</button></div></div></div>
+<div class="modal" id="coupon"><div class="modalbox"><div class="modalhead"><h2>Create a Coupon 🎟️</h2><button class="close" onclick="closeM('coupon')">×</button></div><div class="field"><label>COUPON CODE</label><input class="input" placeholder="GLIMMER"></div><div class="field"><label>FUNCTION</label><input class="input" placeholder="10% donation"></div><div class="field"><label>DESCRIPTION</label><textarea class="area" placeholder="What happens when this coupon is used?"></textarea></div><div class="actions"><button class="btn soft" onclick="closeM('coupon')">Cancel</button><button class="btn purple" onclick="closeM('coupon');alert('Coupon created!')">Create Coupon</button></div></div></div>
+<div class="modal" id="rule"><div class="modalbox">
+<div class="modalhead"><h2 id="ruleModalTitle">Add a DBR Rule 📖</h2><button class="close" onclick="closeM('rule')">×</button></div>
+<div class="field"><label>DBR RULE ID</label><input id="ruleId" class="input" placeholder="e.g. DBR09"></div>
+<div class="field"><label>DESCRIPTION</label><textarea id="ruleDescription" class="area" placeholder="Describe what the rule does..."></textarea></div>
+<div class="field"><label>COMMENT</label><textarea id="ruleComment" class="area" placeholder="Add implementation or gameplay notes..."></textarea></div>
+<div class="actions"><button class="btn soft" onclick="closeM('rule')">Cancel</button><button class="btn purple" id="ruleSaveBtn" onclick="saveRule()">Add Rule</button></div>
+</div></div></div>
+
+<script>
+const names={dash:"GAME PULSE",cards:"RECORD LIBRARY",users:"PLAYERS",pay:"MONEY & PAYMENTS",coupon:"COUPONS",dbr:"DBR RULES",fields:"DATABASE FIELDS",reports:"GAME REPORTS"};
+function go(id,el){document.querySelectorAll('.section').forEach(x=>x.classList.remove('on'));document.getElementById(id).classList.add('on');document.querySelectorAll('.nav').forEach(x=>x.classList.remove('on'));if(el)el.classList.add('on');document.getElementById('crumb').textContent=names[id]}
+function openM(id){document.getElementById(id).classList.add('open')}function closeM(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
+
+
+
+function block(b){let s=b.closest('tr').querySelector('.badge');if(b.textContent==='Block'){b.textContent='Unblock';b.className='btn';s.textContent='BLOCKED';s.className='badge bad'}else{b.textContent='Block';b.className='btn danger';s.textContent='ACTIVE';s.className='badge ok'}}
+function filterCards(v){v=v.toLowerCase();document.querySelectorAll('#recordsGrid .game-record').forEach(c=>c.style.display=c.innerText.toLowerCase().includes(v)?'':'none')}
+function createRecord(){
+  const content=document.getElementById('recordContent').value.trim();
+  if(!content){alert('Please enter the record content.');return;}
+  alert(document.getElementById('recordType').value+' Record created successfully!');
+  closeM('recordModal');
+}
+
+function editRule(btn){
+  const row=btn.closest('tr');
+  const cells=row.querySelectorAll('td');
+  document.getElementById('ruleModalTitle').textContent='Edit DBR Rule ✏️';
+  document.getElementById('ruleSaveBtn').textContent='Save Changes';
+  document.getElementById('ruleId').value=cells[0].innerText.trim();
+  document.getElementById('ruleDescription').value=cells[1].innerText.trim();
+  document.getElementById('ruleComment').value=cells[2].innerText.trim()==='—'?'':cells[2].innerText.trim();
+  document.getElementById('ruleSaveBtn').dataset.editingRule=row.dataset.rule;
+  openM('rule');
+}
+function deleteRule(btn){
+  const row=btn.closest('tr');
+  const rule=row.dataset.rule || row.cells[0].innerText.trim();
+  if(confirm('Delete '+rule+'? This action cannot be undone.')){
+    row.remove();
+    updateDbrCount();
+  }
+}
+function saveRule(){
+  const id=document.getElementById('ruleId').value.trim();
+  const description=document.getElementById('ruleDescription').value.trim();
+  const comment=document.getElementById('ruleComment').value.trim();
+  if(!id || !description){alert('Please enter the DBR Rule ID and Description.');return;}
+  const saveBtn=document.getElementById('ruleSaveBtn');
+  const editing=saveBtn.dataset.editingRule;
+  const body=document.getElementById('dbrTableBody');
+  if(editing){
+    const row=body.querySelector('tr[data-rule="'+editing+'"]');
+    if(row){
+      row.dataset.rule=id;
+      row.cells[0].innerHTML='<span class="pill">'+escapeHtml(id)+'</span>';
+      row.cells[1].innerHTML='<b>'+escapeHtml(description)+'</b>';
+      row.cells[2].textContent=comment || '—';
+    }
+  }else{
+    const row=document.createElement('tr');
+    row.dataset.rule=id;
+    row.innerHTML='<td><span class="pill">'+escapeHtml(id)+'</span></td><td><b>'+escapeHtml(description)+'</b></td><td>'+escapeHtml(comment || '—')+'</td><td><button class="btn" onclick="editRule(this)">Edit</button> <button class="btn danger" onclick="deleteRule(this)">Delete</button></td>';
+    body.appendChild(row);
+  }
+  closeM('rule');
+  resetRuleModal();
+  updateDbrCount();
+}
+function resetRuleModal(){
+  document.getElementById('ruleModalTitle').textContent='Add a DBR Rule 📖';
+  document.getElementById('ruleSaveBtn').textContent='Add Rule';
+  delete document.getElementById('ruleSaveBtn').dataset.editingRule;
+  document.getElementById('ruleId').value='';
+  document.getElementById('ruleDescription').value='';
+  document.getElementById('ruleComment').value='';
+}
+function updateDbrCount(){
+  const n=document.querySelectorAll('#dbrTableBody tr').length;
+  const pill=document.querySelector('#dbr .ph .pill');
+  if(pill) pill.textContent=n+' RULE'+(n===1?'':'S');
+}
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+</script></body></html>
