@@ -1,0 +1,2914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Did I Say That Outloud??? — Admin</title>
+<style>
+/* ---------------------------------------------------------------------------
+   Layout: fixed dark rail, cream workspace, one card system used everywhere.
+   Palette and faces are carried over unchanged from the approved admin build.
+   --------------------------------------------------------------------------- */
+:root{
+  /* brand */
+  --ink:#19192b; --purple:#6d4be5; --blue:#315bd8; --red:#e65353; --yellow:#f5cb4b;
+  --cream:#f7f3eb; --line:#e7e2f0; --muted:#77768a; --white:#fff;
+
+  /* derived surfaces */
+  --ink-2:#23223a; --ink-3:#39384b; --rail-text:#c8c6d7; --rail-dim:#8c8aa1;
+  --surface:#ffffff; --surface-2:#fffdf9; --surface-3:#f8f6fc;
+  --purple-wash:#f1edff; --purple-line:#ded5ff; --purple-deep:#5b3ec5;
+
+  /* semantic (kept separate from the brand accent) */
+  --ok:#2f8f63; --ok-wash:#e9f6ef; --ok-line:#bfe4d0;
+  --warn:#9a6b12; --warn-wash:#fdf4de; --warn-line:#f0e0b0;
+  --bad:#c83737; --bad-wash:#fdf1f1; --bad-line:#f2cccc;
+
+  /* type */
+  --display:Georgia,'Times New Roman',serif;
+  --body:Arial,Helvetica,'Segoe UI',sans-serif;
+
+  --r-sm:8px; --r:12px; --r-lg:16px;
+  --shadow:0 1px 2px rgba(25,25,43,.05), 0 6px 18px rgba(25,25,43,.05);
+  --rail:250px;
+  color-scheme:light;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--cream);color:var(--ink);
+  font:14px/1.5 var(--body);-webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+a{color:var(--purple)}
+:focus-visible{outline:2px solid var(--purple);outline-offset:2px;border-radius:4px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* ------------------------------------------------------------------ rail */
+.rail{
+  position:fixed;inset:0 auto 0 0;width:var(--rail);background:var(--ink);
+  color:var(--white);display:flex;flex-direction:column;z-index:30;
+}
+.brand{padding:20px 18px 16px;border-bottom:1px solid var(--ink-3)}
+.brand img{width:148px;height:52px;object-fit:contain;object-position:left center;display:block}
+.brand small{display:block;color:var(--rail-dim);font-size:10px;letter-spacing:1.6px;margin-top:10px;text-transform:uppercase}
+.navscroll{flex:1;overflow:auto;padding:10px 12px 20px}
+.navlabel{color:var(--rail-dim);text-transform:uppercase;letter-spacing:1.4px;font-size:10px;font-weight:700;margin:18px 10px 6px}
+.navlabel:first-child{margin-top:6px}
+.nav{
+  display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  color:var(--rail-text);padding:10px 11px;border-radius:10px;margin:2px 0;
+  font-size:13px;transition:background .15s ease,color .15s ease;
+}
+.nav:hover{background:var(--ink-2);color:var(--white)}
+.nav.active{background:var(--purple);color:var(--white);font-weight:700}
+.nav .ic{flex:0 0 22px;display:inline-flex;align-items:center;justify-content:center}
+.nav .ic svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.nav .count{margin-left:auto;background:var(--ink-3);color:var(--rail-text);font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+.nav.active .count{background:rgba(255,255,255,.22);color:#fff}
+.railfoot{padding:14px 18px;border-top:1px solid var(--ink-3);color:var(--rail-dim);font-size:11px;line-height:1.5}
+
+/* ------------------------------------------------------------------ shell */
+.main{margin-left:var(--rail);min-width:0;min-height:100%;display:flex;flex-direction:column}
+.topbar{
+  height:64px;background:var(--surface-2);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));
+  position:sticky;top:0;z-index:20;
+}
+.crumb{font-size:12px;color:var(--muted)}
+.crumb b{color:var(--ink);font-weight:700}
+.topright{display:flex;align-items:center;gap:10px}
+.iconbtn{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);display:inline-flex;align-items:center;justify-content:center;position:relative}
+.iconbtn:hover{background:var(--purple-wash);border-color:var(--purple-line)}
+.iconbtn svg{width:17px;height:17px;stroke:var(--ink);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.iconbtn .dot{position:absolute;top:7px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--red);border:2px solid var(--surface)}
+.user{display:flex;align-items:center;gap:9px;padding:5px 12px 5px 5px;border-radius:30px;border:1px solid var(--line);background:var(--surface)}
+.user:hover{background:var(--purple-wash);border-color:var(--purple-line)}
+.avatar{width:28px;height:28px;border-radius:50%;background:var(--purple);color:#fff;display:inline-flex;align-items:center;justify-content:center}
+.avatar svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.user span{font-size:13px;font-weight:700}
+.railtoggle{display:none}
+
+.content{
+  flex:1;width:100%;max-width:1560px;margin:0 auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:26px 48px;
+}
+@media(min-width:900px){.content{padding-left:max(28px,env(safe-area-inset-left,0px));padding-right:max(28px,env(safe-area-inset-right,0px))}}
+.section{display:none}
+.section.active{display:block}
+
+/* ------------------------------------------------------------------ page head */
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:20px}
+.head h1{font:700 29px/1.15 var(--display)}
+.head p{color:var(--muted);font-size:13px;margin:7px 0 0;max-width:62ch}
+.headactions{display:flex;gap:9px;flex-wrap:wrap}
+
+/* ------------------------------------------------------------------ buttons */
+.btn{
+  border:1px solid var(--line);background:var(--surface);border-radius:var(--r-sm);
+  padding:9px 13px;font-size:12px;font-weight:700;color:var(--ink);
+  display:inline-flex;align-items:center;gap:7px;transition:all .15s ease;white-space:nowrap;
+}
+.btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.btn:hover{border-color:var(--purple-line);background:var(--purple-wash);color:var(--purple-deep)}
+.btn.primary{background:var(--purple);border-color:var(--purple);color:#fff}
+.btn.primary:hover{background:var(--purple-deep);border-color:var(--purple-deep);color:#fff}
+.btn.soft{background:var(--purple-wash);border-color:var(--purple-line);color:var(--purple-deep)}
+.btn.danger{background:var(--bad-wash);border-color:var(--bad-line);color:var(--bad)}
+.btn.danger:hover{background:#f9e3e3;border-color:#e9b6b6;color:var(--bad)}
+.btn.sm{padding:6px 10px;font-size:11px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* ------------------------------------------------------------------ cards */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);margin-bottom:18px;min-width:0}
+.panelhead{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:16px 18px;border-bottom:1px solid var(--line)}
+.panelhead h3{font:700 16px var(--display)}
+.panelhead .sub{font-size:12px;color:var(--muted);margin-top:3px}
+.panelbody{padding:18px}
+.panelbody.flush{padding:0}
+
+/* ------------------------------------------------------------------ KPI tiles */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:18px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px 17px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi .kl{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.3px}
+.kpi .kl svg{width:14px;height:14px;stroke:var(--purple);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.kpi .kv{font:700 29px/1 var(--display);margin:11px 0 7px;font-variant-numeric:tabular-nums}
+.kpi .kd{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.trend{font-weight:700;display:inline-flex;align-items:center;gap:3px}
+.trend.up{color:var(--ok)} .trend.down{color:var(--bad)} .trend.flat{color:var(--muted)}
+.kpi .spark{position:absolute;right:0;bottom:0;width:98px;height:38px;opacity:.5}
+
+/* ------------------------------------------------------------------ grids */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.span2{grid-column:span 2}
+@media(max-width:800px){.span2{grid-column:span 1}}
+
+/* ------------------------------------------------------------------ tables */
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--surface-3)}
+.search{position:relative;flex:1 1 230px;min-width:0;max-width:340px}
+.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--muted);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.search input{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-sm);padding:9px 11px 9px 33px;font-size:13px}
+.search input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(109,75,229,.12)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto;align-items:center}
+.sel{border:1px solid var(--line);background:var(--surface);border-radius:var(--r-sm);padding:8px 10px;font-size:12px;color:var(--ink)}
+.sel:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(109,75,229,.12)}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:680px}
+thead th{
+  position:sticky;top:0;z-index:1;text-align:left;background:var(--surface-3);color:#6d6a80;
+  font-size:10px;text-transform:uppercase;letter-spacing:.8px;font-weight:700;
+  padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap;
+}
+thead th.sortable{cursor:pointer;user-select:none}
+thead th.sortable:hover{color:var(--purple-deep);background:var(--purple-wash)}
+thead th .arrow{display:inline-block;width:9px;margin-left:5px;opacity:.3}
+thead th.sorted .arrow{opacity:1;color:var(--purple)}
+tbody td{padding:12px 14px;border-bottom:1px solid #f0edf6;vertical-align:middle;line-height:1.45}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#faf8ff}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.cellmain{font-weight:700;display:block}
+.cellsub{color:var(--muted);font-size:11.5px;display:block;margin-top:2px}
+.recordtext{max-width:430px;line-height:1.45}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
+.rowactions{display:flex;gap:6px;flex-wrap:nowrap;justify-content:flex-end}
+
+/* status pills: shape as well as colour, so state reads at a glance */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:30px;font-size:10.5px;font-weight:700;letter-spacing:.3px;border:1px solid;white-space:nowrap}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.pill.ok{color:var(--ok);background:var(--ok-wash);border-color:var(--ok-line)}
+.pill.warn{color:var(--warn);background:var(--warn-wash);border-color:var(--warn-line)}
+.pill.bad{color:var(--bad);background:var(--bad-wash);border-color:var(--bad-line)}
+.pill.info{color:var(--purple-deep);background:var(--purple-wash);border-color:var(--purple-line)}
+.pill.mute{color:var(--muted);background:var(--surface-3);border-color:var(--line)}
+.pill.plain::before{display:none}
+.tag{display:inline-block;padding:3px 8px;border-radius:6px;font-size:10.5px;font-weight:700;background:var(--surface-3);border:1px solid var(--line);color:#5d5a70;white-space:nowrap}
+.tag+.tag{margin-left:4px}
+
+/* pagination */
+.pager{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:13px 18px;border-top:1px solid var(--line);background:var(--surface-2)}
+.pagerinfo{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pagerctl{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.pagebtn{min-width:32px;height:32px;padding:0 9px;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-sm);font-size:12px;font-weight:700;color:var(--ink);display:inline-flex;align-items:center;justify-content:center}
+.pagebtn:hover:not([disabled]):not(.on){background:var(--purple-wash);border-color:var(--purple-line);color:var(--purple-deep)}
+.pagebtn.on{background:var(--purple);border-color:var(--purple);color:#fff}
+.pagebtn[disabled]{opacity:.4;cursor:not-allowed}
+.pagebtn.gap{border:0;background:none;min-width:18px;color:var(--muted)}
+.empty{padding:46px 20px;text-align:center;color:var(--muted)}
+.empty svg{width:34px;height:34px;stroke:var(--line);fill:none;stroke-width:1.5;margin-bottom:10px}
+.empty b{display:block;color:var(--ink);font:700 15px var(--display);margin-bottom:5px}
+
+/* ------------------------------------------------------------------ tabs */
+.tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:18px}
+.tab{padding:10px 15px;font-size:13px;font-weight:700;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;display:inline-flex;align-items:center;gap:7px}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--purple-deep);border-bottom-color:var(--purple)}
+.tab .count{background:var(--surface-3);border:1px solid var(--line);border-radius:20px;padding:1px 7px;font-size:10px}
+.tab.on .count{background:var(--purple-wash);border-color:var(--purple-line)}
+.tabpane{display:none}
+.tabpane.on{display:block}
+
+/* ------------------------------------------------------------------ charts */
+.chartbox{position:relative}
+.chartbox svg{display:block;width:100%;height:auto;overflow:visible}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}
+.legend span{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted)}
+.legend i{width:9px;height:9px;border-radius:3px;display:inline-block}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden}
+.seg button{padding:5px 11px;font-size:11px;font-weight:700;color:var(--muted);background:var(--surface)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--ink);color:#fff}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;font-size:11.5px;padding:7px 10px;border-radius:8px;opacity:0;transition:opacity .12s;white-space:nowrap;z-index:5;transform:translate(-50%,-115%)}
+.tip b{font-size:13px;display:block;margin-bottom:1px}
+.tip.on{opacity:1}
+.bars{display:flex;flex-direction:column;gap:11px}
+.barrow{display:grid;grid-template-columns:1fr 54px;gap:11px;align-items:center;font-size:12px}
+.barrow .lbl{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bartrack{grid-column:1/-1;height:8px;border-radius:5px;background:var(--surface-3);overflow:hidden}
+.bartrack i{display:block;height:100%;border-radius:5px;background:var(--purple)}
+.barrow .val{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+
+/* ------------------------------------------------------------------ forms */
+.field{margin-bottom:15px}
+.field label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#6d6a80;margin-bottom:6px}
+.input,.area,.select{width:100%;border:1px solid #ded9e9;background:var(--surface);border-radius:var(--r-sm);padding:10px 12px;font-size:13px}
+.input:focus,.area:focus,.select:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(109,75,229,.12)}
+.area{min-height:92px;resize:vertical;line-height:1.5}
+.hint{font-size:11px;color:var(--muted);margin-top:5px}
+.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0 14px}
+.ad-type-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:2px 0 0}
+.ad-type-option{position:relative;display:flex;align-items:flex-start;gap:12px;min-width:0;padding:16px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);cursor:pointer;text-transform:none;letter-spacing:0;margin:0!important;transition:border-color .18s ease,background .18s ease,box-shadow .18s ease;}
+.ad-type-option:hover{border-color:#b8a9f5;background:#fbfaff}
+.ad-type-option:has(input:checked){border-color:var(--purple);background:rgba(109,75,229,.065);box-shadow:0 0 0 2px rgba(109,75,229,.09)}
+.ad-type-option input{position:absolute;top:14px;right:14px;width:17px;height:17px;margin:0;accent-color:var(--purple);cursor:pointer}
+.ad-type-icon{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:11px;background:var(--surface-3);color:var(--muted)}
+.ad-type-option:has(input:checked) .ad-type-icon{background:#e9e3ff;color:var(--purple)}
+.ad-type-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ad-type-copy{display:flex;flex-direction:column;gap:5px;padding-right:16px}
+.ad-type-title{font-size:13px;font-weight:750;color:var(--ink);line-height:1.3}
+.ad-type-desc{font-size:11px;font-weight:400;line-height:1.45;color:var(--muted);letter-spacing:0;text-transform:none}
+.ad-type-tag{display:inline-flex;align-self:flex-start;margin-top:2px;padding:3px 7px;border-radius:5px;background:var(--surface-3);font-size:9px;font-weight:700;letter-spacing:.35px;color:var(--muted);text-transform:uppercase}
+@media(max-width:480px){.ad-type-options{grid-template-columns:1fr}.ad-type-option{padding:13px}}
+.note{background:var(--warn-wash);border:1px solid var(--warn-line);border-radius:var(--r);padding:12px 14px;font-size:12px;line-height:1.55;color:#6b4e12}
+.note b{color:#573f0c}
+
+/* ------------------------------------------------------------------ modal */
+.modal{position:fixed;inset:0;background:rgba(23,22,38,.62);display:none;align-items:center;justify-content:center;padding:18px;z-index:60}
+.modal.open{display:flex}
+.modalbox{width:min(680px,100%);max-height:90vh;overflow:auto;background:var(--surface);border-radius:var(--r-lg);box-shadow:0 24px 60px rgba(18,15,40,.3)}
+.modalhead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:18px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface);z-index:1}
+.modalhead h3{font:700 18px var(--display)}
+.modalhead p{font-size:12px;color:var(--muted);margin:4px 0 0}
+.modalbody{padding:20px}
+.modalfoot{display:flex;justify-content:flex-end;gap:9px;padding:15px 20px;border-top:1px solid var(--line);background:var(--surface-2);position:sticky;bottom:0}
+.x{width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);flex:0 0 auto}
+.x:hover{background:var(--surface-3);color:var(--ink)}
+.x svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+
+/* ------------------------------------------------------------------ ads */
+.policy{display:flex;flex-direction:column;gap:2px}
+.policyrow{display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid #f0edf6}
+.policyrow:last-child{border-bottom:0}
+.policyrow .pt{flex:1;min-width:0}
+.policyrow .pt b{display:block;font-size:13px}
+.policyrow .pt span{display:block;color:var(--muted);font-size:11.5px;margin-top:3px;line-height:1.5}
+.switch{flex:0 0 42px;width:42px;height:24px;border-radius:30px;background:var(--line);position:relative;margin-top:2px}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(25,25,43,.25);transition:left .18s ease}
+.switch.on{background:var(--ok)}
+.switch.on::after{left:21px}
+.switch.locked{opacity:.75;cursor:not-allowed}
+.lockmark{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--muted);margin-top:6px}
+.lockmark svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2}
+
+.phone{width:268px;max-width:100%;margin:0 auto;border:9px solid var(--ink);border-radius:30px;background:var(--cream);overflow:hidden;box-shadow:0 12px 30px rgba(25,25,43,.16)}
+.phonebar{background:var(--ink);color:#fff;padding:7px 14px;font-size:10px;display:flex;justify-content:space-between}
+.lobby{padding:14px}
+.lobbycode{background:var(--ink);color:#fff;border-radius:12px;padding:12px;text-align:center;margin-bottom:11px}
+.lobbycode b{display:block;font:700 22px var(--display);letter-spacing:3px}
+.lobbycode span{font-size:9.5px;color:#b9b7cb;letter-spacing:1.2px;text-transform:uppercase}
+.lobbyplayers{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px}
+.lobbychip{background:#fff;border:1px solid var(--line);border-radius:20px;padding:4px 9px;font-size:10px;font-weight:700}
+.adslot{border-radius:11px;overflow:hidden;border:1px solid var(--line);background:#fff;margin-bottom:9px}
+.adslot img{display:block;width:100%;height:auto}
+.adslot .adfoot{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;font-size:9.5px;color:var(--muted)}
+.adslot.card img{aspect-ratio:4/3;object-fit:cover}
+.adnone{border:1px dashed var(--line);border-radius:11px;padding:18px;text-align:center;font-size:11px;color:var(--muted)}
+.previewnote{font-size:11px;color:var(--muted);text-align:center;margin-top:11px;line-height:1.5}
+
+.rotbars{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+.rotrow{display:grid;grid-template-columns:1fr 92px;gap:10px;align-items:center;font-size:12px}
+.rotrow .lbl{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rotrow .res{text-align:right;font-variant-numeric:tabular-nums;font-size:11.5px;color:var(--muted)}
+.rottrack{grid-column:1/-1;height:7px;border-radius:5px;background:var(--surface-3);overflow:hidden;display:flex}
+.rottrack i{display:block;height:100%}
+.adthumb{width:66px;height:22px;border-radius:5px;object-fit:cover;border:1px solid var(--line);display:block}
+.urlerr{color:var(--bad);font-size:11px;margin-top:5px;display:none}
+.urlerr.on{display:block}
+
+/* ------------------------------------------------------------------ setup */
+.setrow{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid #f0edf6}
+.setrow:last-child{border-bottom:0}
+.setrow .st{flex:1;min-width:0}
+.setrow .st b{display:block;font-size:13px}
+.setrow .st span{display:block;color:var(--muted);font-size:11.5px;margin-top:3px;line-height:1.5}
+.setctl{flex:0 0 auto;display:flex;align-items:center;gap:8px}
+.numin{width:84px;border:1px solid #ded9e9;background:var(--surface);border-radius:var(--r-sm);padding:8px 10px;font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
+.numin:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(109,75,229,.12)}
+.numin.bad{border-color:var(--bad);background:var(--bad-wash)}
+.unit{font-size:11.5px;color:var(--muted);min-width:52px}
+.changed{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--yellow);margin-left:7px;vertical-align:middle}
+.seterr{color:var(--bad);font-size:11.5px;margin-top:8px;display:none}
+.seterr.on{display:block}
+
+.timeline{display:flex;border-radius:10px;overflow:hidden;border:1px solid var(--line);height:38px;margin:4px 0 12px}
+.timeline i{display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#fff;min-width:0;overflow:hidden;white-space:nowrap;padding:0 4px}
+.tlkey{display:flex;gap:14px;flex-wrap:wrap}
+.tlkey span{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted)}
+.tlkey i{width:9px;height:9px;border-radius:3px}
+.estimate{background:var(--purple-wash);border:1px solid var(--purple-line);border-radius:var(--r);padding:13px 15px;display:flex;gap:22px;flex-wrap:wrap;margin-top:13px}
+.estimate div{min-width:0}
+.estimate b{display:block;font:700 20px var(--display);color:var(--purple-deep);font-variant-numeric:tabular-nums}
+.estimate span{font-size:11px;color:var(--muted)}
+
+.tierhead{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#6d6a80;font-weight:700}
+.tierrow{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;padding:12px 0;border-bottom:1px solid #f0edf6;align-items:center;font-size:12.5px}
+.tierrow:last-child{border-bottom:0}
+.tierrow .lab b{display:block;font-size:12.5px}
+.tierrow .lab span{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+@media(max-width:620px){.tierhead,.tierrow{grid-template-columns:1fr 1fr}.tierhead span:first-child,.tierrow .lab{grid-column:1/-1}}
+
+.chk{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #f0edf6}
+.chk:last-child{border-bottom:0}
+.chk input{width:17px;height:17px;margin-top:2px;accent-color:var(--purple);flex:0 0 auto}
+.chk .ct b{display:block;font-size:12.5px}
+.chk .ct span{display:block;color:var(--muted);font-size:11px;margin-top:2px;line-height:1.5}
+.codedemo{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.codedemo b{font:700 17px var(--display);letter-spacing:2.5px;background:var(--ink);color:#fff;padding:7px 13px;border-radius:9px}
+.rulelist{display:flex;flex-direction:column}
+.ruleitem{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid #f0edf6}
+.ruleitem:last-child{border-bottom:0}
+.ruleitem svg{width:15px;height:15px;stroke:var(--ok);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;margin-top:2px}
+.ruleitem b{display:block;font-size:12.5px}
+.ruleitem span{display:block;color:var(--muted);font-size:11px;margin-top:2px;line-height:1.5}
+.ruleitem .ref{margin-left:auto;flex:0 0 auto}
+
+/* ------------------------------------------------------------------ misc */
+.drop{border:2px dashed var(--purple-line);border-radius:var(--r);background:var(--purple-wash);padding:30px 20px;text-align:center}
+.drop svg{width:30px;height:30px;stroke:var(--purple);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;margin-bottom:9px}
+.drop b{display:block;font:700 15px var(--display);margin-bottom:5px}
+.drop span{font-size:12px;color:var(--muted)}
+.livedot{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block;margin-right:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.scrim{display:none;position:fixed;inset:0;background:rgba(23,22,38,.5);z-index:25}
+@media(max-width:1000px){
+  .rail{transform:translateX(-100%);transition:transform .2s ease}
+  body.navopen .rail{transform:none}
+  body.navopen .scrim{display:block}
+  .main{margin-left:0}
+  .railtoggle{display:inline-flex}
+  .head h1{font-size:24px}
+}
+
+/* Set 24px horizontal page spacing */
+.topbar{
+  padding-left:24px !important;
+  padding-right:24px !important;
+}
+.content{
+  max-width:none !important;
+  margin-left:0 !important;
+  margin-right:0 !important;
+  padding-left:24px !important;
+  padding-right:24px !important;
+}
+@media (max-width: 768px){
+  .topbar,
+  .content{
+    padding-left:24px !important;
+    padding-right:24px !important;
+  }
+}
+
+/* Hide Game Setup from the sidebar navigation */
+.nav[data-sec="setup"]{display:none !important;}
+</style>
+</head>
+<body>
+
+<div class="scrim" id="scrim"></div>
+
+<!-- ============================================================= RAIL -->
+<aside class="rail" id="rail">
+  <div class="brand">
+    <img id="brandLogo" alt="Did I Say That Outloud??? logo" src="data:image/png;base64,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">
+    <small>Admin Console</small>
+  </div>
+
+  <nav class="navscroll" id="nav">
+    <div class="navlabel">Playground</div>
+    <button class="nav active" data-sec="dashboard">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M3 12l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span>
+      Game Pulse
+    </button>
+    <button class="nav" data-sec="records">
+      <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/></svg></span>
+      Record Library<span class="count">1,122</span>
+    </button>
+
+    <div class="navlabel">Community</div>
+    <button class="nav" data-sec="people">
+      <span class="ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 11.2A3 3 0 1 0 16 5.2"/><path d="M17.5 20c0-2.3-.9-4.1-2.3-5.2"/></svg></span>
+      Players &amp; Admins
+    </button>
+
+    <div class="navlabel">Business</div>
+    <button class="nav" data-sec="payments">
+      <span class="ic"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><path d="M2.5 10h19"/><path d="M6.5 14.5h4"/></svg></span>
+      Payments &amp; Discounts
+    </button>
+    <button class="nav" data-sec="coupons">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2.5 2.5 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2.5 2.5 0 0 0 0-6z"/><path d="M14 8.5l-4 7"/></svg></span>
+      Coupons
+    </button>
+    <button class="nav" data-sec="reports">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
+      Game Reports
+    </button>
+
+    <div class="navlabel">Configuration</div>
+    <button class="nav" data-sec="setup">
+      <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14.5a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h.1a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v.1a1.6 1.6 0 0 0 1.5 1h.2a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></span>
+      Game Setup
+    </button>
+    <button class="nav" data-sec="ads">
+      <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M7 20h10"/><path d="M7 9.5h6M7 13h4"/></svg></span>
+      Ads<span class="count" id="adCount">4</span>
+    </button>
+    <button class="nav" data-sec="dbr">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M5 4h11l4 4v12H5z"/><path d="M15.5 4v4.5H20"/><path d="M8.5 12.5h7M8.5 16h4.5"/></svg></span>
+      DBRs<span class="count">8</span>
+    </button>
+  </nav>
+
+  <div class="railfoot">
+    Release 1.0 · build 2026.10.19<br>
+    Horrible Games LLC
+  </div>
+</aside>
+
+<!-- ============================================================= MAIN -->
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:12px;min-width:0">
+      <button class="iconbtn railtoggle" id="railtoggle" aria-label="Open menu">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="crumb">Admin · <b id="crumb">Game Pulse</b></div>
+    </div>
+    <div class="topright">
+      <button class="user" aria-label="Signed in as Dov">
+        <span class="avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.5 20c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5"/></svg></span>
+        <span>Dov</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <!-- ===================================================== DASHBOARD -->
+    <section class="section active" id="dashboard">
+      <div class="head">
+        <div>
+          <h1>Game Pulse</h1>
+          <p>How the game is running right now, and how it has moved over the last two weeks.</p>
+        </div>
+        <div class="headactions">
+          <div class="seg" id="rangeSeg">
+            <button data-range="7">7 days</button>
+            <button data-range="14" class="on">14 days</button>
+            <button data-range="30">30 days</button>
+          </div>
+          <button class="btn"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v3h16v-3"/></svg>Export</button>
+        </div>
+      </div>
+
+      <div class="kpis" id="kpis"></div>
+
+      <div class="grid2">
+        <div class="panel span2">
+          <div class="panelhead">
+            <div>
+              <h3>Games played</h3>
+              <div class="sub">Completed games per day, with players who joined them</div>
+            </div>
+            <div class="legend">
+              <span><i style="background:var(--purple)"></i>Games</span>
+              <span><i style="background:var(--blue)"></i>Players</span>
+            </div>
+          </div>
+          <div class="panelbody"><div class="chartbox" id="chartGames"></div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panelhead"><div><h3>Who is hosting</h3><div class="sub">Share of games by the host's plan</div></div></div>
+          <div class="panelbody"><div class="chartbox" id="chartPlan"></div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panelhead"><div><h3>When games start</h3><div class="sub">Local start time, averaged over 14 days</div></div></div>
+          <div class="panelbody"><div class="chartbox" id="chartHours"></div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panelhead"><div><h3>Subscription revenue</h3><div class="sub">Net of Apple and Google commission</div></div></div>
+          <div class="panelbody"><div class="chartbox" id="chartRevenue"></div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panelhead">
+            <div><h3>How games end</h3><div class="sub">Last 14 days</div></div>
+          </div>
+          <div class="panelbody"><div class="bars" id="endReasons"></div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panelhead">
+          <div><h3><span class="livedot"></span>Games in progress</h3><div class="sub">Updates as rounds are played</div></div>
+          <button class="btn sm" data-go="reports">Open reports</button>
+        </div>
+        <div id="liveGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===================================================== RECORDS -->
+    <section class="section" id="records">
+      <div class="head">
+        <div>
+          <h1>Record Library</h1>
+          <p>Every question and answer the game can deal. Filters here match the sliders a host sees when they set up a game.</p>
+        </div>
+        <div class="headactions">
+          <button class="btn" id="btnImport"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L8 8m4-4l4 4"/><path d="M4 17v3h16v-3"/></svg>Import from Excel</button>
+          <button class="btn primary" id="btnAddRecord"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add record</button>
+        </div>
+      </div>
+      <div class="panel"><div id="recordsGrid"></div></div>
+    </section>
+
+    <!-- ===================================================== PEOPLE -->
+    <section class="section" id="people">
+      <div class="head">
+        <div>
+          <h1>Players &amp; Admins</h1>
+          <p>Accounts, blocking history, admin access and the audit trail, in one place.</p>
+        </div>
+        <div class="headactions">
+          <button class="btn" id="btnAddAdmin"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add admin</button>
+        </div>
+      </div>
+
+      <div class="tabs" id="peopleTabs">
+        <button class="tab on" data-pane="tabPlayers">Players <span class="count">4,812</span></button>
+        <button class="tab" data-pane="tabBlocks">Blocking history <span class="count">34</span></button>
+        <button class="tab" data-pane="tabAdmins">Admin roles <span class="count">4</span></button>
+        <button class="tab" data-pane="tabAudit">Audit log <span class="count">1,906</span></button>
+      </div>
+
+      <div class="tabpane on" id="tabPlayers"><div class="panel"><div id="playersGrid"></div></div></div>
+      <div class="tabpane" id="tabBlocks">
+        <div class="panel">
+          <div class="panelhead"><div><h3>Blocking history</h3><div class="sub">Every block and unblock, with the admin who made it</div></div></div>
+          <div id="blocksGrid"></div>
+        </div>
+      </div>
+      <div class="tabpane" id="tabAdmins"><div class="panel"><div id="adminsGrid"></div></div></div>
+      <div class="tabpane" id="tabAudit">
+        <div class="panel">
+          <div class="panelhead"><div><h3>Audit log</h3><div class="sub">Append-only record of every admin change</div></div></div>
+          <div id="auditGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== PAYMENTS -->
+    <section class="section" id="payments">
+      <div class="head">
+        <div>
+          <h1>Payments &amp; Discounts</h1>
+          <p>Subscriptions sold through the Apple and Google stores. Refunds are issued in the store consoles, not here.</p>
+        </div>
+        <div class="headactions"><button class="btn"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v3h16v-3"/></svg>Export CSV</button></div>
+      </div>
+      <div class="kpis" id="payKpis"></div>
+      <div class="panel"><div id="paymentsGrid"></div></div>
+    </section>
+
+    <!-- ===================================================== COUPONS -->
+    <section class="section" id="coupons">
+      <div class="head">
+        <div>
+          <h1>Coupons</h1>
+          <p>Codes are created in the Apple and Google developer accounts. This page reports what they did.</p>
+        </div>
+        <div class="headactions"><button class="btn primary" id="btnAddCoupon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Track a campaign</button></div>
+      </div>
+      <div class="note" style="margin-bottom:18px">
+        <b>Glimmer campaign:</b> 10% of every Glimmer redemption goes to the Glimmerglass Opera Festival. The donation is paid outside the app — this page is the figure it is calculated from.
+      </div>
+      <div class="panel"><div id="couponsGrid"></div></div>
+    </section>
+
+    <!-- ===================================================== REPORTS -->
+    <section class="section" id="reports">
+      <div class="head">
+        <div>
+          <h1>Game Reports</h1>
+          <p>Which records land, which ones win, where the money comes from and where players are.</p>
+        </div>
+        <div class="headactions">
+          <select class="sel" id="reportPeriod">
+            <option>Last 7 days</option>
+            <option selected>Last 30 days</option>
+            <option>Last 90 days</option>
+            <option>All time</option>
+          </select>
+          <button class="btn"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v3h16v-3"/></svg>Export</button>
+        </div>
+      </div>
+
+      <div class="tabs" id="reportTabs">
+        <button class="tab on" data-pane="repPlayed">Most played</button>
+        <button class="tab" data-pane="repWon">Most winning</button>
+        <button class="tab" data-pane="repVotes">Vote count</button>
+        <button class="tab" data-pane="repFinance">Financial</button>
+        <button class="tab" data-pane="repCampaign">Campaigns</button>
+        <button class="tab" data-pane="repGeo">Player locations</button>
+        <button class="tab" data-pane="repAds">Lobby ads</button>
+        <button class="tab" data-pane="repActivity">Game activity</button>
+      </div>
+
+      <div class="tabpane on" id="repPlayed">
+        <div class="grid2" style="margin-bottom:16px">
+          <div class="panel span2">
+            <div class="panelhead"><div><h3>Top ten answers by times played</h3><div class="sub">Across all games in the selected period</div></div></div>
+            <div class="panelbody"><div class="bars" id="topPlayedBars"></div></div>
+          </div>
+        </div>
+        <div class="panel"><div id="playedGrid"></div></div>
+      </div>
+
+      <div class="tabpane" id="repWon">
+        <div class="panel">
+          <div class="panelhead"><div><h3>Win rate by answer</h3><div class="sub">A record played often but rarely picked is a candidate for retirement</div></div></div>
+          <div id="wonGrid"></div>
+        </div>
+      </div>
+
+      <div class="tabpane" id="repVotes">
+        <div class="note" style="margin-bottom:16px">Vote counts are never shown to players, including the Reader. They appear here only.</div>
+        <div class="panel"><div id="votesGrid"></div></div>
+      </div>
+
+      <div class="tabpane" id="repFinance">
+        <div class="kpis" id="finKpis"></div>
+        <div class="panel">
+          <div class="panelhead"><div><h3>Revenue by product</h3><div class="sub">Gross, commission and net for the period</div></div></div>
+          <div id="financeGrid"></div>
+        </div>
+      </div>
+
+      <div class="tabpane" id="repCampaign"><div class="panel"><div id="campaignGrid"></div></div></div>
+
+      <div class="tabpane" id="repGeo">
+        <div class="grid2" style="margin-bottom:16px">
+          <div class="panel">
+            <div class="panelhead"><div><h3>Where players are</h3><div class="sub">From the country on the player's profile</div></div></div>
+            <div class="panelbody"><div class="bars" id="geoBars"></div></div>
+          </div>
+          <div class="panel">
+            <div class="panelhead"><div><h3>Consent</h3><div class="sub">Location is only reported where the player agreed</div></div></div>
+            <div class="panelbody"><div class="chartbox" id="chartConsent"></div></div>
+          </div>
+        </div>
+        <div class="panel"><div id="geoGrid"></div></div>
+      </div>
+
+      <div class="tabpane" id="repAds">
+        <div class="panel">
+          <div class="panelhead"><div><h3>Lobby ads</h3><div class="sub">Horrible Games' own ads. They play in the lobby until the first question, then never again that game.</div></div></div>
+          <div id="adsGrid"></div>
+        </div>
+      </div>
+
+      <div class="tabpane" id="repActivity">
+        <div class="panel">
+          <div class="panelhead"><div><h3>Game activity</h3><div class="sub">Every game started in the period</div></div></div>
+          <div id="activityGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== GAME SETUP -->
+    <section class="section" id="setup">
+      <div class="head">
+        <div>
+          <h1>Game Setup</h1>
+          <p>What a new game starts with. Timers and limits are settings, so changing one takes a restart rather than a release.</p>
+        </div>
+        <div class="headactions">
+          <button class="btn" id="btnSetupReset"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg>Back to agreed plan</button>
+          <button class="btn primary" id="btnSetupSave"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Save changes</button>
+        </div>
+      </div>
+
+      <div class="note" id="setupDirty" style="display:none;margin-bottom:18px">
+        <b>Unsaved changes.</b> <span id="setupDirtyList"></span>
+      </div>
+
+      <div class="grid2" style="margin-bottom:18px">
+        <div class="panel span2">
+          <div class="panelhead">
+            <div><h3>How long a round runs</h3><div class="sub">Dov asked for about three minutes each, to match the paper game</div></div>
+          </div>
+          <div class="panelbody">
+            <div class="timeline" id="roundTimeline"></div>
+            <div class="tlkey" id="roundKey"></div>
+
+            <div style="margin-top:16px">
+              <div class="setrow">
+                <span class="st"><b>Time to choose answers</b><span>From the question appearing to the Reader locking in. A player who misses it simply cannot win that round.</span></span>
+                <span class="setctl"><input class="numin" id="setAnswer" type="number" min="30" max="600" step="10"><span class="unit">seconds</span></span>
+              </div>
+              <div class="setrow">
+                <span class="st"><b>Time to vote</b><span>Voting is anonymous, and the count is never shown to players.</span></span>
+                <span class="setctl"><input class="numin" id="setVote" type="number" min="30" max="600" step="10"><span class="unit">seconds</span></span>
+              </div>
+              <div class="setrow">
+                <span class="st"><b>Nudge the Reader after</b><span>How long to wait before reminding a Reader who has not picked a winner.</span></span>
+                <span class="setctl"><input class="numin" id="setReminder" type="number" min="10" max="300" step="5"><span class="unit">seconds</span></span>
+              </div>
+              <div class="setrow">
+                <span class="st"><b>Drop the round after</b><span>If the Reader still does not respond. Played records stay out of the game either way.</span></span>
+                <span class="setctl"><input class="numin" id="setDiscard" type="number" min="20" max="600" step="10"><span class="unit">seconds</span></span>
+              </div>
+            </div>
+            <p class="seterr" id="timerErr"></p>
+
+            <div class="estimate">
+              <div><b id="estRound">8:00</b><span>Longest a round can run</span></div>
+              <div><b id="estTypical">3:25</b><span>Typical round, once people get going</span></div>
+              <div>
+                <input class="numin" id="estQuestions" type="number" min="5" max="200" step="5" value="20"
+                       style="width:72px;font:700 20px Georgia,serif;color:var(--purple-deep);padding:2px 6px;text-align:left;border-color:var(--purple-line)">
+                <span>Questions in a game</span>
+              </div>
+              <div><b id="estGame">1h 8m</b><span id="estFitNote">Dov expects an evening to run 3 to 8 hours</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panelhead"><div><h3>The table</h3><div class="sub">Who can be in a game and for how long</div></div></div>
+          <div class="panelbody">
+            <div class="setrow">
+              <span class="st"><b>Records in a hand</b><span>Fixed at ten. Unplayed records stay put; only what was played is replaced.</span></span>
+              <span class="setctl"><input class="numin" id="setHand" type="number" value="10" disabled><span class="unit">records</span></span>
+            </div>
+            <div class="setrow">
+              <span class="st"><b>Players needed to start</b><span>A game also ends if it drops below this.</span></span>
+              <span class="setctl"><input class="numin" id="setMin" type="number" value="3" disabled><span class="unit">players</span></span>
+            </div>
+            <div class="setrow">
+              <span class="st"><b>End a quiet game after</b><span>No question, no answer, no vote for this long and the game closes itself.</span></span>
+              <span class="setctl"><input class="numin" id="setIdle" type="number" min="5" max="480" step="5"><span class="unit">minutes</span></span>
+            </div>
+            <div class="setrow">
+              <span class="st"><b>Longest a game may run</b><span>Also how long a guest&rsquo;s pass stays valid.</span></span>
+              <span class="setctl"><input class="numin" id="setHours" type="number" min="1" max="24"><span class="unit">hours</span></span>
+            </div>
+            <div class="setrow">
+              <span class="st"><b>Grace after a dropped connection</b><span>A tunnel is not a departure. Below this, nobody is told anyone left.</span></span>
+              <span class="setctl"><input class="numin" id="setGrace" type="number" min="5" max="120" step="5"><span class="unit">seconds</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panelhead"><div><h3>What a new game starts on</h3><div class="sub">The host can change these when they set up, within their plan</div></div></div>
+          <div class="panelbody">
+            <div class="field">
+              <label for="setOrient">Orientation</label>
+              <select class="select" id="setOrient"><option>Neutral</option><option>Gay</option><option>Straight</option></select>
+              <div class="hint">Neutral deals neutral records only. A bias also deals the matching records.</div>
+            </div>
+            <div class="field">
+              <label for="setPolitics">Political bias</label>
+              <select class="select" id="setPolitics"><option>1 &mdash; Liberal</option><option>2 &mdash; More liberal</option><option>3 &mdash; Neutral</option><option>4 &mdash; More conservative</option><option>5 &mdash; Conservative</option></select>
+            </div>
+            <div class="field">
+              <label for="setSex">Sexual content</label>
+              <select class="select" id="setSex"><option>Kids</option><option>Severe</option><option>Nothing barred</option></select>
+              <div class="hint">A free host stays on Kids whatever is set here.</div>
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label for="setLang">Language</label>
+              <select class="select" id="setLang" disabled><option>US English</option></select>
+              <div class="hint">Other languages are a later release.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panelhead"><div><h3>What each plan gets</h3><div class="sub">Everyone in a game plays on the host&rsquo;s plan, guests included</div></div></div>
+        <div class="panelbody">
+          <div class="tierhead"><span>&nbsp;</span><span>Free</span><span>Premium</span></div>
+          <div class="tierrow">
+            <span class="lab"><b>Players in a game</b><span>Including the host</span></span>
+            <span><input class="numin" id="tierFreePlayers" type="number" min="3" max="20"></span>
+            <span><input class="numin" id="tierPremPlayers" type="number" min="3" max="20"></span>
+          </div>
+          <div class="tierrow">
+            <span class="lab"><b>Questions available</b><span>Out of 113 in the library</span></span>
+            <span><input class="numin" id="tierFreeQ" type="number" min="1" max="113"></span>
+            <span><span class="pill info plain">All 113</span></span>
+          </div>
+          <div class="tierrow">
+            <span class="lab"><b>Answers available</b><span>Out of 1,009 in the library</span></span>
+            <span><input class="numin" id="tierFreeA" type="number" min="10" max="1009"></span>
+            <span><span class="pill info plain">All 1,009</span></span>
+          </div>
+          <div class="tierrow">
+            <span class="lab"><b>Content ceiling</b><span>The highest the host may set</span></span>
+            <span><span class="tag">Kids</span></span>
+            <span><span class="tag">Nothing barred</span></span>
+          </div>
+          <div class="tierrow">
+            <span class="lab"><b>Lobby ads</b><span>Until the first question is asked</span></span>
+            <span><span class="pill warn">Shown</span></span>
+            <span><span class="pill ok">None</span></span>
+          </div>
+          <p class="seterr" id="tierErr"></p>
+          <p class="hint" id="tierNote" style="margin-top:12px"></p>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-bottom:18px">
+        <div class="panel">
+          <div class="panelhead"><div><h3>How a host may end a game</h3><div class="sub">Tick what appears on the setup screen</div></div></div>
+          <div class="panelbody">
+            <label class="chk"><input type="checkbox" id="endQ"><span class="ct"><b>After a number of questions</b><span>The host picks a count when the game is created.</span></span></label>
+            <label class="chk"><input type="checkbox" id="endD"><span class="ct"><b>After a length of time</b><span>For example two hours from the start.</span></span></label>
+            <label class="chk"><input type="checkbox" id="endC"><span class="ct"><b>At a clock time</b><span>Useful when the room has to be out by eleven.</span></span></label>
+            <label class="chk"><input type="checkbox" id="endH"><span class="ct"><b>Play until I say we are done</b><span>No automatic end. The host closes the game.</span></span></label>
+            <p class="seterr" id="endErr"></p>
+
+            <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:#6d6a80;margin-bottom:9px">If the scores are tied</div>
+              <label class="chk"><input type="checkbox" id="tbShared"><span class="ct"><b>Share the win</b><span>Everyone on the top score wins together.</span></span></label>
+              <label class="chk"><input type="checkbox" id="tbExtra"><span class="ct"><b>Play one deciding round</b><span>Only the tied players answer. A second tie is shared.</span></span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panelhead"><div><h3>Game codes</h3><div class="sub">What a host reads out across the room</div></div></div>
+          <div class="panelbody">
+            <div class="setrow">
+              <span class="st"><b>Six characters, letters and digits</b><span>No 0 or O, no 1, I or L &mdash; they get misread out loud. Not case sensitive.</span></span>
+              <span class="setctl"><span class="pill ok">Fixed</span></span>
+            </div>
+            <div class="setrow">
+              <span class="st"><b>Codes stop working when a game ends</b><span>The same code can then be handed to a future game.</span></span>
+              <span class="setctl"><span class="pill ok">Fixed</span></span>
+            </div>
+            <div class="setrow" style="border-bottom:0">
+              <span class="st"><b>Guessing protection</b><span>Five join attempts a minute from one connection, and a code locks for fifteen minutes after ten failures.</span></span>
+              <span class="setctl"><span class="pill ok">On</span></span>
+            </div>
+            <div style="margin-top:6px">
+              <div class="hint">Examples from the current alphabet:</div>
+              <div class="codedemo" id="codeDemo"></div>
+              <div class="hint" style="margin-top:9px">About 1.07 billion combinations, and each one only works while its game is open.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panelhead"><div><h3>Rules the game enforces</h3><div class="sub">Decisions already taken, listed so nothing is a surprise later</div></div></div>
+        <div class="panelbody"><div class="rulelist" id="fixedRules"></div></div>
+      </div>
+    </section>
+
+    <!-- ===================================================== ADS -->
+    <section class="section" id="ads">
+      <div class="head">
+        <div>
+          <h1>Ads</h1>
+          <p>Horrible Games&rsquo; own ads, shown in the lobby while players join. Change anything here and the preview and rotation below move with it.</p>
+        </div>
+        <div class="headactions">
+          <button class="btn primary" id="btnAddAd"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add ad</button>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-bottom:18px">
+        <div class="panel">
+          <div class="panelhead"><div><h3>Where ads appear</h3><div class="sub">Agreed in the monetization plan. The first three are enforced by the game and cannot be switched off here.</div></div></div>
+          <div class="panelbody"><div class="policy" id="adPolicy"></div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panelhead"><div><h3>How they are shown</h3><div class="sub">These you can change</div></div></div>
+          <div class="panelbody">
+            <div class="field">
+              <label for="adRotation">Rotation</label>
+              <select class="select" id="adRotation">
+                <option>Random (weighted)</option>
+                <option>Random (even)</option>
+                <option>In order</option>
+              </select>
+              <div class="hint">Weighted means an ad with weight 5 comes up five times as often as one with weight 1.</div>
+            </div>
+            <div class="field">
+              <label for="adPerLobby">Ads per lobby</label>
+              <select class="select" id="adPerLobby"><option>1</option><option selected>2</option><option>3</option></select>
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label for="adFormat">Format</label>
+              <select class="select" id="adFormat"><option selected>Banner</option><option>Full-screen card</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="panel">
+        <div class="panelhead">
+          <div><h3>Ad inventory</h3><div class="sub">Only ads that are running and inside their dates reach a player</div></div>
+        </div>
+        <div id="adsConfigGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===================================================== DBR -->
+    <section class="section" id="dbr">
+      <div class="head">
+        <div>
+          <h1>DBRs</h1>
+          <p>Dov Based Rules — the placeholders inside record text. The game fills them in when a round is dealt.</p>
+        </div>
+      </div>
+      <div class="note" style="margin-bottom:18px">
+        <b>Release 1.0:</b> this set is fixed. Adding and editing DBRs from the admin panel is a 2.0 feature, so the rules below are shown for reference and comment only.
+      </div>
+      <div class="panel"><div id="dbrGrid"></div></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============================================================= MODALS -->
+<div class="modal" id="modalRecord">
+  <div class="modalbox">
+    <div class="modalhead">
+      <div><h3 id="recordModalTitle">Add record</h3><p>Serial numbers are assigned by the system and never reused.</p></div>
+      <button class="x" data-close><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modalbody">
+      <div class="field">
+        <label for="recType">Record type</label>
+        <select class="select" id="recType"><option>Question</option><option selected>Answer</option></select>
+      </div>
+      <div class="field">
+        <label for="recText">Record text</label>
+        <textarea class="area" id="recText" placeholder="The amusement park ride DBR01 isn't tall enough to get on"></textarea>
+        <div class="hint">Use DBR04, DBR05 and DBR06 to mark where answers go. DBR01, DBR02, DBR03 and DBR07 are filled in with player names at deal time.</div>
+      </div>
+      <div class="formgrid">
+        <div class="field">
+          <label for="recOrient">Orientation</label>
+          <select class="select" id="recOrient"><option>A — All</option><option selected>N — Neutral</option><option>G — Gay</option><option>S — Straight</option></select>
+        </div>
+        <div class="field">
+          <label for="recSex">Sexual content</label>
+          <select class="select" id="recSex"><option selected>K — Kids</option><option>S — Severe</option><option>N — Nothing barred</option></select>
+        </div>
+        <div class="field">
+          <label for="recPol">Political bias</label>
+          <select class="select" id="recPol"><option>1 — Liberal</option><option>2 — More liberal</option><option selected>3 — Neutral</option><option>4 — More conservative</option><option>5 — Conservative</option></select>
+        </div>
+        <div class="field">
+          <label for="recLang">Language</label>
+          <select class="select" id="recLang"><option selected>E — US English</option></select>
+        </div>
+        <div class="field">
+          <label for="recStatus">Status</label>
+          <select class="select" id="recStatus"><option>Draft</option><option selected>Active</option><option>Retired</option></select>
+        </div>
+        <div class="field">
+          <label for="recFree">Free tier rank</label>
+          <input class="input" id="recFree" placeholder="e.g. 128" inputmode="numeric">
+          <div class="hint">Blank keeps it out of the free set.</div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="recFrom">Schedule</label>
+        <div class="formgrid">
+          <input class="input" id="recFrom" type="date">
+          <input class="input" id="recTo" type="date">
+        </div>
+        <div class="hint">Leave both blank to publish immediately and never retire.</div>
+      </div>
+    </div>
+    <div class="modalfoot">
+      <button class="btn" data-close>Cancel</button>
+      <button class="btn primary" data-close>Save record</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalImport">
+  <div class="modalbox">
+    <div class="modalhead">
+      <div><h3>Import from Excel</h3><p>Columns A to I of the locked template. Rows with problems are reported, the rest are imported.</p></div>
+      <button class="x" data-close><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modalbody">
+      <div class="drop">
+        <svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L8 8m4-4l4 4"/><path d="M4 16v4h16v-4"/></svg>
+        <b>Drop the record sheet here</b>
+        <span>.xlsx from the locked template · up to 25 MB</span>
+      </div>
+      <div class="panel" style="margin:18px 0 0">
+        <div class="panelhead"><div><h3>Last import</h3><div class="sub">18 Oct 2026 · records-oct-18.xlsx</div></div><span class="pill warn">6 issues</span></div>
+        <div class="panelbody" style="display:flex;gap:26px;flex-wrap:wrap">
+          <div><div class="kl" style="font-size:11px;color:var(--muted);font-weight:700">Rows read</div><div class="tnum" style="font:700 22px var(--display);margin-top:5px">412</div></div>
+          <div><div class="kl" style="font-size:11px;color:var(--muted);font-weight:700">Accepted</div><div class="tnum" style="font:700 22px var(--display);margin-top:5px;color:var(--ok)">406</div></div>
+          <div><div class="kl" style="font-size:11px;color:var(--muted);font-weight:700">Rejected</div><div class="tnum" style="font:700 22px var(--display);margin-top:5px;color:var(--bad)">6</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modalfoot">
+      <button class="btn" data-close>Close</button>
+      <button class="btn primary" data-close>Start import</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalAdmin">
+  <div class="modalbox">
+    <div class="modalhead">
+      <div><h3>Add admin</h3><p>Admin accounts use a second factor at sign-in.</p></div>
+      <button class="x" data-close><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modalbody">
+      <div class="formgrid">
+        <div class="field"><label for="admName">Name</label><input class="input" id="admName" placeholder="Michael Treiman"></div>
+        <div class="field"><label for="admEmail">Email</label><input class="input" id="admEmail" placeholder="michael@horriblegamesllc.com"></div>
+      </div>
+      <div class="field">
+        <label for="admRole">Role</label>
+        <select class="select" id="admRole">
+          <option>Admin — everything</option>
+          <option selected>Content admin — records only</option>
+          <option>Support — read only</option>
+        </select>
+      </div>
+    </div>
+    <div class="modalfoot"><button class="btn" data-close>Cancel</button><button class="btn primary" data-close>Send invitation</button></div>
+  </div>
+</div>
+
+<div class="modal" id="modalAd">
+  <div class="modalbox">
+    <div class="modalhead">
+      <div><h3 id="adModalTitle">Add ad</h3><p>Release 1.0 shows Horrible Games&rsquo; own ads only. No ad network, so nothing here tracks a player.</p></div>
+      <button class="x" data-close><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modalbody">
+      <div class="field">
+        <label for="adName">Name</label>
+        <input class="input" id="adName" placeholder="Glimmerglass Opera Festival">
+      </div>
+
+      <div class="field">
+        <label>Ad Type</label>
+        <div class="ad-type-options" role="radiogroup" aria-label="Choose ad type">
+          <label class="ad-type-option" for="adTypeImage">
+            <input id="adTypeImage" type="radio" name="adTypeChoice" value="Image" checked>
+            <span class="ad-type-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-5-5L5 20"/></svg></span>
+            <span class="ad-type-copy"><span class="ad-type-title">Image ad</span><span class="ad-type-desc">A static banner or graphic that appears in your ad placement.</span><span class="ad-type-tag">PNG · JPG · WEBP</span></span>
+          </label>
+          <label class="ad-type-option" for="adTypeVideo">
+            <input id="adTypeVideo" type="radio" name="adTypeChoice" value="Video">
+            <span class="ad-type-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="m16 10 5-3v10l-5-3z"/><path d="m8 9 4 3-4 3z"/></svg></span>
+            <span class="ad-type-copy"><span class="ad-type-title">Video ad</span><span class="ad-type-desc">A moving creative with a configurable close-button delay.</span><span class="ad-type-tag">MP4 · WEBM</span></span>
+          </label>
+        </div>
+        <div class="hint" style="margin-top:8px">Choose the format that matches your creative. You can change this later.</div>
+        <select class="select" id="adType" aria-hidden="true" tabindex="-1" style="display:none"><option value="Image" selected>Image</option><option value="Video">Video</option></select>
+      </div>
+      <div class="field" id="adVideoCloseField" style="display:none">
+        <label for="adVideoCloseTime">Video close button appearing time (seconds)</label>
+        <input class="input" id="adVideoCloseTime" type="number" min="0" step="1" value="5" placeholder="5">
+        <div class="hint">Choose how many seconds the video plays before the close button appears.</div>
+      </div>
+      <div class="field">
+        <label for="adFile">Ad creative</label>
+        <div class="drop" id="adDrop" style="padding:18px">
+          <img id="adPreviewImg" alt="" style="display:none;max-width:260px;border-radius:9px;margin:0 auto 10px">
+          <video id="adPreviewVideo" controls muted style="display:none;max-width:260px;max-height:180px;border-radius:9px;margin:0 auto 10px"></video>
+          <svg id="adDropIcon" viewBox="0 0 24 24"><path d="M12 16V4m0 0L8 8m4-4l4 4"/><path d="M4 16v4h16v-4"/></svg>
+          <b id="adDropTitle">Drop an image here</b>
+          <span id="adDropHint">PNG or JPG &middot; 320 &times; 100 for a banner, 4:3 for a card</span>
+          <div style="margin-top:11px"><button class="btn sm" type="button" id="adPickBtn">Choose file</button></div>
+          <input type="file" id="adFile" accept="image/*" hidden>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="adTarget">Where it links to</label>
+        <input class="input" id="adTarget" placeholder="https://glimmerglass.org">
+        <div class="hint">Must be https and on an approved domain: didisaythatgame.com, horriblegamesllc.com, glimmerglass.org, dovtreiman.art.</div>
+        <div class="urlerr" id="adUrlErr"></div>
+      </div>
+
+      <div class="formgrid">
+        <div class="field"><label for="adFrom">Runs from</label><input class="input" id="adFrom" type="date"></div>
+        <div class="field"><label for="adTo">Until</label><input class="input" id="adTo" type="date"><div class="hint">Blank runs forever.</div></div>
+      </div>
+
+      <div class="formgrid">
+        <div class="field">
+          <label for="adWeight">Rotation weight</label>
+          <select class="select" id="adWeight"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
+        </div>
+        <div class="field">
+          <label for="adStatus">Status</label>
+          <select class="select" id="adStatus"><option>Draft</option><option selected>Running</option><option>Paused</option><option>Ended</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modalfoot">
+      <button class="btn" data-close>Cancel</button>
+      <button class="btn primary" id="btnSaveAd">Save ad</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalCoupon">
+  <div class="modalbox">
+    <div class="modalhead">
+      <div><h3>Track a campaign</h3><p>The code itself is created in the Apple and Google consoles. Add it here so redemptions are reported.</p></div>
+      <button class="x" data-close><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modalbody">
+      <div class="formgrid">
+        <div class="field"><label for="cpCode">Code</label><input class="input" id="cpCode" placeholder="GLIMMER"></div>
+        <div class="field"><label for="cpStore">Store</label><select class="select" id="cpStore"><option>Apple App Store</option><option>Google Play</option><option selected>Both</option></select></div>
+      </div>
+      <div class="field"><label for="cpPurpose">What it does</label><input class="input" id="cpPurpose" placeholder="10% of revenue donated to the Glimmerglass Opera Festival"></div>
+      <div class="formgrid">
+        <div class="field"><label for="cpFrom">Runs from</label><input class="input" id="cpFrom" type="date"></div>
+        <div class="field"><label for="cpTo">Until</label><input class="input" id="cpTo" type="date"></div>
+      </div>
+    </div>
+    <div class="modalfoot"><button class="btn" data-close>Cancel</button><button class="btn primary" data-close>Save campaign</button></div>
+  </div>
+</div>
+<script>
+/* ===========================================================================
+   Did I Say That Outloud??? — admin console
+   Demonstration build: every figure below is generated sample data.
+   =========================================================================== */
+(function () {
+'use strict';
+
+/* ---------------------------------------------------------------- helpers */
+var S = 20261019;
+function rnd(){ S = (S * 1103515245 + 12345) % 2147483648; return S / 2147483648; }
+function pick(a){ return a[Math.floor(rnd()*a.length)]; }
+function between(a,b){ return a + Math.floor(rnd()*(b-a+1)); }
+function money(n){ return '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function money0(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
+function num(n){ return n.toLocaleString('en-US'); }
+function pct(n){ return n.toFixed(1) + '%'; }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function daysAgo(d){ var t = new Date(2026,9,19); t.setDate(t.getDate()-d); return t; }
+function fmtDate(d){ return d.toLocaleDateString('en-US',{day:'2-digit',month:'short',year:'numeric'}); }
+function fmtShort(d){ return d.toLocaleDateString('en-US',{day:'numeric',month:'short'}); }
+function fmtTime(d){ return d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
+
+var FIRST = ['Dov','Michael','Kevin','Alex','Carla','Bob','Dana','Priya','Marcus','Nina','Theo','Ruth','Omar','Sadie','Felix','Lena','Caleb','Joan','Rory','Mina','Victor','Elsie','Hugo','Paloma','Desmond','Tess','Ivan','Greta','Milo','Rosa'];
+var LAST  = ['Treiman','Okafor','Lindqvist','Barnes','Ferreira','Nakamura','Delgado','Whitfield','Osei','Kaplan','Moreau','Santos','Byrne','Novak','Ahmed','Petrova','Rossi','Mbeki','Donnelly','Yilmaz'];
+var HANDLES = ['SnortLaugh','CouchGremlin','AuntJudy','BigSpoon','NoFilter','PastaWizard','DadJokeDan','QuietStorm','SockPuppet','TheOtherSteve','MayoLegend','ChaosMuppet','SpreadsheetKing','LateNightLou','GiggleFit','BananaPhone','OverSharer','MrsNoodle','WheezeMachine','CaptainOops'];
+var COUNTRIES = [['US','United States',62],['CA','Canada',11],['GB','United Kingdom',9],['AU','Australia',6],['IE','Ireland',3],['NZ','New Zealand',2],['DE','Germany',2],['NL','Netherlands',2],['SE','Sweden',1],['ZA','South Africa',1]];
+
+var QUESTION_TEXT = [
+  'The hottest latest salad ingredient is DBR04',
+  'DBR02 just told the whole table that DBR04',
+  'What DBR01 keeps in the glovebox: DBR04',
+  'The real reason DBR01 left the party early: DBR04',
+  'DBR03 has one rule at dinner and it is DBR04',
+  'On the family group chat DBR01 sent DBR04 and then DBR05',
+  'The worst possible thing to find in a hotel minibar: DBR04',
+  'DBR02 named the dog DBR07 because of DBR04',
+  'Three things DBR01 packed for a weekend away: DBR04, DBR05 and DBR06',
+  'The new rule at DBR03 house is DBR04',
+  'What got DBR01 banned from the group chat: DBR04',
+  'DBR02 would trade their entire savings for DBR04',
+  'The tattoo DBR01 regrets is DBR04',
+  'Overheard at the school gate: DBR04',
+  'DBR07 has been eating DBR04 again'
+];
+var ANSWER_TEXT = [
+  'a lukewarm sausage roll','the last clean spoon','DBR01 in a borrowed cardigan','a traffic cone with a name',
+  'four unread voicemails from DBR02','an entirely beige buffet','the neighbour’s wifi password','a surprisingly damp paperback',
+  'DBR07 wearing a tiny hat','a jar of something from 2011','the loud half of a phone call','a trampoline nobody asked for',
+  'DBR01’s emotional support stapler','a casserole with opinions','the slowest possible apology','a group photo where everyone blinked',
+  'an inflatable flamingo at a funeral','DBR02’s karaoke signature move','a drawer that will not open','instructions in four languages, none useful',
+  'a garden gnome under witness protection','DBR01 explaining crypto again','half a birthday cake with a name scraped off','a motivational poster in a dentist’s office',
+  'the office kettle and its history','a bag for life, on its ninth life','DBR07’s very confident bark','someone else’s shopping list',
+  'a wedding toast that went on too long','a shed with ambitions','the quiet one at the barbecue','an email that ended "regards" and nothing else'
+];
+
+var ORIENT = [['N','Neutral',70],['A','All',14],['S','Straight',9],['G','Gay',7]];
+var SEX = [['K','Kids',58],['S','Severe',29],['N','Nothing barred',13]];
+function weighted(list){ var t=0,i; for(i=0;i<list.length;i++) t+=list[i][2]; var r=rnd()*t; for(i=0;i<list.length;i++){ r-=list[i][2]; if(r<=0) return list[i]; } return list[list.length-1]; }
+
+/* Record text is composed from fragments so the demo library reads like 1,100
+   distinct records rather than the same two dozen lines repeating down the page. */
+var CTX = ['at a funeral','in the family group chat','on the school run','during the best man’s speech',
+  'at 3am','in DBR01’s glovebox','at the office party','halfway up a ladder','in the staff kitchen',
+  'on a first date','at passport control','in the parents’ evening queue','on the last train',
+  'in a hot tub','at the village fete','during a fire drill','on a camping trip','in the dentist’s waiting room',
+  'at a baby shower','on the group holiday','in the lift','at the wake','on live radio','in the car park'];
+var TONE = ['','somehow, ','allegedly, ','against all advice, '];
+
+function uniqueText(pool, used){
+  for(var attempt=0; attempt<80; attempt++){
+    var base = pick(pool);
+    var t = rnd()<0.22 ? base : pick(TONE) + base + ' ' + pick(CTX);
+    if(!used[t]){ used[t]=1; return t; }
+  }
+  var fallback = pick(TONE) + pick(pool) + ' ' + pick(CTX) + ' (' + Object.keys(used).length + ')';
+  used[fallback]=1; return fallback;
+}
+
+/* ---------------------------------------------------------------- data */
+var DATA = {};
+
+DATA.records = (function(){
+  var out=[], n=1122, serial=1, usedQ={}, usedA={};
+  for(var i=0;i<n;i++){
+    var isQ = i % 10 === 0;
+    var o = weighted(ORIENT), s = weighted(SEX);
+    var txt = isQ ? uniqueText(QUESTION_TEXT, usedQ) : uniqueText(ANSWER_TEXT, usedA);
+    var blanks = isQ ? (txt.match(/DBR0[456]/g)||['DBR04']).length : 0;
+    var st = rnd()<0.91 ? 'Active' : (rnd()<0.6 ? 'Retired' : 'Draft');
+    var rank = i < 375 ? i+1 : null;
+
+    /* The free set is Kids content only - Rated R records sit further down the
+       sheet, which is what the monetization plan agreed (MO-04). */
+    if(rank!==null) s = SEX[0];
+
+    out.push({
+      serial: String(serial+i).padStart(9,'0').replace(/(\d{3})(\d{2})(\d{4})/,'$1-$2-$3'),
+      serialRaw: serial+i,
+      text: txt,
+      type: isQ ? 'Question' : 'Answer',
+      answers: blanks,
+      dbr: (txt.match(/DBR\d\d/g)||[]).join(' '),
+      orientation: o[1], orientCode:o[0],
+      sex: s[1], sexCode:s[0],
+      politics: between(1,5),
+      status: st,
+      freeRank: rank,
+      plays: isQ ? between(0,240) : between(0,610),
+      schedule: rnd()<0.08 ? 'From ' + fmtShort(daysAgo(-between(3,40))) : 'Always on'
+    });
+  }
+  return out;
+})();
+
+DATA.players = (function(){
+  var out=[], n=4812;
+  for(var i=0;i<n;i++){
+    var f=pick(FIRST), l=pick(LAST), c=weighted(COUNTRIES);
+    var premium = rnd()<0.128;
+    var blocked = rnd()<0.007;
+    out.push({
+      name: f+' '+l,
+      handle: pick(HANDLES)+between(1,99),
+      email: (f+'.'+l).toLowerCase()+'@'+pick(['gmail.com','outlook.com','icloud.com','yahoo.com','hey.com']),
+      country: c[1], cc:c[0],
+      tier: premium ? 'Premium' : 'Free',
+      plan: premium ? pick(['Monthly','Annual']) : '—',
+      games: between(1, premium?180:40),
+      joined: daysAgo(between(1,300)),
+      lastSeen: daysAgo(between(0,45)),
+      status: blocked ? 'Blocked' : (rnd()<0.06 ? 'Deactivating' : 'Active')
+    });
+  }
+  return out;
+})();
+
+DATA.blocks = (function(){
+  var out=[], admins=['Dov Treiman','Michael Treiman','Kevin Treiman'];
+  for(var i=0;i<34;i++){
+    var p = DATA.players[between(0,400)];
+    out.push({
+      player: p.name, handle: p.handle,
+      action: rnd()<0.72 ? 'Blocked' : 'Unblocked',
+      admin: pick(admins),
+      when: daysAgo(between(1,180)),
+      reason: pick(['Offensive screen name','Harassment reported by host','Repeated spam in lobby','Appeal upheld — unblocked','Shared account credentials','Abusive language during play'])
+    });
+  }
+  out.sort(function(a,b){ return b.when-a.when; });
+  return out;
+})();
+
+DATA.admins = [
+  {name:'Dov Treiman', email:'dov@horriblegamesllc.com', role:'Admin', access:'Records, users, billing, ads, reports, roles', mfa:true, last:daysAgo(0), status:'Active'},
+  {name:'Michael Treiman', email:'michael@horriblegamesllc.com', role:'Admin', access:'Records, users, billing, ads, reports, roles', mfa:true, last:daysAgo(1), status:'Active'},
+  {name:'Kevin Treiman', email:'kevin@horriblegamesllc.com', role:'Content admin', access:'Records only — add, edit, retire, import', mfa:true, last:daysAgo(3), status:'Active'},
+  {name:'Alex Barnes', email:'alex@zibaltech.com', role:'Support', access:'Read only — players and games', mfa:false, last:daysAgo(12), status:'Invited'}
+];
+
+DATA.audit = (function(){
+  var out=[], acts=[
+    ['Record edited','Record','Changed sexual content from Kids to Severe'],
+    ['Record created','Record','Added a new answer record'],
+    ['Record retired','Record','Taken out of the deck'],
+    ['Player blocked','Player','Offensive screen name'],
+    ['Player unblocked','Player','Appeal upheld'],
+    ['Import completed','Import batch','406 of 412 rows accepted'],
+    ['Ad scheduled','Advertisement','Glimmerglass banner, runs to 30 Nov'],
+    ['Role granted','Admin','Content admin'],
+    ['Free tier rank changed','Record','Moved out of the free set'],
+    ['Coupon campaign added','Coupon','GLIMMER tracked for reporting']
+  ];
+  for(var i=0;i<1906;i++){
+    var a = pick(acts);
+    out.push({
+      when: daysAgo(between(0,240)),
+      admin: pick(['Dov Treiman','Michael Treiman','Kevin Treiman']),
+      action: a[0], entity: a[1], detail: a[2],
+      ref: a[1]==='Record' ? String(100000001+between(0,1100)).replace(/(\d{3})(\d{2})(\d{4})/,'$1-$2-$3') : '—'
+    });
+  }
+  out.sort(function(a,b){ return b.when-a.when; });
+  return out;
+})();
+
+DATA.payments = (function(){
+  var out=[], n=1486;
+  for(var i=0;i<n;i++){
+    var annual = rnd()<0.38;
+    var gross = annual ? 39.99 : 4.99;
+    var store = rnd()<0.57 ? 'Apple App Store' : 'Google Play';
+    var rate = rnd()<0.8 ? 0.15 : 0.30;
+    var coupon = rnd()<0.22 ? pick(['GLIMMER','LAUNCH25','OPERA','PODCAST','DOVART']) : null;
+    var st = rnd()<0.955 ? 'Settled' : (rnd()<0.6 ? 'Refunded' : 'Pending');
+    var p = DATA.players[between(0,DATA.players.length-1)];
+    out.push({
+      id:'PAY-'+(60410+i),
+      player:p.name, handle:p.handle,
+      plan: annual ? 'Premium Annual' : 'Premium Monthly',
+      store: store,
+      gross: gross,
+      commission: +(gross*rate).toFixed(2),
+      net: +(gross*(1-rate)).toFixed(2),
+      coupon: coupon,
+      status: st,
+      when: daysAgo(between(0,120))
+    });
+  }
+  out.sort(function(a,b){ return b.when-a.when; });
+  return out;
+})();
+
+DATA.coupons = [
+  {code:'GLIMMER', purpose:'10% of revenue donated to the Glimmerglass Opera Festival', store:'Both', redemptions:412, revenue:7284.56, donation:728.46, runs:'1 Sep 2026 — 31 Dec 2026', status:'Running'},
+  {code:'LAUNCH25', purpose:'First month free on a monthly plan', store:'Both', redemptions:1038, revenue:0, donation:0, runs:'12 Aug 2026 — 30 Sep 2026', status:'Ended'},
+  {code:'OPERA', purpose:'Three months at the annual rate', store:'Apple App Store', redemptions:146, revenue:2918.54, donation:0, runs:'1 Oct 2026 — 30 Nov 2026', status:'Running'},
+  {code:'PODCAST', purpose:'Two free months, read out on the show', store:'Both', redemptions:287, revenue:1243.77, donation:0, runs:'20 Sep 2026 — 20 Oct 2026', status:'Running'},
+  {code:'DOVART', purpose:'Free deck expansion, from the artist’s mailing list', store:'Google Play', redemptions:94, revenue:469.06, donation:0, runs:'5 Oct 2026 — 5 Nov 2026', status:'Running'},
+  {code:'FAMILY', purpose:'Free month for anyone in the beta', store:'Both', redemptions:61, revenue:0, donation:0, runs:'1 Jul 2026 — 31 Jul 2026', status:'Ended'},
+  {code:'HOLIDAY', purpose:'Party Pass trial — not launched', store:'Both', redemptions:0, revenue:0, donation:0, runs:'Not scheduled', status:'Draft'}
+];
+
+DATA.dbr = [
+  {id:'DBR01', desc:'A random player other than the Reader', comment:'Appears in questions and in answers, so substitution runs on both.', used:734},
+  {id:'DBR02', desc:'The Reader', comment:'Filled in from the current round.', used:208},
+  {id:'DBR03', desc:'A player the Reader names by point-and-click', comment:'The Reader picks before the answering window opens.', used:96},
+  {id:'DBR04', desc:'Answer blank 1', comment:'Marks where the first answer goes. Never substituted.', used:113},
+  {id:'DBR05', desc:'Answer blank 2', comment:'Present only on two-answer questions.', used:31},
+  {id:'DBR06', desc:'Answer blank 3', comment:'Present only on three-answer questions.', used:12},
+  {id:'DBR07', desc:'A pet name the Reader types', comment:'Free text, up to 20 characters.', used:58},
+  {id:'DBR08', desc:'A second random player, not the Reader and not DBR01', comment:'Needs at least three players, which the minimum guarantees.', used:44}
+];
+
+DATA.live = (function(){
+  var out=[];
+  for(var i=0;i<24;i++){
+    var premium = rnd()<0.34;
+    var players = premium ? between(6,18) : between(3,7);
+    var host = DATA.players[between(0,500)];
+    out.push({
+      code: (function(){ var a='ABCDEFGHJKMNPQRSTUVWXYZ23456789',s=''; for(var j=0;j<6;j++) s+=a[Math.floor(rnd()*a.length)]; return s; })(),
+      host: host.name,
+      tier: premium ? 'Premium' : 'Free',
+      players: players,
+      round: between(1,22),
+      phase: pick(['Answering','Voting','Reader picking','Dealing']),
+      started: daysAgo(0),
+      minutes: between(4,96)
+    });
+  }
+  return out;
+})();
+
+DATA.activity = (function(){
+  var out=[];
+  for(var i=0;i<860;i++){
+    var premium = rnd()<0.31;
+    out.push({
+      code:(function(){ var a='ABCDEFGHJKMNPQRSTUVWXYZ23456789',s=''; for(var j=0;j<6;j++) s+=a[Math.floor(rnd()*a.length)]; return s; })(),
+      host: DATA.players[between(0,900)].name,
+      tier: premium?'Premium':'Free',
+      players: premium?between(5,20):between(3,7),
+      rounds: between(4,38),
+      minutes: between(12,210),
+      ended: pick(['Host ended','Question limit','Duration reached','Host left','Too few players','Idle for an hour']),
+      when: daysAgo(between(0,30))
+    });
+  }
+  out.sort(function(a,b){ return b.when-a.when; });
+  return out;
+})();
+
+/* Placeholder creatives, drawn as inline SVG so the demo has real thumbnails
+   without shipping image files. A real upload replaces these with the file the
+   admin drops in (read with FileReader, so it works with no server). */
+function adArt(title, c1, c2){
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="100">' +
+    '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+    '<stop offset="0" stop-color="'+c1+'"/><stop offset="1" stop-color="'+c2+'"/></linearGradient></defs>' +
+    '<rect width="320" height="100" fill="url(#g)"/>' +
+    '<text x="18" y="46" font-family="Georgia,serif" font-size="19" font-weight="700" fill="#fff">'+title+'</text>' +
+    '<text x="18" y="70" font-family="Arial,sans-serif" font-size="11" fill="#ffffffcc">Horrible Games</text></svg>';
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
+/* Ad inventory. The configuration screen manages this list and the lobby-ad
+   report reads the same records, so a change in one shows up in the other. */
+DATA.ads = [
+  {id:'AD-01', name:'Go Premium — full library', target:'https://didisaythatgame.com/premium',
+   art:adArt('Go Premium','#6d4be5','#315bd8'), from:'2026-08-01', to:'', weight:5,
+   impressions:48219, clicks:3104, status:'Running'},
+  {id:'AD-02', name:'Glimmerglass Opera Festival', target:'https://glimmerglass.org',
+   art:adArt('Glimmerglass','#315bd8','#19192b'), from:'2026-09-01', to:'2026-11-30', weight:3,
+   impressions:31507, clicks:942, status:'Running'},
+  {id:'AD-03', name:'Dov Treiman, artist', target:'https://dovtreiman.art',
+   art:adArt('Dov Treiman','#e65353','#6d4be5'), from:'2026-08-15', to:'', weight:2,
+   impressions:28844, clicks:611, status:'Running'},
+  {id:'AD-04', name:'Horrible Games — what we make', target:'https://horriblegamesllc.com',
+   art:adArt('Horrible Games','#19192b','#6d4be5'), from:'2026-08-01', to:'', weight:2,
+   impressions:26130, clicks:488, status:'Running'},
+  {id:'AD-05', name:'Cooperstown summer season', target:'https://glimmerglass.org/summer',
+   art:adArt('Summer Season','#f5cb4b','#e65353'), from:'2026-06-01', to:'2026-08-31', weight:1,
+   impressions:9043, clicks:201, status:'Ended'},
+  {id:'AD-06', name:'Party Pass teaser', target:'https://didisaythatgame.com/party',
+   art:adArt('Party Pass','#77768a','#19192b'), from:'', to:'', weight:1,
+   impressions:0, clicks:0, status:'Draft'}
+];
+
+/* Where an ad may point. Anything else is refused: an admin-controlled link that
+   can be set to any host is an open redirect with the brand's name on it. */
+DATA.adHosts = ['didisaythatgame.com','horriblegamesllc.com','glimmerglass.org','dovtreiman.art','didisaygame.com'];
+
+/* The three rules below are fixed by the agreed monetization plan (MO-05) and are
+   shown so the client can see them, not so they can be switched off here. */
+DATA.adPolicy = [
+  {name:'Lobby only', on:true, why:'Ads never appear while a question is read, answers are chosen or votes are cast.'},
+  {name:'Stop at the first question', on:true, why:'Once a game asks its first question, ads do not come back for that game.'}
+];
+
+DATA.adSettings = { rotation:'Random (weighted)', perLobby:2, format:'Banner' };
+
+/* ---------------------------------------------------------------- game setup
+   The numbers a new game starts with. These are settings, not code: changing a
+   timer here is a configuration change and a restart, not a release. Per-game
+   timers and Lightning Games are a 2.0 feature (GP-14). */
+DATA.setup = {
+  answerWindow:180, voteWindow:180, readerReminder:60, readerDiscard:120,
+  idleMinutes:60, maxHours:8, disconnectGrace:20,
+  handSize:10, minPlayers:3,
+  defaults:{ orientation:'Neutral', politics:3, sex:'Kids', language:'US English' },
+  endConditions:{ questionCount:true, duration:true, clockTime:true, untilHost:true },
+  tieBreak:{ shared:true, extraRound:true },
+  tiers:{
+    free:{ maxPlayers:7, questions:25, answers:350, ads:true, maxSex:'Kids' },
+    premium:{ maxPlayers:20, questions:null, answers:null, ads:false, maxSex:'Nothing barred' }
+  }
+};
+DATA.setupAgreed = JSON.parse(JSON.stringify(DATA.setup));
+
+/* How big the library actually is, so the free-set numbers can be sanity-checked
+   against something real rather than typed into the void. */
+DATA.library = { questions:113, answers:1009 };
+
+/* Rules the game enforces. They are here so the client can see them in one place,
+   not so they can be switched off - each one is a decision already taken. */
+DATA.fixedRules = [
+  {name:'Ten records in a hand', why:'Unplayed records stay put; only what was played is replaced.', ref:'GS-04'},
+  {name:'Three players to start', why:'A game also ends if it drops below three.', ref:'GS-02'},
+  {name:'Mulligan once per player per round', why:'Only after confirming, and only until the Reader locks in.', ref:'GP-05'},
+  {name:'The Reader cannot pick their own answer', why:'The Reader scores only when every other vote goes to their record.', ref:'GP-07'},
+  {name:'Nobody votes for their own answer', why:'Votes are anonymous and are never shown to players.', ref:'ZA-09'},
+  {name:'Played records stay out for the game', why:'True even when a round is discarded.', ref:'GS-12'},
+  {name:'The system picks the question', why:'The Reader cannot choose or skip it. Skipping arrives in 2.0.', ref:'GP-12'},
+  {name:'US English only', why:'Other languages are a later release.', ref:'ZA-18'},
+  {name:'Games are not saved and resumed', why:'Save and resume, and host resume, are both 2.0.', ref:'GS-09'}
+];
+
+/* ------------------------------------------------- derived report tables */
+DATA.played = DATA.records.filter(function(r){ return r.type==='Answer'; }).slice(0,180).map(function(r){
+  var plays = between(120,980), wins = Math.round(plays*(0.06+rnd()*0.22));
+  return { text:r.text, serial:r.serial, plays:plays, wins:wins, rate:(wins/plays*100), votes:Math.round(plays*(0.8+rnd()*1.6)) };
+}).sort(function(a,b){ return b.plays-a.plays; });
+
+DATA.won = DATA.played.slice().sort(function(a,b){ return b.rate-a.rate; });
+DATA.votes = DATA.played.slice().sort(function(a,b){ return b.votes-a.votes; });
+
+DATA.finance = [
+  {product:'Premium Monthly — Apple', units:612, gross:3053.88, rate:'15%', commission:458.08, net:2595.80},
+  {product:'Premium Monthly — Google', units:449, gross:2240.51, rate:'15%', commission:336.08, net:1904.43},
+  {product:'Premium Annual — Apple', units:268, gross:10717.32, rate:'15%', commission:1607.60, net:9109.72},
+  {product:'Premium Annual — Google', units:157, gross:6278.43, rate:'15%', commission:941.76, net:5336.67},
+  {product:'Premium Monthly — Apple (first year, 30%)', units:41, gross:204.59, rate:'30%', commission:61.38, net:143.21},
+  {product:'Refunds', units:-23, gross:-412.77, rate:'—', commission:-61.92, net:-350.85}
+];
+
+DATA.geo = COUNTRIES.map(function(c){
+  var players = Math.round(4812 * c[2]/100);
+  return { country:c[1], cc:c[0], players:players, games:Math.round(players*2.4), premium:Math.round(players*(0.08+rnd()*0.09)), consent: rnd()<0.5?'Profile country':'Consented location' };
+}).sort(function(a,b){ return b.players-a.players; });
+
+/* ---------------------------------------------------------------- grid */
+function Grid(mount, cfg){
+  this.mount = typeof mount==='string' ? document.getElementById(mount) : mount;
+  this.cfg = cfg;
+  this.rows = cfg.rows;
+  this.page = 1;
+  this.size = cfg.pageSize || 10;
+  this.q = '';
+  this.sort = cfg.sort || null;
+  this.dir = cfg.dir || 'asc';
+  this.filters = {};
+  this.render();
+}
+Grid.prototype.filtered = function(){
+  var self=this, rows=this.rows, q=this.q.trim().toLowerCase();
+  if(q){
+    rows = rows.filter(function(r){
+      return self.cfg.columns.some(function(c){
+        if(c.search===false) return false;
+        var v = c.value ? c.value(r) : r[c.key];
+        return v!=null && String(v).toLowerCase().indexOf(q)>-1;
+      });
+    });
+  }
+  Object.keys(this.filters).forEach(function(k){
+    var v=self.filters[k]; if(!v) return;
+    var f=(self.cfg.filters||[]).filter(function(x){return x.key===k;})[0];
+    rows = rows.filter(function(r){ return f.test(r,v); });
+  });
+  if(this.sort){
+    var col=this.cfg.columns.filter(function(c){return c.key===self.sort;})[0];
+    if(col){
+      var d=this.dir==='asc'?1:-1;
+      rows = rows.slice().sort(function(a,b){
+        var x = col.sortValue ? col.sortValue(a) : (col.value?col.value(a):a[col.key]);
+        var y = col.sortValue ? col.sortValue(b) : (col.value?col.value(b):b[col.key]);
+        if(x==null) x=''; if(y==null) y='';
+        if(typeof x==='number' && typeof y==='number') return (x-y)*d;
+        if(x instanceof Date && y instanceof Date) return (x-y)*d;
+        return String(x).localeCompare(String(y),'en',{numeric:true})*d;
+      });
+    }
+  }
+  return rows;
+};
+Grid.prototype.render = function(){
+  var self=this, all=this.filtered(), total=all.length;
+  var pages = Math.max(1, Math.ceil(total/this.size));
+  if(this.page>pages) this.page=pages;
+  var start=(this.page-1)*this.size, slice=all.slice(start, start+this.size);
+  var h='';
+
+  /* toolbar */
+  h+='<div class="toolbar">';
+  h+='<div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
+  h+='<input type="search" placeholder="'+esc(this.cfg.searchLabel||'Search')+'" value="'+esc(this.q)+'" data-role="q"></div>';
+  h+='<div class="filters">';
+  (this.cfg.filters||[]).forEach(function(f){
+    h+='<select class="sel" data-filter="'+f.key+'"><option value="">'+esc(f.label)+'</option>';
+    f.options.forEach(function(o){
+      h+='<option value="'+esc(o)+'"'+(self.filters[f.key]===o?' selected':'')+'>'+esc(o)+'</option>';
+    });
+    h+='</select>';
+  });
+  h+='<select class="sel" data-role="size">';
+  [10,25,50,100].forEach(function(n){ h+='<option value="'+n+'"'+(self.size===n?' selected':'')+'>'+n+' per page</option>'; });
+  h+='</select></div></div>';
+
+  /* table */
+  if(total===0){
+    h+='<div class="empty"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/></svg><b>Nothing matches that</b>Try a different search, or clear the filters.</div>';
+  } else {
+    h+='<div class="tablewrap"><table><thead><tr>';
+    this.cfg.columns.forEach(function(c){
+      var sorted = self.sort===c.key;
+      var cls = (c.sortable===false?'':'sortable') + (sorted?' sorted':'') + (c.align==='right'?' num':'');
+      h+='<th class="'+cls+'"'+(c.sortable===false?'':' data-sort="'+c.key+'" tabindex="0" role="button"')+(c.width?' style="width:'+c.width+'"':'')+'>'+esc(c.label);
+      if(c.sortable!==false) h+='<span class="arrow">'+(sorted?(self.dir==='asc'?'▲':'▼'):'▴')+'</span>';
+      h+='</th>';
+    });
+    h+='</tr></thead><tbody>';
+    slice.forEach(function(r){
+      h+='<tr>';
+      self.cfg.columns.forEach(function(c){
+        h+='<td'+(c.align==='right'?' class="num"':'')+'>'+(c.cell?c.cell(r):esc(c.value?c.value(r):r[c.key]))+'</td>';
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table></div>';
+
+    /* pager */
+    h+='<div class="pager"><div class="pagerinfo">Showing <b>'+num(start+1)+'–'+num(Math.min(start+self.size,total))+'</b> of <b>'+num(total)+'</b>'+(total!==self.rows.length?' (filtered from '+num(self.rows.length)+')':'')+'</div>';
+    h+='<div class="pagerctl">';
+    h+='<button class="pagebtn" data-page="1"'+(self.page===1?' disabled':'')+' aria-label="First page">«</button>';
+    h+='<button class="pagebtn" data-page="'+(self.page-1)+'"'+(self.page===1?' disabled':'')+' aria-label="Previous page">‹</button>';
+    var list=[], i;
+    for(i=1;i<=pages;i++){ if(i===1||i===pages||Math.abs(i-self.page)<=1) list.push(i); else if(list[list.length-1]!=='…') list.push('…'); }
+    list.forEach(function(p){
+      if(p==='…') h+='<span class="pagebtn gap">…</span>';
+      else h+='<button class="pagebtn'+(p===self.page?' on':'')+'" data-page="'+p+'">'+p+'</button>';
+    });
+    h+='<button class="pagebtn" data-page="'+(self.page+1)+'"'+(self.page===pages?' disabled':'')+' aria-label="Next page">›</button>';
+    h+='<button class="pagebtn" data-page="'+pages+'"'+(self.page===pages?' disabled':'')+' aria-label="Last page">»</button>';
+    h+='</div></div>';
+  }
+
+  this.mount.innerHTML = h;
+  this.bind();
+};
+Grid.prototype.bind = function(){
+  var self=this, m=this.mount;
+  var q=m.querySelector('[data-role="q"]');
+  if(q) q.addEventListener('input', function(){
+    self.q=this.value; self.page=1;
+    var pos=this.selectionStart; self.render();
+    var nq=self.mount.querySelector('[data-role="q"]'); if(nq){ nq.focus(); nq.setSelectionRange(pos,pos); }
+  });
+  var size=m.querySelector('[data-role="size"]');
+  if(size) size.addEventListener('change', function(){ self.size=+this.value; self.page=1; self.render(); });
+  m.querySelectorAll('[data-filter]').forEach(function(el){
+    el.addEventListener('change', function(){ self.filters[this.getAttribute('data-filter')]=this.value; self.page=1; self.render(); });
+  });
+  m.querySelectorAll('[data-sort]').forEach(function(el){
+    function go(){
+      var k=el.getAttribute('data-sort');
+      if(self.sort===k) self.dir = self.dir==='asc'?'desc':'asc';
+      else { self.sort=k; self.dir='asc'; }
+      self.render();
+    }
+    el.addEventListener('click', go);
+    el.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } });
+  });
+  m.querySelectorAll('[data-page]').forEach(function(el){
+    el.addEventListener('click', function(){ self.page=+this.getAttribute('data-page'); self.render(); self.mount.scrollIntoView({block:'nearest'}); });
+  });
+};
+
+/* ---------------------------------------------------------------- cells */
+function pillFor(status){
+  var map={
+    'Active':'ok','Settled':'ok','Running':'ok','Approved':'ok',
+    'Draft':'mute','Ended':'mute','Invited':'warn','Pending':'warn','Deactivating':'warn','Retired':'mute',
+    'Blocked':'bad','Refunded':'bad','Rejected':'bad',
+    'Premium':'info','Free':'mute','Unblocked':'ok'
+  };
+  return '<span class="pill '+(map[status]||'mute')+'">'+esc(status)+'</span>';
+}
+function tierPill(t){ return '<span class="pill '+(t==='Premium'?'info':'mute')+'">'+esc(t)+'</span>'; }
+function twoLine(a,b){ return '<span class="cellmain">'+esc(a)+'</span><span class="cellsub">'+esc(b)+'</span>'; }
+function rowBtns(list){
+  return '<div class="rowactions">'+list.map(function(b){
+    return '<button class="btn sm'+(b.kind?' '+b.kind:'')+'">'+esc(b.label)+'</button>';
+  }).join('')+'</div>';
+}
+
+/* ---------------------------------------------------------------- charts */
+function tipFor(box){
+  var t=document.createElement('div'); t.className='tip'; box.appendChild(t); return t;
+}
+function areaChart(box, days){
+  var games=[], players=[], i;
+  for(i=days-1;i>=0;i--){
+    var d=daysAgo(i), dow=d.getDay();
+    var base = 96 + (dow===5||dow===6 ? 58 : dow===0 ? 26 : 0);
+    var g = Math.round(base + Math.sin(i/2.4)*11 + rnd()*18);
+    games.push({d:d, v:g});
+    players.push({d:d, v:Math.round(g*(5.4+rnd()*1.1))});
+  }
+  var W=760,H=250,PL=46,PR=14,PT=16,PB=30;
+  var maxG=Math.max.apply(null,games.map(function(p){return p.v;}));
+  var maxP=Math.max.apply(null,players.map(function(p){return p.v;}));
+  var topG=Math.ceil(maxG/50)*50, topP=Math.ceil(maxP/250)*250;
+  function x(i){ return PL + i*(W-PL-PR)/(games.length-1); }
+  function yG(v){ return PT + (1-v/topG)*(H-PT-PB); }
+  function yP(v){ return PT + (1-v/topP)*(H-PT-PB); }
+
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Games and players per day">';
+  s+='<defs><linearGradient id="gfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d4be5" stop-opacity=".28"/><stop offset="1" stop-color="#6d4be5" stop-opacity="0"/></linearGradient></defs>';
+  for(i=0;i<=4;i++){
+    var gy=PT+i*(H-PT-PB)/4;
+    s+='<line x1="'+PL+'" y1="'+gy+'" x2="'+(W-PR)+'" y2="'+gy+'" stroke="#eeeaf4" stroke-width="1"/>';
+    s+='<text x="'+(PL-9)+'" y="'+(gy+4)+'" text-anchor="end" font-size="10" fill="#77768a">'+Math.round(topG-(i*topG/4))+'</text>';
+  }
+  var ga='M'+x(0)+','+(H-PB), gl='';
+  games.forEach(function(p,j){ ga+=' L'+x(j)+','+yG(p.v); gl+=(j?' L':'M')+x(j)+','+yG(p.v); });
+  ga+=' L'+x(games.length-1)+','+(H-PB)+' Z';
+  s+='<path d="'+ga+'" fill="url(#gfill)"/>';
+  s+='<path d="'+gl+'" fill="none" stroke="#6d4be5" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>';
+  var pl='';
+  players.forEach(function(p,j){ pl+=(j?' L':'M')+x(j)+','+yP(p.v); });
+  s+='<path d="'+pl+'" fill="none" stroke="#315bd8" stroke-width="2" stroke-dasharray="5 4" opacity=".85"/>';
+  var step=Math.ceil(games.length/7);
+  games.forEach(function(p,j){ if(j%step===0||j===games.length-1) s+='<text x="'+x(j)+'" y="'+(H-9)+'" text-anchor="middle" font-size="10" fill="#77768a">'+fmtShort(p.d)+'</text>'; });
+  var last=games.length-1;
+  s+='<circle cx="'+x(last)+'" cy="'+yG(games[last].v)+'" r="4.5" fill="#6d4be5" stroke="#fff" stroke-width="2"/>';
+  games.forEach(function(p,j){
+    s+='<rect x="'+(x(j)-(W-PL-PR)/(games.length-1)/2)+'" y="'+PT+'" width="'+((W-PL-PR)/(games.length-1))+'" height="'+(H-PT-PB)+'" fill="transparent" data-i="'+j+'"/>';
+  });
+  s+='</svg>';
+  box.innerHTML=s;
+  var tip=tipFor(box), svg=box.querySelector('svg');
+  svg.addEventListener('mousemove', function(e){
+    var t=e.target.getAttribute && e.target.getAttribute('data-i');
+    if(t===null||t===undefined){ tip.classList.remove('on'); return; }
+    var j=+t, r=box.getBoundingClientRect();
+    tip.innerHTML='<b>'+num(games[j].v)+' games</b>'+num(players[j].v)+' players · '+fmtDate(games[j].d);
+    tip.style.left=(e.clientX-r.left)+'px'; tip.style.top=(e.clientY-r.top-6)+'px';
+    tip.classList.add('on');
+  });
+  svg.addEventListener('mouseleave', function(){ tip.classList.remove('on'); });
+}
+function donut(box, segs, centerTop, centerSub){
+  var total=segs.reduce(function(a,s){return a+s.v;},0), R=62, C=2*Math.PI*R, off=0;
+  var s='<svg viewBox="0 0 200 170" role="img" aria-label="Share by plan">';
+  s+='<g transform="translate(100,85) rotate(-90)">';
+  segs.forEach(function(seg){
+    var frac=seg.v/total, len=C*frac;
+    s+='<circle r="'+R+'" fill="none" stroke="'+seg.c+'" stroke-width="24" stroke-dasharray="'+len+' '+(C-len)+'" stroke-dashoffset="'+(-off)+'"/>';
+    off+=len;
+  });
+  s+='</g>';
+  s+='<text x="100" y="80" text-anchor="middle" font-size="26" font-family="Georgia,serif" font-weight="700" fill="#19192b">'+esc(centerTop)+'</text>';
+  s+='<text x="100" y="99" text-anchor="middle" font-size="10.5" fill="#77768a">'+esc(centerSub)+'</text>';
+  s+='</svg>';
+  var leg='<div class="legend">'+segs.map(function(seg){
+    return '<span><i style="background:'+seg.c+'"></i>'+esc(seg.n)+' · <b style="color:#19192b">'+pct(seg.v/total*100)+'</b></span>';
+  }).join('')+'</div>';
+  box.innerHTML=s+leg;
+}
+function colBars(box, items, opts){
+  opts=opts||{};
+  var W=380,H=180,PL=34,PR=8,PT=12,PB=28;
+  var max=Math.max.apply(null,items.map(function(i){return i.v;}));
+  var top=opts.round? Math.ceil(max/opts.round)*opts.round : max;
+  var bw=(W-PL-PR)/items.length;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(opts.label||'Bar chart')+'">';
+  for(var i=0;i<=3;i++){
+    var gy=PT+i*(H-PT-PB)/3;
+    s+='<line x1="'+PL+'" y1="'+gy+'" x2="'+(W-PR)+'" y2="'+gy+'" stroke="#eeeaf4"/>';
+    s+='<text x="'+(PL-7)+'" y="'+(gy+4)+'" text-anchor="end" font-size="9" fill="#77768a">'+(opts.fmt?opts.fmt(top-(i*top/3)):Math.round(top-(i*top/3)))+'</text>';
+  }
+  items.forEach(function(it,j){
+    var h=(it.v/top)*(H-PT-PB), xx=PL+j*bw+bw*0.17, w=bw*0.66;
+    s+='<rect x="'+xx+'" y="'+(H-PB-h)+'" width="'+w+'" height="'+Math.max(h,1)+'" rx="3" fill="'+(it.c||'#6d4be5')+'" data-j="'+j+'"/>';
+    if(it.l) s+='<text x="'+(xx+w/2)+'" y="'+(H-10)+'" text-anchor="middle" font-size="9" fill="#77768a">'+esc(it.l)+'</text>';
+  });
+  s+='</svg>';
+  box.innerHTML=s;
+  var tip=tipFor(box), svg=box.querySelector('svg');
+  svg.addEventListener('mousemove', function(e){
+    var t=e.target.getAttribute && e.target.getAttribute('data-j');
+    if(t===null||t===undefined){ tip.classList.remove('on'); return; }
+    var it=items[+t], r=box.getBoundingClientRect();
+    tip.innerHTML='<b>'+(opts.tip?opts.tip(it):num(it.v))+'</b>'+esc(it.n||it.l||'');
+    tip.style.left=(e.clientX-r.left)+'px'; tip.style.top=(e.clientY-r.top-6)+'px';
+    tip.classList.add('on');
+  });
+  svg.addEventListener('mouseleave', function(){ tip.classList.remove('on'); });
+}
+function hBars(el, items, fmt){
+  var max=Math.max.apply(null,items.map(function(i){return i.v;}));
+  el.innerHTML=items.map(function(it){
+    return '<div class="barrow"><span class="lbl" title="'+esc(it.n)+'">'+esc(it.n)+'</span>'+
+           '<span class="val">'+(fmt?fmt(it.v):num(it.v))+'</span>'+
+           '<span class="bartrack"><i style="width:'+Math.max(2,(it.v/max)*100)+'%;background:'+(it.c||'var(--purple)')+'"></i></span></div>';
+  }).join('');
+}
+
+/* ---------------------------------------------------------------- KPIs */
+function spark(points, color){
+  var W=98,H=38,max=Math.max.apply(null,points),min=Math.min.apply(null,points);
+  var rng=(max-min)||1, d='';
+  points.forEach(function(p,i){
+    var x=i*W/(points.length-1), y=H-4-((p-min)/rng)*(H-10);
+    d+=(i?' L':'M')+x.toFixed(1)+','+y.toFixed(1);
+  });
+  return '<svg class="spark" viewBox="0 0 '+W+' '+H+'" aria-hidden="true"><path d="'+d+'" fill="none" stroke="'+color+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+function kpiCard(k){
+  var ic={
+    games:'<path d="M3 12l9-8 9 8"/><path d="M5 10v10h14V10"/>',
+    players:'<circle cx="9" cy="8" r="3"/><path d="M3 19c0-3 2.7-5 6-5s6 2 6 5"/><path d="M16 11a3 3 0 1 0 0-6"/>',
+    money:'<path d="M12 3v18"/><path d="M16.5 7.5c0-1.9-2-3-4.5-3s-4.5 1.1-4.5 3 2 2.6 4.5 3 4.5 1.1 4.5 3-2 3-4.5 3-4.5-1.1-4.5-3"/>',
+    clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    card:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>',
+    round:'<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/>'
+  }[k.icon]||'';
+  var tc = k.dir==='up'?'up':k.dir==='down'?'down':'flat';
+  var arrow = k.dir==='up'?'▲':k.dir==='down'?'▼':'—';
+  return '<div class="kpi">'+
+    '<div class="kl"><svg viewBox="0 0 24 24">'+ic+'</svg>'+esc(k.label)+'</div>'+
+    '<div class="kv">'+esc(k.value)+'</div>'+
+    '<div class="kd"><span class="trend '+tc+'">'+arrow+' '+esc(k.delta)+'</span><span>'+esc(k.note)+'</span></div>'+
+    (k.spark?spark(k.spark,'#6d4be5'):'')+
+  '</div>';
+}
+function renderKpis(){
+  var s=[112,98,104,131,126,119,147,152,138,129,161,158,144,168];
+  document.getElementById('kpis').innerHTML=[
+    {label:'Games today',icon:'games',value:'168',delta:'11%',dir:'up',note:'vs same day last week',spark:s},
+    {label:'Playing right now',icon:'players',value:'342',delta:'24',dir:'up',note:'across 24 live games',spark:[210,254,231,288,264,301,342]},
+    {label:'Premium subscribers',icon:'card',value:'617',delta:'38',dir:'up',note:'12.8% of 4,812 players',spark:[498,512,531,547,566,579,594,617]},
+    {label:'Monthly recurring revenue',icon:'money',value:'$3,284',delta:'6.4%',dir:'up',note:'net of store commission',spark:[2410,2588,2704,2810,2967,3061,3188,3284]},
+    {label:'Average game length',icon:'clock',value:'47 min',delta:'3 min',dir:'up',note:'median 41 minutes',spark:[38,40,39,42,44,43,46,47]},
+    {label:'Rounds played today',icon:'round',value:'1,184',delta:'2.1%',dir:'down',note:'7.0 rounds per game',spark:[1240,1198,1265,1302,1221,1209,1184]}
+  ].map(kpiCard).join('');
+}
+
+/* ---------------------------------------------------------------- dashboard */
+function renderDashboard(days){
+  areaChart(document.getElementById('chartGames'), days||14);
+
+  donut(document.getElementById('chartPlan'), [
+    {n:'Free host',v:69,c:'#315bd8'},
+    {n:'Premium host',v:31,c:'#6d4be5'}
+  ], '31%', 'hosted on Premium');
+
+  var hours=[];
+  [2,1,1,0,0,0,1,2,3,4,5,6,9,11,10,12,16,24,41,63,78,71,48,22].forEach(function(v,i){
+    hours.push({v:v,l:(i%4===0)?(i===0?'12a':(i<12?i+'a':(i===12?'12p':(i-12)+'p'))):'',n:(i===0?'Midnight':(i<12?i+' am':(i===12?'Noon':(i-12)+' pm')))+' start'});
+  });
+  colBars(document.getElementById('chartHours'), hours, {round:20,label:'Games by hour',tip:function(i){return i.v+'% of games';},fmt:function(v){return Math.round(v)+'%';}});
+
+  colBars(document.getElementById('chartRevenue'), [
+    {v:1420,l:'May',n:'May 2026'},{v:1783,l:'Jun',n:'June 2026'},{v:2104,l:'Jul',n:'July 2026'},
+    {v:2388,l:'Aug',n:'August 2026'},{v:2871,l:'Sep',n:'September 2026'},{v:3284,l:'Oct',n:'October 2026',c:'#315bd8'}
+  ], {round:1000,label:'Revenue by month',tip:function(i){return money0(i.v);},fmt:function(v){return '$'+Math.round(v/1000)+'k';}});
+
+  hBars(document.getElementById('endReasons'), [
+    {n:'Host ended the game',v:1042},
+    {n:'Question limit reached',v:486},
+    {n:'Duration reached',v:311},
+    {n:'Host left',v:187,c:'var(--yellow)'},
+    {n:'Fewer than three players',v:96,c:'var(--yellow)'},
+    {n:'Idle for an hour',v:64,c:'var(--red)'}
+  ]);
+
+  new Grid('liveGrid',{
+    rows:DATA.live, pageSize:10, sort:'minutes', dir:'desc',
+    searchLabel:'Search by code or host',
+    filters:[{key:'tier',label:'All plans',options:['Free','Premium'],test:function(r,v){return r.tier===v;}},
+             {key:'phase',label:'All phases',options:['Dealing','Answering','Voting','Reader picking'],test:function(r,v){return r.phase===v;}}],
+    columns:[
+      {key:'code',label:'Code',cell:function(r){return '<span class="mono cellmain">'+esc(r.code)+'</span>';}},
+      {key:'host',label:'Host',cell:function(r){return twoLine(r.host, r.tier+' plan');}},
+      {key:'tier',label:'Plan',cell:function(r){return tierPill(r.tier);}},
+      {key:'players',label:'Players',align:'right',cell:function(r){return '<span class="tnum">'+r.players+'</span>';}},
+      {key:'round',label:'Round',align:'right',cell:function(r){return '<span class="tnum">'+r.round+'</span>';}},
+      {key:'phase',label:'Phase',cell:function(r){return '<span class="tag">'+esc(r.phase)+'</span>';}},
+      {key:'minutes',label:'Running',align:'right',cell:function(r){return '<span class="tnum">'+r.minutes+' min</span>';}},
+      {key:'act',label:'',sortable:false,search:false,cell:function(){return rowBtns([{label:'Watch'},{label:'End',kind:'danger'}]);}}
+    ]
+  });
+}
+
+/* ---------------------------------------------------------------- grids */
+var GRIDS = {};
+function buildGrids(){
+
+  /* ---- records */
+  new Grid('recordsGrid',{
+    rows:DATA.records, pageSize:25, sort:'serialRaw', dir:'asc',
+    searchLabel:'Search record text or serial number',
+    filters:[
+      {key:'type',label:'All types',options:['Question','Answer'],test:function(r,v){return r.type===v;}},
+      {key:'status',label:'All statuses',options:['Active','Draft','Retired'],test:function(r,v){return r.status===v;}},
+      {key:'sex',label:'All content levels',options:['Kids','Severe','Nothing barred'],test:function(r,v){return r.sex===v;}},
+      {key:'orientation',label:'All orientations',options:['All','Neutral','Gay','Straight'],test:function(r,v){return r.orientation===v;}},
+      {key:'free',label:'Free and full library',options:['In the free set','Premium only'],test:function(r,v){return v==='In the free set' ? r.freeRank!=null : r.freeRank==null;}}
+    ],
+    columns:[
+      {key:'serial',label:'Serial',sortValue:function(r){return r.serialRaw;},cell:function(r){return '<span class="mono">'+esc(r.serial)+'</span>';}},
+      {key:'text',label:'Record',width:'38%',cell:function(r){
+        return '<div class="recordtext">'+esc(r.text)+'</div>'+(r.freeRank?'<span class="cellsub">Free set · rank '+r.freeRank+'</span>':'');
+      }},
+      {key:'type',label:'Type',cell:function(r){
+        return '<span class="tag">'+esc(r.type)+'</span>'+(r.type==='Question'&&r.answers>1?'<span class="cellsub">'+r.answers+' answers</span>':'');
+      }},
+      {key:'dbr',label:'DBR',cell:function(r){return r.dbr?r.dbr.split(' ').map(function(d){return '<span class="tag">'+esc(d)+'</span>';}).join(''):'<span class="cellsub">—</span>';}},
+      {key:'orientation',label:'Orientation',cell:function(r){return '<span class="tag">'+esc(r.orientCode)+' · '+esc(r.orientation)+'</span>';}},
+      {key:'sex',label:'Content',cell:function(r){return '<span class="tag">'+esc(r.sexCode)+' · '+esc(r.sex)+'</span>';}},
+      {key:'politics',label:'Politics',align:'right',cell:function(r){return '<span class="tnum">'+r.politics+'</span>';}},
+      {key:'status',label:'Status',cell:function(r){return pillFor(r.status);}},
+      {key:'schedule',label:'Schedule',cell:function(r){return '<span class="cellsub" style="margin:0">'+esc(r.schedule)+'</span>';}},
+      {key:'act',label:'',sortable:false,search:false,cell:function(){return rowBtns([{label:'Edit'},{label:'Retire',kind:'danger'}]);}}
+    ]
+  });
+
+  /* ---- players */
+  new Grid('playersGrid',{
+    rows:DATA.players, pageSize:25, sort:'lastSeen', dir:'desc',
+    searchLabel:'Search name, screen name or email',
+    filters:[
+      {key:'tier',label:'All plans',options:['Free','Premium'],test:function(r,v){return r.tier===v;}},
+      {key:'status',label:'All statuses',options:['Active','Blocked','Deactivating'],test:function(r,v){return r.status===v;}},
+      {key:'country',label:'All countries',options:COUNTRIES.map(function(c){return c[1];}),test:function(r,v){return r.country===v;}}
+    ],
+    columns:[
+      {key:'name',label:'Player',cell:function(r){return twoLine(r.name,'@'+r.handle);}},
+      {key:'email',label:'Email',cell:function(r){return '<span class="cellsub" style="margin:0">'+esc(r.email)+'</span>';}},
+      {key:'country',label:'Country',cell:function(r){return '<span class="tag">'+esc(r.cc)+'</span> '+esc(r.country);}},
+      {key:'tier',label:'Plan',cell:function(r){return tierPill(r.tier)+(r.plan!=='—'?'<span class="cellsub">'+esc(r.plan)+'</span>':'');}},
+      {key:'games',label:'Games',align:'right',cell:function(r){return '<span class="tnum">'+num(r.games)+'</span>';}},
+      {key:'joined',label:'Joined',sortValue:function(r){return r.joined;},cell:function(r){return '<span class="tnum">'+fmtDate(r.joined)+'</span>';}},
+      {key:'lastSeen',label:'Last seen',sortValue:function(r){return r.lastSeen;},cell:function(r){return '<span class="tnum">'+fmtDate(r.lastSeen)+'</span>';}},
+      {key:'status',label:'Status',cell:function(r){return pillFor(r.status);}},
+      {key:'act',label:'',sortable:false,search:false,cell:function(r){
+        return rowBtns([{label:'View'},{label:r.status==='Blocked'?'Unblock':'Block',kind:r.status==='Blocked'?'':'danger'}]);
+      }}
+    ]
+  });
+
+  /* ---- blocking history */
+  new Grid('blocksGrid',{
+    rows:DATA.blocks, pageSize:10, sort:'when', dir:'desc',
+    searchLabel:'Search player, admin or reason',
+    filters:[{key:'action',label:'All actions',options:['Blocked','Unblocked'],test:function(r,v){return r.action===v;}}],
+    columns:[
+      {key:'player',label:'Player',cell:function(r){return twoLine(r.player,'@'+r.handle);}},
+      {key:'action',label:'Action',cell:function(r){return pillFor(r.action);}},
+      {key:'reason',label:'Reason',width:'32%',cell:function(r){return esc(r.reason);}},
+      {key:'admin',label:'Admin'},
+      {key:'when',label:'When',sortValue:function(r){return r.when;},cell:function(r){return '<span class="tnum">'+fmtDate(r.when)+'</span>';}}
+    ]
+  });
+
+  /* ---- admin roles */
+  new Grid('adminsGrid',{
+    rows:DATA.admins, pageSize:10, sort:'name', dir:'asc',
+    searchLabel:'Search admins',
+    columns:[
+      {key:'name',label:'Admin',cell:function(r){return twoLine(r.name,r.email);}},
+      {key:'role',label:'Role',cell:function(r){return '<span class="pill info plain">'+esc(r.role)+'</span>';}},
+      {key:'access',label:'Access',width:'34%',cell:function(r){return '<span class="cellsub" style="margin:0">'+esc(r.access)+'</span>';}},
+      {key:'mfa',label:'Two-factor',cell:function(r){return r.mfa?'<span class="pill ok">On</span>':'<span class="pill warn">Not set up</span>';}},
+      {key:'last',label:'Last active',sortValue:function(r){return r.last;},cell:function(r){return '<span class="tnum">'+fmtDate(r.last)+'</span>';}},
+      {key:'status',label:'Status',cell:function(r){return pillFor(r.status);}},
+      {key:'act',label:'',sortable:false,search:false,cell:function(){return rowBtns([{label:'Edit'},{label:'Remove',kind:'danger'}]);}}
+    ]
+  });
+
+  /* ---- audit */
+  GRIDS.audit = new Grid('auditGrid',{
+    rows:DATA.audit, pageSize:25, sort:'when', dir:'desc',
+    searchLabel:'Search action, admin or record',
+    filters:[
+      {key:'entity',label:'Everything',options:['Record','Player','Import batch','Advertisement','Admin','Coupon'],test:function(r,v){return r.entity===v;}},
+      {key:'admin',label:'All admins',options:['Dov Treiman','Michael Treiman','Kevin Treiman'],test:function(r,v){return r.admin===v;}}
+    ],
+    columns:[
+      {key:'when',label:'When',sortValue:function(r){return r.when;},cell:function(r){return '<span class="tnum">'+fmtDate(r.when)+'</span>';}},
+      {key:'admin',label:'Admin'},
+      {key:'action',label:'Action',cell:function(r){return '<span class="cellmain">'+esc(r.action)+'</span>';}},
+      {key:'entity',label:'Area',cell:function(r){return '<span class="tag">'+esc(r.entity)+'</span>';}},
+      {key:'ref',label:'Record',cell:function(r){return '<span class="mono">'+esc(r.ref)+'</span>';}},
+      {key:'detail',label:'Change',width:'32%',cell:function(r){return '<span class="cellsub" style="margin:0">'+esc(r.detail)+'</span>';}}
+    ]
+  });
+
+  /* ---- payments */
+  var settled=DATA.payments.filter(function(p){return p.status==='Settled';});
+  var grossT=settled.reduce(function(a,p){return a+p.gross;},0);
+  var netT=settled.reduce(function(a,p){return a+p.net;},0);
+  document.getElementById('payKpis').innerHTML=[
+    {label:'Gross, last 120 days',icon:'money',value:money0(grossT),delta:'8.2%',dir:'up',note:num(settled.length)+' settled payments'},
+    {label:'Store commission',icon:'card',value:money0(grossT-netT),delta:'15%',dir:'flat',note:'15% on most, 30% on first-year'},
+    {label:'Net to Horrible Games',icon:'money',value:money0(netT),delta:'7.9%',dir:'up',note:'after commission'},
+    {label:'Refunds',icon:'card',value:String(DATA.payments.filter(function(p){return p.status==='Refunded';}).length),delta:'0.9%',dir:'down',note:'of all payments'}
+  ].map(kpiCard).join('');
+
+  new Grid('paymentsGrid',{
+    rows:DATA.payments, pageSize:25, sort:'when', dir:'desc',
+    searchLabel:'Search payment, player or coupon',
+    filters:[
+      {key:'plan',label:'All plans',options:['Premium Monthly','Premium Annual'],test:function(r,v){return r.plan===v;}},
+      {key:'store',label:'Both stores',options:['Apple App Store','Google Play'],test:function(r,v){return r.store===v;}},
+      {key:'status',label:'All statuses',options:['Settled','Pending','Refunded'],test:function(r,v){return r.status===v;}}
+    ],
+    columns:[
+      {key:'id',label:'Payment',cell:function(r){return '<span class="mono cellmain">'+esc(r.id)+'</span>';}},
+      {key:'player',label:'Player',cell:function(r){return twoLine(r.player,'@'+r.handle);}},
+      {key:'plan',label:'Plan',cell:function(r){return '<span class="tag">'+esc(r.plan.replace('Premium ',''))+'</span>';}},
+      {key:'store',label:'Store',cell:function(r){return '<span class="cellsub" style="margin:0">'+esc(r.store)+'</span>';}},
+      {key:'gross',label:'Gross',align:'right',cell:function(r){return '<span class="tnum">'+money(r.gross)+'</span>';}},
+      {key:'commission',label:'Commission',align:'right',cell:function(r){return '<span class="tnum" style="color:var(--muted)">−'+money(r.commission)+'</span>';}},
+      {key:'net',label:'Net',align:'right',cell:function(r){return '<span class="tnum cellmain">'+money(r.net)+'</span>';}},
+      {key:'coupon',label:'Coupon',cell:function(r){return r.coupon?'<span class="pill info plain">'+esc(r.coupon)+'</span>':'<span class="cellsub">—</span>';}},
+      {key:'status',label:'Status',cell:function(r){return pillFor(r.status);}},
+      {key:'when',label:'Date',sortValue:function(r){return r.when;},cell:function(r){return '<span class="tnum">'+fmtDate(r.when)+'</span>';}}
+    ]
+  });
+
+  /* ---- coupons */
+  new Grid('couponsGrid',{
+    rows:DATA.coupons, pageSize:10, sort:'redemptions', dir:'desc',
+    searchLabel:'Search code or purpose',
+    filters:[{key:'status',label:'All statuses',options:['Running','Ended','Draft'],test:function(r,v){return r.status===v;}}],
+    columns:[
+      {key:'code',label:'Code',cell:function(r){return '<span class="mono cellmain">'+esc(r.code)+'</span>';}},
+      {key:'purpose',label:'What it does',width:'34%',cell:function(r){return esc(r.purpose);}},
+      {key:'store',label:'Store',cell:function(r){return '<span class="tag">'+esc(r.store)+'</span>';}},
+      {key:'redemptions',label:'Redemptions',align:'right',cell:function(r){return '<span class="tnum">'+num(r.redemptions)+'</span>';}},
+      {key:'revenue',label:'Attributed revenue',align:'right',cell:function(r){return '<span class="tnum">'+(r.revenue?money(r.revenue):'—')+'</span>';}},
+      {key:'donation',label:'Donation owed',align:'right',cell:function(r){return r.donation?'<span class="tnum cellmain" style="color:var(--purple-deep)">'+money(r.donation)+'</span>':'<span class="cellsub">—</span>';}},
+      {key:'runs',label:'Runs',cell:function(r){return '<span class="cellsub" style="margin:0">'+esc(r.runs)+'</span>';}},
+      {key:'status',label:'Status',cell:function(r){return pillFor(r.status);}}
+    ]
+  });
+
+  /* ---- DBRs */
+  new Grid('dbrGrid',{
+    rows:DATA.dbr, pageSize:10, sort:'id', dir:'asc',
+    searchLabel:'Search rules',
+    columns:[
+      {key:'id',label:'Rule',cell:function(r){return '<span class="mono cellmain">'+esc(r.id)+'</span>';}},
+      {key:'desc',label:'What it stands for',width:'34%',cell:function(r){return '<span class="cellmain">'+esc(r.desc)+'</span>';}},
+      {key:'comment',label:'Notes',width:'34%',cell:function(r){return '<span class="cellsub" style="margin:0">'+esc(r.comment)+'</span>';}},
+      {key:'used',label:'Records using it',align:'right',cell:function(r){return '<span class="tnum">'+num(r.used)+'</span>';}},
+      {key:'act',label:'',sortable:false,search:false,cell:function(){return rowBtns([{label:'Comment'}]);}}
+    ]
+  });
+
+  /* ---- reports: most played */
+  hBars(document.getElementById('topPlayedBars'), DATA.played.slice(0,10).map(function(r){
+    return {n:r.text, v:r.plays};
+  }));
+  new Grid('playedGrid',{
+    rows:DATA.played, pageSize:10, sort:'plays', dir:'desc',
+    searchLabel:'Search records',
+    columns:[
+      {key:'serial',label:'Serial',cell:function(r){return '<span class="mono">'+esc(r.serial)+'</span>';}},
+      {key:'text',label:'Answer',width:'42%',cell:function(r){return '<div class="recordtext">'+esc(r.text)+'</div>';}},
+      {key:'votes',label:'Votes received',align:'right',cell:function(r){return '<span class="tnum cellmain">'+num(r.votes)+'</span>';}},
+      {key:'wins',label:'Wins',align:'right',cell:function(r){return '<span class="tnum">'+num(r.wins)+'</span>';}},
+      {key:'rate',label:'Win rate',align:'right',cell:function(r){return '<span class="tnum">'+pct(r.rate)+'</span>';}}
+    ]
+  });
+
+  /* ---- reports: most winning */
+  new Grid('wonGrid',{
+    rows:DATA.won, pageSize:10, sort:'rate', dir:'desc',
+    searchLabel:'Search records',
+    filters:[{key:'band',label:'All win rates',options:['Above 20%','10% to 20%','Below 10%'],
+      test:function(r,v){ return v==='Above 20%'?r.rate>20:v==='10% to 20%'?(r.rate>=10&&r.rate<=20):r.rate<10; }}],
+    columns:[
+      {key:'text',label:'Answer',width:'44%',cell:function(r){return '<div class="recordtext">'+esc(r.text)+'</div><span class="cellsub mono">'+esc(r.serial)+'</span>';}},
+      {key:'plays',label:'Played',align:'right',cell:function(r){return '<span class="tnum">'+num(r.plays)+'</span>';}},
+      {key:'wins',label:'Wins',align:'right',cell:function(r){return '<span class="tnum">'+num(r.wins)+'</span>';}},
+      {key:'rate',label:'Win rate',align:'right',cell:function(r){
+        var cls=r.rate>20?'ok':r.rate<10?'bad':'warn';
+        return '<span class="pill '+cls+'">'+pct(r.rate)+'</span>';
+      }}
+    ]
+  });
+
+  /* ---- reports: votes */
+  new Grid('votesGrid',{
+    rows:DATA.votes, pageSize:10, sort:'votes', dir:'desc',
+    searchLabel:'Search records',
+    columns:[
+      {key:'text',label:'Answer',width:'46%',cell:function(r){return '<div class="recordtext">'+esc(r.text)+'</div><span class="cellsub mono">'+esc(r.serial)+'</span>'; }},
+      {key:'plays',label:'Times played',align:'right',cell:function(r){return '<span class="tnum">'+num(r.plays)+'</span>'; }},
+      {key:'votes',label:'Votes received',align:'right',cell:function(r){return '<span class="tnum cellmain">'+num(r.votes)+'</span>'; }},
+      {key:'per',label:'Votes per play',align:'right',sortValue:function(r){return r.votes/r.plays;},cell:function(r){return '<span class="tnum">'+(r.votes/r.plays).toFixed(2)+'</span>'; }}
+    ]
+  });
+
+  /* ---- reports: finance */
+  var gT=DATA.finance.reduce(function(a,f){return a+f.gross;},0);
+  var cT=DATA.finance.reduce(function(a,f){return a+f.commission;},0);
+  var nT=DATA.finance.reduce(function(a,f){return a+f.net;},0);
+  document.getElementById('finKpis').innerHTML=[
+    {label:'Gross revenue',icon:'money',value:money0(gT),delta:'9.1%',dir:'up',note:'last 30 days'},
+    {label:'Store commission',icon:'card',value:money0(cT),delta:pct(cT/gT*100),dir:'flat',note:'blended rate'},
+    {label:'Net revenue',icon:'money',value:money0(nT),delta:'8.7%',dir:'up',note:'what reaches the bank'},
+    {label:'Owed to charity',icon:'money',value:money0(728.46),delta:'GLIMMER',dir:'flat',note:'paid outside the app'}
+  ].map(kpiCard).join('');
+
+  new Grid('financeGrid',{
+    rows:DATA.finance, pageSize:10, sort:'net', dir:'desc', searchLabel:'Search products',
+    columns:[
+      {key:'product',label:'Product',width:'36%',cell:function(r){return '<span class="cellmain">'+esc(r.product)+'</span>';}},
+      {key:'units',label:'Units',align:'right',cell:function(r){return '<span class="tnum">'+num(r.units)+'</span>';}},
+      {key:'gross',label:'Gross',align:'right',cell:function(r){return '<span class="tnum">'+money(r.gross)+'</span>';}},
+      {key:'rate',label:'Rate',cell:function(r){return '<span class="tag">'+esc(r.rate)+'</span>';}},
+      {key:'commission',label:'Commission',align:'right',cell:function(r){return '<span class="tnum" style="color:var(--muted)">'+money(r.commission)+'</span>';}},
+      {key:'net',label:'Net',align:'right',cell:function(r){return '<span class="tnum cellmain">'+money(r.net)+'</span>';}}
+    ]
+  });
+
+  /* ---- reports: campaigns */
+  new Grid('campaignGrid',{
+    rows:DATA.coupons.filter(function(c){return c.status!=='Draft';}), pageSize:10, sort:'redemptions', dir:'desc',
+    searchLabel:'Search campaigns',
+    columns:[
+      {key:'code',label:'Campaign',cell:function(r){return '<span class="mono cellmain">'+esc(r.code)+'</span><span class="cellsub">'+esc(r.runs)+'</span>';}},
+      {key:'purpose',label:'Offer',width:'32%',cell:function(r){return esc(r.purpose);}},
+      {key:'redemptions',label:'Redemptions',align:'right',cell:function(r){return '<span class="tnum">'+num(r.redemptions)+'</span>';}},
+      {key:'revenue',label:'Attributed revenue',align:'right',cell:function(r){return '<span class="tnum">'+(r.revenue?money(r.revenue):'—')+'</span>';}},
+      {key:'arpu',label:'Per redemption',align:'right',sortValue:function(r){return r.redemptions?r.revenue/r.redemptions:0;},
+        cell:function(r){return '<span class="tnum">'+(r.redemptions?money(r.revenue/r.redemptions):'—')+'</span>';}},
+      {key:'status',label:'Status',cell:function(r){return pillFor(r.status);}}
+    ]
+  });
+
+  /* ---- reports: geo */
+  hBars(document.getElementById('geoBars'), DATA.geo.slice(0,8).map(function(g){ return {n:g.country,v:g.players}; }));
+  donut(document.getElementById('chartConsent'), [
+    {n:'Profile country',v:81,c:'#6d4be5'},
+    {n:'Consented location',v:14,c:'#315bd8'},
+    {n:'Not shared',v:5,c:'#e7e2f0'}
+  ], '95%', 'reportable');
+  new Grid('geoGrid',{
+    rows:DATA.geo, pageSize:10, sort:'players', dir:'desc', searchLabel:'Search countries',
+    columns:[
+      {key:'country',label:'Country',cell:function(r){return '<span class="tag">'+esc(r.cc)+'</span> <span class="cellmain" style="display:inline">'+esc(r.country)+'</span>';}},
+      {key:'players',label:'Players',align:'right',cell:function(r){return '<span class="tnum">'+num(r.players)+'</span>';}},
+      {key:'premium',label:'Premium',align:'right',cell:function(r){return '<span class="tnum">'+num(r.premium)+'</span>';}},
+      {key:'share',label:'Premium share',align:'right',sortValue:function(r){return r.premium/r.players;},cell:function(r){return '<span class="tnum">'+pct(r.premium/r.players*100)+'</span>';}},
+      {key:'games',label:'Games hosted',align:'right',cell:function(r){return '<span class="tnum">'+num(r.games)+'</span>';}},
+      {key:'consent',label:'Source',cell:function(r){return '<span class="tag">'+esc(r.consent)+'</span>';}}
+    ]
+  });
+
+  /* ---- reports: ads */
+  GRIDS.adsReport = new Grid('adsGrid',{
+    rows:DATA.ads, pageSize:10, sort:'impressions', dir:'desc', searchLabel:'Search ads',
+    columns:[
+      {key:'art',label:'',sortable:false,search:false,cell:function(r){return '<img class="adthumb" src="'+r.art+'" alt="">';}},
+      {key:'name',label:'Ad',width:'28%',cell:function(r){return twoLine(r.name,r.target.replace(/^https:\/\//,''));}},
+      {key:'impressions',label:'Impressions',align:'right',cell:function(r){return '<span class="tnum">'+num(r.impressions)+'</span>';}},
+      {key:'clicks',label:'Clicks',align:'right',cell:function(r){return '<span class="tnum">'+num(r.clicks)+'</span>';}},
+      {key:'ctr',label:'Click rate',align:'right',sortValue:function(r){return r.impressions?r.clicks/r.impressions:0;},
+        cell:function(r){return '<span class="tnum">'+(r.impressions?pct(r.clicks/r.impressions*100):'—')+'</span>';}},
+      {key:'from',label:'Schedule',sortValue:function(r){return r.from||'';},cell:function(r){
+        if(!r.from && !r.to) return '<span class="cellsub" style="margin:0">Always on</span>';
+        return '<span class="cellsub" style="margin:0">'+esc(r.from||'—')+' to '+esc(r.to||'no end')+'</span>';
+      }},
+      {key:'status',label:'Status',cell:function(r){return pillFor(r.status);}},
+      {key:'act',label:'',sortable:false,search:false,cell:function(r){
+        return '<div class="rowactions"><button class="btn sm" data-go="ads">Configure</button></div>';
+      }}
+    ]
+  });
+
+  /* ---- reports: activity */
+  new Grid('activityGrid',{
+    rows:DATA.activity, pageSize:25, sort:'when', dir:'desc',
+    searchLabel:'Search by code or host',
+    filters:[
+      {key:'tier',label:'All plans',options:['Free','Premium'],test:function(r,v){return r.tier===v;}},
+      {key:'ended',label:'All endings',options:['Host ended','Question limit','Duration reached','Host left','Too few players','Idle for an hour'],test:function(r,v){return r.ended===v;}}
+    ],
+    columns:[
+      {key:'code',label:'Code',cell:function(r){return '<span class="mono cellmain">'+esc(r.code)+'</span>';}},
+      {key:'host',label:'Host'},
+      {key:'tier',label:'Plan',cell:function(r){return tierPill(r.tier);}},
+      {key:'players',label:'Players',align:'right',cell:function(r){return '<span class="tnum">'+r.players+'</span>';}},
+      {key:'rounds',label:'Rounds',align:'right',cell:function(r){return '<span class="tnum">'+r.rounds+'</span>';}},
+      {key:'minutes',label:'Length',align:'right',cell:function(r){return '<span class="tnum">'+r.minutes+' min</span>';}},
+      {key:'ended',label:'How it ended',cell:function(r){
+        var bad=r.ended==='Host left'||r.ended==='Too few players'||r.ended==='Idle for an hour';
+        return '<span class="pill '+(bad?'warn':'ok')+'">'+esc(r.ended)+'</span>';
+      }},
+      {key:'when',label:'Date',sortValue:function(r){return r.when;},cell:function(r){return '<span class="tnum">'+fmtDate(r.when)+'</span>';}}
+    ]
+  });
+}
+
+
+/* ===========================================================================
+   Ads configuration
+   The list on this screen is the same one the lobby-ad report reads, so an ad
+   added here appears there too. Everything below works on that list: add, edit,
+   pause, delete, re-weight, and the preview and rotation follow.
+   =========================================================================== */
+var ADSTATE = { editingId:null, art:null, creativeType:'Image', videoCloseTime:5 };
+
+function adIsLive(a){
+  if(a.status!=='Running') return false;
+  var today = '2026-10-19';
+  if(a.from && a.from > today) return false;
+  if(a.to && a.to < today) return false;
+  return true;
+}
+function liveAds(){ return DATA.ads.filter(adIsLive); }
+
+function renderAdPolicy(){
+  document.getElementById('adPolicy').innerHTML = DATA.adPolicy.map(function(r){
+    return '<div class="policyrow">'+
+      '<span class="switch locked'+(r.on?' on':'')+'" role="img" aria-label="'+(r.on?'On':'Off')+'"></span>'+
+      '<span class="pt"><b>'+esc(r.name)+'</b><span>'+esc(r.why)+'</span>'+
+      '<span class="lockmark"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Set by the monetization plan</span>'+
+      '</span></div>';
+  }).join('');
+}
+
+/* Weighted pick, which is what "rotate at random" has to mean once ads have
+   different weights. Picking without replacement so one lobby never shows the
+   same ad twice. */
+function pickAds(pool, count, mode){
+  var left = pool.slice(), out = [];
+  while(out.length < count && left.length){
+    var idx = 0;
+    if(mode === 'In order'){
+      idx = 0;
+    } else if(mode === 'Random (even)'){
+      idx = Math.floor(rnd()*left.length);
+    } else {
+      var total = left.reduce(function(a,x){ return a + (x.weight||1); }, 0);
+      var r = rnd()*total;
+      for(var i=0;i<left.length;i++){ r -= (left[i].weight||1); if(r<=0){ idx=i; break; } idx=i; }
+    }
+    out.push(left[idx]);
+    left.splice(idx,1);
+  }
+  return out;
+}
+
+function renderAdPreview(){
+  var pool = liveAds();
+  var per = +document.getElementById('adPerLobby').value;
+  var mode = document.getElementById('adRotation').value;
+  var format = document.getElementById('adFormat').value;
+  var box = document.getElementById('adPreview');
+  var note = document.getElementById('previewNote');
+
+  if(!pool.length){
+    box.innerHTML = '<div class="adnone">No ad is running today, so the lobby shows none. Players still see the code and who has joined.</div>';
+    note.textContent = 'Nothing is live. An ad needs the status Running and today inside its dates.';
+    return;
+  }
+
+  var shown = pickAds(pool, Math.min(per, pool.length), mode);
+  box.innerHTML = shown.map(function(a){
+    return '<div class="adslot'+(format==='Full-screen card'?' card':'')+'">'+
+      '<img src="'+a.art+'" alt="'+esc(a.name)+'">'+
+      '<div class="adfoot"><span>'+esc(a.name)+'</span><span>Ad</span></div></div>';
+  }).join('');
+
+  note.textContent = shown.length + ' of ' + pool.length + ' live ads, ' +
+    mode.toLowerCase() + '. They stop the moment the first question is asked, and a Premium host\u2019s game shows none at all.';
+}
+
+function runRotation(){
+  var pool = liveAds();
+  var out = document.getElementById('rotResult');
+  var note = document.getElementById('rotNote');
+  if(!pool.length){ out.innerHTML=''; note.textContent='Nothing is live to rotate.'; return; }
+
+  var per = +document.getElementById('adPerLobby').value;
+  var mode = document.getElementById('adRotation').value;
+  var lobbies = 200, counts = {};
+  pool.forEach(function(a){ counts[a.id]=0; });
+  for(var i=0;i<lobbies;i++){
+    pickAds(pool, Math.min(per,pool.length), mode).forEach(function(a){ counts[a.id]++; });
+  }
+
+  var slots = lobbies * Math.min(per, pool.length);
+  var weightTotal = pool.reduce(function(a,x){ return a+(x.weight||1); },0);
+  var colors = ['#6d4be5','#315bd8','#e65353','#f5cb4b','#2f8f63','#77768a'];
+
+  out.innerHTML = pool.map(function(a,i){
+    var got = counts[a.id]/slots*100;
+    var want = mode==='Random (weighted)' ? (a.weight||1)/weightTotal*100 : 100/pool.length;
+    return '<div class="rotrow"><span class="lbl">'+esc(a.name)+'</span>'+
+      '<span class="res">'+got.toFixed(1)+'% <span style="opacity:.6">/ '+want.toFixed(1)+'%</span></span>'+
+      '<span class="rottrack"><i style="width:'+Math.max(1,got)+'%;background:'+colors[i%colors.length]+'"></i></span></div>';
+  }).join('');
+
+  note.innerHTML = '200 lobbies, ' + slots + ' ad slots. The second figure is the share each ad should get from its weight \u2014 the two converge as the sample grows.';
+}
+
+function refreshAdsEverywhere(){
+  document.getElementById('adCount').textContent = String(liveAds().length);
+  renderAdPreview();
+  if(GRIDS.adsConfig) GRIDS.adsConfig.render();
+  if(GRIDS.adsReport) GRIDS.adsReport.render();
+}
+
+/* ---- the editor -------------------------------------------------------- */
+function openAdEditor(id){
+  var a = id ? DATA.ads.filter(function(x){ return x.id===id; })[0] : null;
+  ADSTATE.editingId = id || null;
+  ADSTATE.art = a ? a.art : null;
+  ADSTATE.creativeType = a && a.creativeType ? a.creativeType : 'Image';
+  ADSTATE.videoCloseTime = a && a.videoCloseTime != null ? a.videoCloseTime : 5;
+
+  document.getElementById('adModalTitle').textContent = a ? 'Edit ad' : 'Add ad';
+  document.getElementById('adName').value = a ? a.name : '';
+  document.getElementById('adType').value = ADSTATE.creativeType;
+  document.querySelectorAll('input[name="adTypeChoice"]').forEach(function(r){ r.checked = r.value === ADSTATE.creativeType; r.closest('.ad-type-option').setAttribute('aria-checked', r.checked ? 'true' : 'false'); });
+  document.getElementById('adVideoCloseTime').value = ADSTATE.videoCloseTime;
+  document.getElementById('adVideoCloseField').style.display = ADSTATE.creativeType === 'Video' ? '' : 'none';
+  updateAdCreativeControls();
+  document.getElementById('adTarget').value = a ? a.target : '';
+  document.getElementById('adFrom').value = a ? a.from : '';
+  document.getElementById('adTo').value = a ? a.to : '';
+  document.getElementById('adWeight').value = a ? String(a.weight) : '3';
+  document.getElementById('adStatus').value = a ? a.status : 'Running';
+  document.getElementById('adUrlErr').classList.remove('on');
+  showAdArt(ADSTATE.art);
+  openModal('modalAd');
+}
+function updateAdCreativeControls(){
+  var type = document.getElementById('adType').value;
+  var file = document.getElementById('adFile');
+  var hint = document.getElementById('adDropHint');
+  var title = document.getElementById('adDropTitle');
+  file.accept = type === 'Video' ? 'video/*' : 'image/*';
+  hint.textContent = type === 'Video' ? 'MP4, WebM or supported video format' : 'PNG or JPG \u00b7 320 \u00d7 100 for a banner, 4:3 for a card';
+  if(!ADSTATE.art) title.textContent = type === 'Video' ? 'Drop a video here' : 'Drop an image here';
+}
+function showAdArt(src){
+  var img = document.getElementById('adPreviewImg');
+  var video = document.getElementById('adPreviewVideo');
+  var icon = document.getElementById('adDropIcon');
+  var title = document.getElementById('adDropTitle');
+  img.style.display='none'; img.removeAttribute('src');
+  video.style.display='none'; video.removeAttribute('src'); video.load();
+  if(src){
+    if(ADSTATE.creativeType === 'Video'){ video.src=src; video.style.display='block'; }
+    else { img.src=src; img.style.display='block'; }
+    icon.style.display='none'; title.textContent='Creative ready \u2014 choose another file to replace it';
+  } else {
+    icon.style.display=''; title.textContent=ADSTATE.creativeType === 'Video' ? 'Drop a video here' : 'Drop an image here';
+  }
+}
+function readAdFile(file){
+  if(!file) return;
+  var isVideo = file.type.indexOf('video/')===0;
+  var isImage = file.type.indexOf('image/')===0;
+  if((ADSTATE.creativeType === 'Video' && !isVideo) || (ADSTATE.creativeType === 'Image' && !isImage)) return;
+  var fr = new FileReader();
+  fr.onload = function(){ ADSTATE.art = fr.result; showAdArt(fr.result); };
+  fr.readAsDataURL(file);
+}
+
+/* An admin-controlled link that can point anywhere is an open redirect wearing
+   the brand's name, so the host is checked against the approved list. */
+function checkAdTarget(url){
+  if(!url) return 'Add the link the ad opens.';
+  var u;
+  try { u = new URL(url); } catch(e){ return 'That is not a complete web address.'; }
+  if(u.protocol !== 'https:') return 'The link has to start with https.';
+  var host = u.hostname.replace(/^www\./,'');
+  var ok = DATA.adHosts.some(function(h){ return host===h || host.slice(-(h.length+1))==='.'+h; });
+  return ok ? null : host + ' is not on the approved list.';
+}
+
+function saveAd(){
+  var name = document.getElementById('adName').value.trim();
+  var target = document.getElementById('adTarget').value.trim();
+  var err = document.getElementById('adUrlErr');
+
+  var problem = !name ? 'Give the ad a name first.' : checkAdTarget(target);
+  if(problem){ err.textContent = problem; err.classList.add('on'); return; }
+  err.classList.remove('on');
+
+  var fields = {
+    name: name,
+    creativeType: document.getElementById('adType').value,
+    videoCloseTime: document.getElementById('adType').value === 'Video' ? Math.max(0, parseInt(document.getElementById('adVideoCloseTime').value || '5', 10)) : null,
+    target: target,
+    from: document.getElementById('adFrom').value,
+    to: document.getElementById('adTo').value,
+    weight: +document.getElementById('adWeight').value,
+    status: document.getElementById('adStatus').value,
+    art: ADSTATE.art || adArt(name.slice(0,18), '#6d4be5', '#315bd8')
+  };
+
+  if(ADSTATE.editingId){
+    var a = DATA.ads.filter(function(x){ return x.id===ADSTATE.editingId; })[0];
+    Object.keys(fields).forEach(function(k){ a[k] = fields[k]; });
+    logAd('Ad edited', a.name);
+  } else {
+    fields.id = 'AD-' + String(DATA.ads.length+1).padStart(2,'0');
+    fields.impressions = 0; fields.clicks = 0;
+    DATA.ads.push(fields);
+    logAd('Ad created', fields.name);
+  }
+
+  document.getElementById('modalAd').classList.remove('open');
+  refreshAdsEverywhere();
+}
+
+/* Every change here is an admin action, so it lands in the audit log like any
+   other (AD-09). */
+function logAd(action, name){
+  DATA.audit.unshift({ when:daysAgo(0), admin:'Dov Treiman', action:action,
+    entity:'Advertisement', detail:name, ref:'\u2014' });
+  if(GRIDS.audit) GRIDS.audit.render();
+}
+
+function buildAdsConfigGrid(){
+  GRIDS.adsConfig = new Grid('adsConfigGrid', {
+    rows: DATA.ads, pageSize:10, sort:'status', dir:'asc',
+    searchLabel:'Search ads by name or link',
+    filters:[{key:'status',label:'All statuses',options:['Running','Paused','Draft','Ended'],
+      test:function(r,v){ return r.status===v; }}],
+    columns:[
+      {key:'art',label:'Creative',sortable:false,search:false,
+        cell:function(r){ return r.creativeType==='Video' ? '<span class="pill">Video</span>' : '<img class="adthumb" src="'+r.art+'" alt="">'; }},
+      {key:'name',label:'Ad',width:'24%',cell:function(r){ return twoLine(r.name, r.target.replace(/^https:\/\//,'')); }},
+      {key:'from',label:'Schedule',sortValue:function(r){ return r.from||''; },cell:function(r){
+        if(!r.from && !r.to) return '<span class="cellsub" style="margin:0">Always on</span>';
+        return '<span class="cellsub" style="margin:0">'+esc(r.from||'\u2014')+' to '+esc(r.to||'no end')+'</span>';
+      }},
+      {key:'weight',label:'Weight',align:'right',cell:function(r){ return '<span class="tnum">'+r.weight+'</span>'; }},
+      {key:'live',label:'In the lobby',sortValue:function(r){ return adIsLive(r)?1:0; },search:false,
+        cell:function(r){ return adIsLive(r) ? '<span class="pill ok">Showing</span>' : '<span class="pill mute">Not showing</span>'; }},
+      {key:'impressions',label:'Impressions',align:'right',cell:function(r){ return '<span class="tnum">'+num(r.impressions)+'</span>'; }},
+      {key:'clicks',label:'Clicks',align:'right',cell:function(r){ return '<span class="tnum">'+num(r.clicks)+'</span>'; }},
+      {key:'ctr',label:'Click rate',align:'right',sortValue:function(r){ return r.impressions?r.clicks/r.impressions:0; },
+        cell:function(r){ return '<span class="tnum">'+(r.impressions?pct(r.clicks/r.impressions*100):'\u2014')+'</span>'; }},
+      {key:'status',label:'Status',cell:function(r){ return pillFor(r.status); }},
+      {key:'act',label:'',sortable:false,search:false,cell:function(r){
+        var toggle = r.status==='Running' ? 'Pause' : 'Run';
+        return '<div class="rowactions">'+
+          '<button class="btn sm" data-ad-edit="'+r.id+'">Edit</button>'+
+          '<button class="btn sm" data-ad-toggle="'+r.id+'">'+toggle+'</button>'+
+          '<button class="btn sm danger" data-ad-del="'+r.id+'">Delete</button></div>';
+      }}
+    ]
+  });
+}
+
+function wireAds(){
+  renderAdPolicy();
+  buildAdsConfigGrid();
+  ['adRotation','adPerLobby','adFormat'].forEach(function(id){
+    document.getElementById(id).addEventListener('change', function(){
+      DATA.adSettings[id==='adRotation'?'rotation':id==='adPerLobby'?'perLobby':'format'] = this.value;
+    });
+  });
+
+  document.getElementById('btnAddAd').addEventListener('click', function(){ openAdEditor(null); });
+  document.getElementById('btnSaveAd').addEventListener('click', saveAd);
+
+  /* row actions */
+  document.getElementById('ads').addEventListener('click', function(e){
+    var edit = e.target.closest('[data-ad-edit]');
+    var toggle = e.target.closest('[data-ad-toggle]');
+    var del = e.target.closest('[data-ad-del]');
+    if(edit){ openAdEditor(edit.getAttribute('data-ad-edit')); return; }
+    if(toggle){
+      var a = DATA.ads.filter(function(x){ return x.id===toggle.getAttribute('data-ad-toggle'); })[0];
+      a.status = a.status==='Running' ? 'Paused' : 'Running';
+      logAd(a.status==='Running' ? 'Ad resumed' : 'Ad paused', a.name);
+      refreshAdsEverywhere();
+      return;
+    }
+    if(del){
+      var id = del.getAttribute('data-ad-del');
+      var gone = DATA.ads.filter(function(x){ return x.id===id; })[0];
+      /* The viewer blocks confirm(), so the second click is the confirmation. */
+      if(del.getAttribute('data-armed')!=='1'){
+        del.setAttribute('data-armed','1');
+        del.textContent = 'Sure?';
+        setTimeout(function(){ if(del.isConnected){ del.removeAttribute('data-armed'); del.textContent='Delete'; } }, 3000);
+        return;
+      }
+      DATA.ads = DATA.ads.filter(function(x){ return x.id!==id; });
+      GRIDS.adsConfig.rows = DATA.ads;
+      if(GRIDS.adsReport) GRIDS.adsReport.rows = DATA.ads;
+      logAd('Ad deleted', gone.name);
+      refreshAdsEverywhere();
+    }
+  });
+
+  /* creative upload: click, pick, or drop */
+  var drop = document.getElementById('adDrop');
+  var file = document.getElementById('adFile');
+  document.querySelectorAll('input[name="adTypeChoice"]').forEach(function(r){ r.addEventListener('change', function(){
+    if(!this.checked) return;
+    document.getElementById('adType').value = this.value;
+    document.querySelectorAll('input[name="adTypeChoice"]').forEach(function(opt){ opt.closest('.ad-type-option').setAttribute('aria-checked', opt.checked ? 'true' : 'false'); });
+    document.getElementById('adType').dispatchEvent(new Event('change'));
+  }); });
+  document.getElementById('adType').addEventListener('change', function(){
+    ADSTATE.creativeType = this.value;
+    document.getElementById('adVideoCloseField').style.display = this.value === 'Video' ? '' : 'none';
+    ADSTATE.art = null; showAdArt(null); updateAdCreativeControls();
+  });
+  document.getElementById('adPickBtn').addEventListener('click', function(){ file.click(); });
+  file.addEventListener('change', function(){ readAdFile(this.files[0]); });
+  ['dragenter','dragover'].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.style.borderColor='var(--purple)'; });
+  });
+  ['dragleave','drop'].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.style.borderColor=''; });
+  });
+  drop.addEventListener('drop', function(e){ readAdFile(e.dataTransfer.files[0]); });
+
+  /* check the link as it is typed, rather than only on save */
+  document.getElementById('adTarget').addEventListener('blur', function(){
+    var problem = this.value.trim() ? checkAdTarget(this.value.trim()) : null;
+    var err = document.getElementById('adUrlErr');
+    if(problem){ err.textContent = problem; err.classList.add('on'); }
+    else err.classList.remove('on');
+  });
+}
+
+
+/* ===========================================================================
+   Game Setup
+   Everything on this screen edits one settings object. Change a timer and the
+   round timeline, the length estimates and the unsaved-changes note all move
+   with it, so the effect of a number is visible before anyone saves it.
+   =========================================================================== */
+function mmss(sec){
+  var m = Math.floor(sec/60), s = sec%60;
+  return m + ':' + String(s).padStart(2,'0');
+}
+function hhmm(min){
+  var h = Math.floor(min/60), m = Math.round(min%60);
+  return h ? (h + 'h ' + (m?m+'m':'').trim()).trim() : m + 'm';
+}
+
+function renderTimeline(){
+  var s = DATA.setup;
+  var parts = [
+    {n:'Choosing answers', v:s.answerWindow, c:'#6d4be5'},
+    {n:'Voting', v:s.voteWindow, c:'#315bd8'},
+    {n:'Reader picks', v:s.readerReminder, c:'#f5cb4b'},
+    {n:'Grace before the round is dropped', v:s.readerDiscard - s.readerReminder, c:'#e65353'}
+  ].filter(function(x){ return x.v > 0; });
+
+  var total = parts.reduce(function(a,x){ return a+x.v; },0);
+  document.getElementById('roundTimeline').innerHTML = parts.map(function(x){
+    var w = x.v/total*100;
+    return '<i style="width:'+w+'%;background:'+x.c+'" title="'+esc(x.n)+' — '+mmss(x.v)+'">'+
+      (w > 13 ? mmss(x.v) : '') + '</i>';
+  }).join('');
+  document.getElementById('roundKey').innerHTML = parts.map(function(x){
+    return '<span><i style="background:'+x.c+'"></i>'+esc(x.n)+' · <b style="color:var(--ink)">'+mmss(x.v)+'</b></span>';
+  }).join('');
+
+  /* The ceiling is everyone using every second. In practice the Reader locks in
+     as soon as people have answered, which is the figure worth planning with. */
+  var ceiling = s.answerWindow + s.voteWindow + s.readerDiscard;
+  var typical = Math.round(s.answerWindow*0.55 + s.voteWindow*0.45 + 25);
+  var questions = +document.getElementById('estQuestions').value || 20;
+  var gameMin = Math.round(typical*questions/60);
+
+  document.getElementById('estRound').textContent = mmss(ceiling);
+  document.getElementById('estTypical').textContent = mmss(typical);
+  document.getElementById('estGame').textContent = hhmm(gameMin);
+
+  /* Dov expects an evening to run 3 to 8 hours, so the useful answer is how many
+     questions that takes at these timings - not a pass mark on an arbitrary 20. */
+  var hours = gameMin/60;
+  var note = document.getElementById('estFitNote');
+  var forThree = Math.ceil(3*3600/typical);
+  if(hours < 3){
+    note.innerHTML = '<span style="color:var(--warn);font-weight:700">Under the 3 hour mark</span> \u2014 about ' +
+      forThree + ' questions would get there';
+  } else if(hours <= 8){
+    note.innerHTML = '<span style="color:var(--ok);font-weight:700">Inside the 3 to 8 hour evening</span> Dov expects';
+  } else {
+    note.innerHTML = '<span style="color:var(--bad);font-weight:700">Past 8 hours</span> \u2014 fewer questions, or shorter windows';
+  }
+}
+
+function validateSetup(){
+  var s = DATA.setup, ok = true;
+  var timerErr = document.getElementById('timerErr');
+  var tierErr = document.getElementById('tierErr');
+  var endErr = document.getElementById('endErr');
+
+  /* The nudge has to come before the round is dropped, or the Reader never gets
+     one. This is the mistake worth catching, because the game still "works". */
+  var discardBad = s.readerDiscard <= s.readerReminder;
+  document.getElementById('setDiscard').classList.toggle('bad', discardBad);
+  document.getElementById('setReminder').classList.toggle('bad', discardBad);
+  if(discardBad){
+    timerErr.textContent = 'Drop the round after the nudge, not before it — otherwise the Reader is never reminded.';
+    timerErr.classList.add('on'); ok = false;
+  } else {
+    timerErr.classList.remove('on');
+  }
+
+  var qBad = s.tiers.free.questions > DATA.library.questions;
+  var aBad = s.tiers.free.answers > DATA.library.answers;
+  var playersBad = s.tiers.free.maxPlayers > s.tiers.premium.maxPlayers;
+  document.getElementById('tierFreeQ').classList.toggle('bad', qBad);
+  document.getElementById('tierFreeA').classList.toggle('bad', aBad);
+  document.getElementById('tierFreePlayers').classList.toggle('bad', playersBad);
+
+  if(qBad || aBad){
+    tierErr.textContent = 'The free set cannot be bigger than the library — there are ' +
+      DATA.library.questions + ' questions and ' + num(DATA.library.answers) + ' answers.';
+    tierErr.classList.add('on'); ok = false;
+  } else if(playersBad){
+    tierErr.textContent = 'Free cannot allow more players than Premium.';
+    tierErr.classList.add('on'); ok = false;
+  } else {
+    tierErr.classList.remove('on');
+  }
+
+  /* 20 players need 200 answers for opening hands alone. */
+  var need = s.tiers.free.maxPlayers * s.handSize;
+  var note = document.getElementById('tierNote');
+  if(s.tiers.free.answers < need){
+    note.innerHTML = '<b style="color:var(--bad)">' + s.tiers.free.maxPlayers + ' players need ' + need +
+      ' answers just to be dealt in.</b> The free set has ' + s.tiers.free.answers + '.';
+    ok = false;
+  } else {
+    note.textContent = s.tiers.free.maxPlayers + ' players need ' + need +
+      ' answers for opening hands. The free set has ' + s.tiers.free.answers + ', so there is room for about ' +
+      Math.floor((s.tiers.free.answers - need)/s.tiers.free.maxPlayers) + ' rounds before the deck is reused.';
+  }
+
+  var anyEnd = Object.keys(s.endConditions).some(function(k){ return s.endConditions[k]; });
+  var anyTie = s.tieBreak.shared || s.tieBreak.extraRound;
+  if(!anyEnd){
+    endErr.textContent = 'Leave the host at least one way to end a game.';
+    endErr.classList.add('on'); ok = false;
+  } else if(!anyTie){
+    endErr.textContent = 'Leave at least one way to settle a tie.';
+    endErr.classList.add('on'); ok = false;
+  } else {
+    endErr.classList.remove('on');
+  }
+
+  return ok;
+}
+
+function setupDiff(){
+  var a = DATA.setup, b = DATA.setupAgreed, out = [];
+  var labels = {
+    answerWindow:'time to choose answers', voteWindow:'time to vote',
+    readerReminder:'Reader nudge', readerDiscard:'round drop',
+    idleMinutes:'quiet-game cutoff', maxHours:'longest game', disconnectGrace:'reconnect grace'
+  };
+  Object.keys(labels).forEach(function(k){
+    if(a[k] !== b[k]) out.push(labels[k] + ' ' + b[k] + ' → ' + a[k]);
+  });
+  ['orientation','politics','sex'].forEach(function(k){
+    if(String(a.defaults[k]) !== String(b.defaults[k])) out.push('default ' + k + ' ' + b.defaults[k] + ' → ' + a.defaults[k]);
+  });
+  if(a.tiers.free.maxPlayers !== b.tiers.free.maxPlayers) out.push('free players ' + b.tiers.free.maxPlayers + ' → ' + a.tiers.free.maxPlayers);
+  if(a.tiers.premium.maxPlayers !== b.tiers.premium.maxPlayers) out.push('Premium players ' + b.tiers.premium.maxPlayers + ' → ' + a.tiers.premium.maxPlayers);
+  if(a.tiers.free.questions !== b.tiers.free.questions) out.push('free questions ' + b.tiers.free.questions + ' → ' + a.tiers.free.questions);
+  if(a.tiers.free.answers !== b.tiers.free.answers) out.push('free answers ' + b.tiers.free.answers + ' → ' + a.tiers.free.answers);
+  Object.keys(a.endConditions).forEach(function(k){
+    if(a.endConditions[k] !== b.endConditions[k]) out.push('ending option changed');
+  });
+  if(a.tieBreak.shared !== b.tieBreak.shared || a.tieBreak.extraRound !== b.tieBreak.extraRound) out.push('tie-break changed');
+  return out.filter(function(v,i,arr){ return arr.indexOf(v)===i; });
+}
+
+function renderSetupState(){
+  var diff = setupDiff();
+  var bar = document.getElementById('setupDirty');
+  if(diff.length){
+    bar.style.display = '';
+    document.getElementById('setupDirtyList').textContent =
+      diff.join(' · ') + '. Nothing reaches players until this is saved.';
+  } else {
+    bar.style.display = 'none';
+  }
+  renderTimeline();
+  validateSetup();
+}
+
+function readSetupInputs(){
+  var s = DATA.setup;
+  s.answerWindow   = +document.getElementById('setAnswer').value || 0;
+  s.voteWindow     = +document.getElementById('setVote').value || 0;
+  s.readerReminder = +document.getElementById('setReminder').value || 0;
+  s.readerDiscard  = +document.getElementById('setDiscard').value || 0;
+  s.idleMinutes    = +document.getElementById('setIdle').value || 0;
+  s.maxHours       = +document.getElementById('setHours').value || 0;
+  s.disconnectGrace= +document.getElementById('setGrace').value || 0;
+  s.defaults.orientation = document.getElementById('setOrient').value;
+  s.defaults.politics    = +document.getElementById('setPolitics').value.charAt(0);
+  s.defaults.sex         = document.getElementById('setSex').value;
+  s.tiers.free.maxPlayers    = +document.getElementById('tierFreePlayers').value || 0;
+  s.tiers.premium.maxPlayers = +document.getElementById('tierPremPlayers').value || 0;
+  s.tiers.free.questions     = +document.getElementById('tierFreeQ').value || 0;
+  s.tiers.free.answers       = +document.getElementById('tierFreeA').value || 0;
+  s.endConditions.questionCount = document.getElementById('endQ').checked;
+  s.endConditions.duration      = document.getElementById('endD').checked;
+  s.endConditions.clockTime     = document.getElementById('endC').checked;
+  s.endConditions.untilHost     = document.getElementById('endH').checked;
+  s.tieBreak.shared     = document.getElementById('tbShared').checked;
+  s.tieBreak.extraRound = document.getElementById('tbExtra').checked;
+}
+
+function writeSetupInputs(){
+  var s = DATA.setup;
+  document.getElementById('setAnswer').value = s.answerWindow;
+  document.getElementById('setVote').value = s.voteWindow;
+  document.getElementById('setReminder').value = s.readerReminder;
+  document.getElementById('setDiscard').value = s.readerDiscard;
+  document.getElementById('setIdle').value = s.idleMinutes;
+  document.getElementById('setHours').value = s.maxHours;
+  document.getElementById('setGrace').value = s.disconnectGrace;
+  document.getElementById('setOrient').value = s.defaults.orientation;
+  document.getElementById('setPolitics').selectedIndex = s.defaults.politics - 1;
+  document.getElementById('setSex').value = s.defaults.sex;
+  document.getElementById('tierFreePlayers').value = s.tiers.free.maxPlayers;
+  document.getElementById('tierPremPlayers').value = s.tiers.premium.maxPlayers;
+  document.getElementById('tierFreeQ').value = s.tiers.free.questions;
+  document.getElementById('tierFreeA').value = s.tiers.free.answers;
+  document.getElementById('endQ').checked = s.endConditions.questionCount;
+  document.getElementById('endD').checked = s.endConditions.duration;
+  document.getElementById('endC').checked = s.endConditions.clockTime;
+  document.getElementById('endH').checked = s.endConditions.untilHost;
+  document.getElementById('tbShared').checked = s.tieBreak.shared;
+  document.getElementById('tbExtra').checked = s.tieBreak.extraRound;
+}
+
+function renderCodeDemo(){
+  var alphabet = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', out = [];
+  for(var i=0;i<4;i++){
+    var c = '';
+    for(var j=0;j<6;j++) c += alphabet[Math.floor(rnd()*alphabet.length)];
+    out.push('<b>'+c+'</b>');
+  }
+  document.getElementById('codeDemo').innerHTML = out.join('');
+}
+
+function renderFixedRules(){
+  document.getElementById('fixedRules').innerHTML = DATA.fixedRules.map(function(r){
+    return '<div class="ruleitem"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>'+
+      '<span><b>'+esc(r.name)+'</b><span>'+esc(r.why)+'</span></span>'+
+      '<span class="ref"><span class="tag">'+esc(r.ref)+'</span></span></div>';
+  }).join('');
+}
+
+function wireSetup(){
+  writeSetupInputs();
+  renderCodeDemo();
+  renderFixedRules();
+  renderSetupState();
+
+  var ids = ['estQuestions','setAnswer','setVote','setReminder','setDiscard','setIdle','setHours','setGrace',
+             'setOrient','setPolitics','setSex','tierFreePlayers','tierPremPlayers','tierFreeQ','tierFreeA',
+             'endQ','endD','endC','endH','tbShared','tbExtra'];
+  ids.forEach(function(id){
+    var el = document.getElementById(id);
+    el.addEventListener('input', function(){ readSetupInputs(); renderSetupState(); });
+    el.addEventListener('change', function(){ readSetupInputs(); renderSetupState(); });
+  });
+
+  document.getElementById('btnSetupSave').addEventListener('click', function(){
+    readSetupInputs();
+    if(!validateSetup()){
+      document.querySelector('#setup .seterr.on').scrollIntoView({block:'center',behavior:'smooth'});
+      return;
+    }
+    var diff = setupDiff();
+    if(!diff.length) return;
+    DATA.setupAgreed = JSON.parse(JSON.stringify(DATA.setup));
+    DATA.audit.unshift({ when:daysAgo(0), admin:'Dov Treiman', action:'Game settings changed',
+      entity:'Game setup', detail:diff.join('; '), ref:'—' });
+    if(GRIDS.audit) GRIDS.audit.render();
+    renderSetupState();
+    var b = document.getElementById('btnSetupSave');
+    b.textContent = 'Saved';
+    setTimeout(function(){ b.innerHTML = '<svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Save changes'; }, 1600);
+  });
+
+  document.getElementById('btnSetupReset').addEventListener('click', function(){
+    DATA.setup = JSON.parse(JSON.stringify(DATA.setupAgreed));
+    writeSetupInputs();
+    renderSetupState();
+  });
+}
+
+/* ---------------------------------------------------------------- shell */
+var TITLES={dashboard:'Game Pulse',records:'Record Library',people:'Players & Admins',payments:'Payments & Discounts',coupons:'Coupons',reports:'Game Reports',setup:'Game Setup',ads:'Ads',dbr:'DBRs'};
+function go(id){
+  document.querySelectorAll('.section').forEach(function(s){ s.classList.toggle('active', s.id===id); });
+  document.querySelectorAll('.nav').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-sec')===id); });
+  document.getElementById('crumb').textContent = TITLES[id]||id;
+  document.body.classList.remove('navopen');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+document.getElementById('nav').addEventListener('click', function(e){
+  var b=e.target.closest('.nav'); if(b) go(b.getAttribute('data-sec'));
+});
+document.addEventListener('click', function(e){
+  var g=e.target.closest('[data-go]'); if(g) go(g.getAttribute('data-go'));
+});
+function tabGroup(wrap){
+  wrap.addEventListener('click', function(e){
+    var t=e.target.closest('.tab'); if(!t) return;
+    var pane=t.getAttribute('data-pane');
+    wrap.querySelectorAll('.tab').forEach(function(x){ x.classList.toggle('on', x===t); });
+    var scope=wrap.parentElement;
+    scope.querySelectorAll(':scope > .tabpane').forEach(function(p){ p.classList.toggle('on', p.id===pane); });
+  });
+}
+tabGroup(document.getElementById('peopleTabs'));
+tabGroup(document.getElementById('reportTabs'));
+
+document.getElementById('rangeSeg').addEventListener('click', function(e){
+  var b=e.target.closest('button'); if(!b) return;
+  this.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x===b); });
+  areaChart(document.getElementById('chartGames'), +b.getAttribute('data-range'));
+});
+
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+document.getElementById('btnAddRecord').addEventListener('click', function(){
+  document.getElementById('recordModalTitle').textContent='Add record';
+  openModal('modalRecord');
+});
+document.getElementById('btnImport').addEventListener('click', function(){ openModal('modalImport'); });
+document.getElementById('btnAddAdmin').addEventListener('click', function(){ openModal('modalAdmin'); });
+document.getElementById('btnAddCoupon').addEventListener('click', function(){ openModal('modalCoupon'); });
+document.querySelectorAll('.modal').forEach(function(m){
+  m.addEventListener('click', function(e){
+    if(e.target===m || e.target.closest('[data-close]')) m.classList.remove('open');
+  });
+});
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape') document.querySelectorAll('.modal.open').forEach(function(m){ m.classList.remove('open'); });
+});
+document.getElementById('railtoggle').addEventListener('click', function(){ document.body.classList.toggle('navopen'); });
+document.getElementById('scrim').addEventListener('click', function(){ document.body.classList.remove('navopen'); });
+
+/* edit buttons inside grids open the record modal */
+document.getElementById('records').addEventListener('click', function(e){
+  var b=e.target.closest('.btn.sm'); if(!b) return;
+  if(b.textContent.trim()==='Edit'){
+    document.getElementById('recordModalTitle').textContent='Edit record';
+    openModal('modalRecord');
+  }
+});
+
+/* ---------------------------------------------------------------- boot */
+renderKpis();
+renderDashboard(14);
+buildGrids();
+wireSetup();
+wireAds();
+
+})();
+</script>
+</body>
+</html>
