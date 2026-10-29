@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Did I Say That Outloud??? — Admin</title>
+<title>Did I Say That Outloud??? — Admin Console</title>
 <style>
 /* ---------------------------------------------------------------------------
    Layout: fixed dark rail, cream workspace, one card system used everywhere.
@@ -107,6 +107,7 @@ h1,h2,h3{text-wrap:balance;margin:0}
 .head h1{font:700 29px/1.15 var(--display)}
 .head p{color:var(--muted);font-size:13px;margin:7px 0 0;max-width:62ch}
 .headactions{display:flex;gap:9px;flex-wrap:wrap}
+[hidden]{display:none !important;}
 
 /* ------------------------------------------------------------------ buttons */
 .btn{
@@ -267,6 +268,29 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .modalhead p{font-size:12px;color:var(--muted);margin:4px 0 0}
 .modalbody{padding:20px}
 .modalfoot{display:flex;justify-content:flex-end;gap:9px;padding:15px 20px;border-top:1px solid var(--line);background:var(--surface-2);position:sticky;bottom:0}
+
+/* Import results side drawer */
+.import-drawer-backdrop{position:fixed;inset:0;background:rgba(23,22,38,.28);z-index:89;opacity:0;pointer-events:none;transition:opacity .18s ease}
+.import-drawer-backdrop.open{opacity:1;pointer-events:auto}
+.import-drawer{position:fixed;z-index:90;top:0;right:0;height:100vh;width:min(500px,100vw);background:var(--surface);box-shadow:-18px 0 50px rgba(18,15,40,.18);transform:translateX(105%);transition:transform .22s ease;display:flex;flex-direction:column}
+.import-drawer.open{transform:translateX(0)}
+.import-drawer-head{padding:22px 22px 18px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.import-drawer-head h3{font:700 20px var(--display);margin:0}
+.import-drawer-head p{font-size:12px;color:var(--muted);margin:5px 0 0;line-height:1.5}
+.import-drawer-body{padding:18px 22px;overflow:auto;flex:1}
+.import-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:18px}
+.import-stat{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--surface-2)}
+.import-stat span{display:block;font-size:11px;color:var(--muted);margin-bottom:6px}
+.import-stat strong{font:750 22px var(--display)}
+.import-failed-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 10px}
+.import-failed-title h4{font-size:14px;margin:0}
+.import-fail-card{border:1px solid var(--line);border-radius:12px;padding:13px 14px;margin-bottom:10px;display:flex;gap:11px;align-items:flex-start}
+.import-fail-icon{width:30px;height:30px;flex:0 0 30px;border-radius:9px;background:#fff0f0;color:#c63e48;display:grid;place-items:center;font-weight:800}
+.import-fail-card b{font-size:13px;display:block;margin-bottom:4px}
+.import-fail-card p{font-size:12px;color:var(--muted);line-height:1.45;margin:0}
+.import-row-tag{font-size:10px;color:var(--muted);font-weight:700;margin-bottom:5px;display:block}
+.import-drawer-foot{padding:14px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:9px;background:var(--surface-2)}
+@media(max-width:480px){.import-summary{gap:6px}.import-stat{padding:9px}.import-stat strong{font-size:19px}.import-drawer-head,.import-drawer-body{padding-left:16px;padding-right:16px}}
 .x{width:30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);flex:0 0 auto}
 .x:hover{background:var(--surface-3);color:var(--ink)}
 .x svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
@@ -399,6 +423,75 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 
 /* Hide Game Setup from the sidebar navigation */
 .nav[data-sec="setup"]{display:none !important;}
+
+.eyebrow{font-size:10px;letter-spacing:1.2px;font-weight:800;color:var(--purple);margin-bottom:5px}
+#modalBlockPlayer .field{margin-bottom:16px}
+#modalBlockPlayer .select,#modalBlockPlayer .area{width:100%}
+#modalBlockPlayer .modalfoot{flex-wrap:wrap}
+
+
+/* Admin Console requirements enhancements */
+
+.favorite-report-list { display:flex; gap:10px; flex-wrap:wrap; }
+.favorite-report-card { border:1px solid var(--line); background:var(--surface, #fff); border-radius:12px; padding:12px 14px; min-width:150px; display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer; color:var(--ink); text-align:left; }
+.favorite-report-card:hover { border-color:var(--purple-line); background:var(--purple-soft); }
+.favorite-report-card b { font-size:13px; }
+.favorite-report-card span { color:var(--purple-deep); font-size:18px; }
+.favorite-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.favorite-options label { display:flex; gap:10px; align-items:center; padding:12px; border:1px solid var(--line); border-radius:10px; cursor:pointer; }
+.favorite-options input, .paid-toggle input { accent-color:var(--purple); }
+.export-format-options { display:grid; gap:10px; }
+.export-format { width:100%; display:flex; align-items:center; gap:14px; text-align:left; border:1px solid var(--line); border-radius:12px; padding:14px; background:var(--surface,#fff); color:var(--ink); cursor:pointer; }
+.export-format:hover { border-color:var(--purple-line); background:var(--purple-soft); }
+.export-format-icon { width:42px; height:42px; border-radius:10px; display:grid; place-items:center; background:var(--purple-soft); color:var(--purple-deep); font-weight:800; font-size:12px; }
+.export-format b, .export-format small { display:block; }
+.export-format small { color:var(--muted); margin-top:3px; }
+.export-format > span:last-child { margin-left:auto; font-size:24px; color:var(--muted); }
+.donation-edit { display:inline-flex; align-items:center; gap:4px; border:1px solid var(--line); background:var(--surface,#fff); padding:4px 7px; border-radius:8px; }
+.donation-edit .currency { color:var(--muted); }
+.donation-edit input { width:82px; border:0; outline:0; background:transparent; color:var(--ink); font-size:12px;font-weight:600; text-align:right; }
+.donation-net { display:inline-block; min-width:84px; text-align:right; font-weight:700; font-variant-numeric:tabular-nums; }
+.paid-toggle { display:inline-flex; align-items:center; gap:6px; white-space:nowrap; cursor:pointer; font-size:12px; }
+.paid-toggle span { color:var(--muted); }
+@media(max-width:640px) { .favorite-options { grid-template-columns:1fr; } .favorite-report-card { flex:1 1 100%; } }
+
+/* Profile drawer and configurable dashboard tiles */
+.drawer-scrim{position:fixed;inset:0;background:rgba(18,16,32,.38);z-index:80;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
+.profile-drawer{position:fixed;z-index:81;right:0;top:0;bottom:0;width:min(390px,92vw);background:var(--surface);border-left:1px solid var(--line);box-shadow:-18px 0 48px rgba(18,15,40,.18);transform:translateX(102%);transition:transform .24s ease;display:flex;flex-direction:column;padding:20px 16px 16px}
+.profile-drawer.open{transform:translateX(0)}.drawer-scrim.open{opacity:1;visibility:visible}
+.drawer-top{display:flex;align-items:center;gap:12px;padding:4px 2px 22px;border-bottom:1px solid var(--line)}.drawer-avatar{width:48px;height:48px;display:grid;place-items:center;border-radius:50%;background:var(--purple);color:#fff;font-size:19px;font-weight:800}.drawer-identity{display:flex;flex-direction:column;gap:3px;flex:1}.drawer-identity b{font-size:15px}.drawer-identity span{font-size:12px;color:var(--ink-2,var(--muted))}.drawer-identity small{font-size:11px;color:var(--muted)}
+.drawer-section-label{font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--muted);padding:22px 8px 8px}.drawer-action{display:flex;align-items:center;gap:12px;width:100%;padding:12px 10px;border:0;border-radius:12px;background:transparent;text-align:left;color:var(--ink);cursor:pointer}.drawer-action:hover{background:var(--purple-wash)}.drawer-action-icon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--surface-2);color:var(--purple-deep);font-size:20px}.drawer-action>span:nth-child(2){display:flex;flex-direction:column;gap:4px;flex:1}.drawer-action b{font-size:13px}.drawer-action small{font-size:11px;color:var(--muted)}.drawer-chevron{font-size:23px;color:var(--muted)}.drawer-bottom{margin-top:auto;border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:13px}.drawer-logout{display:flex;align-items:center;gap:10px;border:0;background:transparent;color:var(--red);font-weight:700;padding:12px;border-radius:10px;text-align:left;cursor:pointer}.drawer-logout:hover{background:var(--red-wash,#fff1f1)}.drawer-logout span{font-size:19px}.drawer-bottom small{text-align:center;color:var(--muted);font-size:10px}
+.dashboard-config-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;font-size:12px;font-weight:700}.dashboard-config-tools>div{display:flex;gap:6px}.dashboard-tile-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.dashboard-tile-option{display:flex;align-items:flex-start;gap:10px;padding:13px;border:1px solid var(--line);border-radius:12px;cursor:pointer;min-height:66px}.dashboard-tile-option:has(input:checked){border-color:var(--purple-line);background:var(--purple-wash)}.dashboard-tile-option input{accent-color:var(--purple);margin-top:3px}.dashboard-tile-option span{display:flex;flex-direction:column;gap:4px}.dashboard-tile-option b{font-size:12px}.dashboard-tile-option small{font-size:10px;color:var(--muted);line-height:1.4}.dashboard-tile-options .empty-note{grid-column:1/-1}.kpis .kpi[data-dashboard-tile],#dashboard .grid2 .panel[data-dashboard-tile]{transition:opacity .15s}
+@media(max-width:560px){.dashboard-tile-options{grid-template-columns:1fr}.dashboard-config-tools{align-items:flex-start;flex-direction:column}}
+
+
+
+/* Export format tooltip menu */
+.export-launch { display:inline-flex; align-items:center; gap:8px; }
+.export-launch[aria-expanded="true"] { border-color:var(--purple-line); background:var(--purple-soft); }
+.export-format-menu[hidden] { display:none !important; }
+.export-format-menu { position:absolute; z-index:120; display:flex; align-items:stretch; gap:4px; padding:7px; border:1px solid var(--line); border-radius:12px; background:var(--surface,#fff); box-shadow:0 12px 34px rgba(18,22,33,.16); margin-top:8px; min-width:210px; right:0; top:100%; }
+.export-menu-option { display:flex; flex:1; flex-direction:column; align-items:center; justify-content:center; gap:7px; padding:10px 12px; border:1px solid transparent; border-radius:9px; background:transparent; color:var(--ink); cursor:pointer; font:600 12px inherit; }
+.export-menu-option:hover,.export-menu-option:focus-visible { outline:none; border-color:var(--purple-line); background:var(--purple-soft); }
+.export-menu-icon { width:34px; height:34px; display:grid; place-items:center; border-radius:9px; background:var(--purple-soft); color:var(--purple-deep); }
+.export-menu-icon svg { width:21px; height:21px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.export-menu-icon.pdf-icon { color:#c43d4c; background:#fff0f1; }
+.export-menu-icon.word-icon { color:#2765b0; background:#edf4ff; }
+.export-menu-icon.excel-icon { color:#218653; background:#eaf8ef; }
+.headactions { position:relative; }
+
+/* Dashboard date-range picker */
+.date-range-wrap { position:relative; display:inline-flex; }
+.date-range-trigger { display:inline-flex; align-items:center; gap:8px; white-space:nowrap; }
+.date-range-trigger svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.date-range-trigger[aria-expanded="true"] { border-color:var(--purple-line); background:var(--purple-soft); }
+.date-range-popover[hidden] { display:none !important; }
+.date-range-popover { position:absolute; z-index:130; right:0; top:calc(100% + 8px); width:280px; padding:16px; display:grid; gap:12px; border:1px solid var(--line); border-radius:14px; background:var(--surface,#fff); box-shadow:0 14px 36px rgba(18,22,33,.16); }
+.date-range-popover label { display:grid; gap:6px; color:var(--muted); font-size:12px; font-weight:600; }
+.date-range-popover input[type="date"] { width:100%; box-sizing:border-box; border:1px solid var(--line); border-radius:8px; padding:9px; background:var(--surface,#fff); color:var(--ink); font:inherit; }
+.date-range-actions { display:flex; justify-content:flex-end; gap:8px; }
+.date-range-error { color:var(--danger,#b42318); font-size:12px; }
+@media(max-width:760px){ #dashboard .head .headactions { flex-wrap:wrap; } .date-range-popover { right:auto; left:0; } }
 </style>
 </head>
 <body>
@@ -474,7 +567,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
       <div class="crumb">Admin · <b id="crumb">Game Pulse</b></div>
     </div>
     <div class="topright">
-      <button class="user" aria-label="Signed in as Dov">
+      <button class="user" id="profileMenuToggle" aria-label="Open Dov profile menu" aria-haspopup="dialog" aria-expanded="false">
         <span class="avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.5 20c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5"/></svg></span>
         <span>Dov</span>
       </button>
@@ -488,23 +581,33 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
       <div class="head">
         <div>
           <h1>Game Pulse</h1>
-          <p>How the game is running right now, and how it has moved over the last two weeks.</p>
+          <p>Daily activity, active games, Premium subscribers, revenue and average game duration over 7, 14 or 30 days.</p>
         </div>
         <div class="headactions">
-          <div class="seg" id="rangeSeg">
+          <div class="seg" id="rangeSeg" aria-label="Dashboard date range shortcuts">
             <button data-range="7">7 days</button>
             <button data-range="14" class="on">14 days</button>
-            <button data-range="30">30 days</button>
           </div>
-          <button class="btn"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v3h16v-3"/></svg>Export</button>
+          <div class="date-range-wrap">
+            <button class="btn date-range-trigger" id="btnCustomDateRange" type="button" aria-label="Choose custom date range" title="Choose date range" aria-expanded="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M7.5 3v4M16.5 3v4M3.5 9.5h17M7.5 13h2M12 13h2M7.5 16.5h2"/></svg>
+              <span id="customRangeLabel">Date range</span>
+            </button>
+            <div class="date-range-popover" id="customDateRangePopover" hidden>
+              <label>Start date<input type="date" id="dashboardStartDate"></label>
+              <label>End date<input type="date" id="dashboardEndDate"></label>
+              <div class="date-range-actions"><button class="btn sm" id="cancelCustomRange" type="button">Cancel</button><button class="btn primary sm" id="applyCustomRange" type="button">Apply range</button></div>
+              <div class="date-range-error" id="customRangeError" role="status"></div>
+            </div>
+          </div>
+          <button class="btn export-launch" type="button" title="Choose PDF, Word, or Excel export format" aria-label="Export report"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v3h16v-3"/></svg>Export</button>
         </div>
       </div>
 
       <div class="kpis" id="kpis"></div>
-
-      <div class="grid2">
+<div class="grid2">
         <div class="panel span2">
-          <div class="panelhead">
+          <div class="panelhead" data-dashboard-tile="gamesPlayed">
             <div>
               <h3>Games played</h3>
               <div class="sub">Completed games per day, with players who joined them</div>
@@ -518,35 +621,28 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
         </div>
 
         <div class="panel">
-          <div class="panelhead"><div><h3>Who is hosting</h3><div class="sub">Share of games by the host's plan</div></div></div>
+          <div class="panelhead" data-dashboard-tile="hostingPlan"><div><h3>Who is hosting</h3><div class="sub">Share of games by the host's plan</div></div></div>
           <div class="panelbody"><div class="chartbox" id="chartPlan"></div></div>
         </div>
 
         <div class="panel">
-          <div class="panelhead"><div><h3>When games start</h3><div class="sub">Local start time, averaged over 14 days</div></div></div>
+          <div class="panelhead" data-dashboard-tile="startTimes"><div><h3>When games start</h3><div class="sub">Local start time, averaged over 14 days</div></div></div>
           <div class="panelbody"><div class="chartbox" id="chartHours"></div></div>
         </div>
 
         <div class="panel">
-          <div class="panelhead"><div><h3>Subscription revenue</h3><div class="sub">Net of Apple and Google commission</div></div></div>
+          <div class="panelhead" data-dashboard-tile="subscriptionRevenue"><div><h3>Subscription revenue</h3><div class="sub">Net of Apple and Google commission</div></div></div>
           <div class="panelbody"><div class="chartbox" id="chartRevenue"></div></div>
         </div>
 
         <div class="panel">
-          <div class="panelhead">
+          <div class="panelhead" data-dashboard-tile="gameEndReasons">
             <div><h3>How games end</h3><div class="sub">Last 14 days</div></div>
           </div>
           <div class="panelbody"><div class="bars" id="endReasons"></div></div>
         </div>
       </div>
 
-      <div class="panel">
-        <div class="panelhead">
-          <div><h3><span class="livedot"></span>Games in progress</h3><div class="sub">Updates as rounds are played</div></div>
-          <button class="btn sm" data-go="reports">Open reports</button>
-        </div>
-        <div id="liveGrid"></div>
-      </div>
     </section>
 
     <!-- ===================================================== RECORDS -->
@@ -572,14 +668,14 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
           <p>Accounts, blocking history, admin access and the audit trail, in one place.</p>
         </div>
         <div class="headactions">
-          <button class="btn" id="btnAddAdmin"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add admin</button>
+          <button class="btn primary" id="btnAddAdmin" type="button" hidden aria-label="Add user"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.3"/><path d="M3 20c0-3.4 2.5-5.5 6-5.5s6 2.1 6 5.5M18 8v6M15 11h6"/></svg>Add User</button>
         </div>
       </div>
 
       <div class="tabs" id="peopleTabs">
         <button class="tab on" data-pane="tabPlayers">Players <span class="count">4,812</span></button>
         <button class="tab" data-pane="tabBlocks">Blocking history <span class="count">34</span></button>
-        <button class="tab" data-pane="tabAdmins">Admin roles <span class="count">4</span></button>
+        <button class="tab" data-pane="tabAdmins">Users <span class="count">4</span></button>
         <button class="tab" data-pane="tabAudit">Audit log <span class="count">1,906</span></button>
       </div>
 
@@ -606,7 +702,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
           <h1>Payments &amp; Discounts</h1>
           <p>Subscriptions sold through the Apple and Google stores. Refunds are issued in the store consoles, not here.</p>
         </div>
-        <div class="headactions"><button class="btn"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v3h16v-3"/></svg>Export CSV</button></div>
+        <div class="headactions"><button class="btn export-launch" type="button" title="Choose PDF, Word, or Excel export format" aria-label="Export report"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v3h16v-3"/></svg>Export</button></div>
       </div>
       <div class="kpis" id="payKpis"></div>
       <div class="panel"><div id="paymentsGrid"></div></div>
@@ -641,11 +737,12 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
             <option>Last 90 days</option>
             <option>All time</option>
           </select>
-          <button class="btn"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v3h16v-3"/></svg>Export</button>
+          <button class="btn export-launch" type="button" title="Choose PDF, Word, or Excel export format" aria-label="Export report"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v3h16v-3"/></svg>Export</button>
         </div>
       </div>
 
       <div class="tabs" id="reportTabs">
+        <button class="tab" data-pane="repLive"><span class="livedot"></span>Games in progress</button>
         <button class="tab on" data-pane="repPlayed">Most played</button>
         <button class="tab" data-pane="repWon">Most winning</button>
         <button class="tab" data-pane="repVotes">Vote count</button>
@@ -654,6 +751,15 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
         <button class="tab" data-pane="repGeo">Player locations</button>
         <button class="tab" data-pane="repAds">Lobby ads</button>
         <button class="tab" data-pane="repActivity">Game activity</button>
+      </div>
+
+      <div class="tabpane" id="repLive">
+        <div class="panel">
+          <div class="panelhead">
+            <div><h3><span class="livedot"></span>Games in progress</h3><div class="sub">Live sessions and active games</div></div>
+          </div>
+          <div id="liveGrid"></div>
+        </div>
       </div>
 
       <div class="tabpane on" id="repPlayed">
@@ -1038,6 +1144,25 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
   </div>
 </div>
 
+<div class="import-drawer-backdrop" id="importResultsBackdrop"></div>
+<aside class="import-drawer" id="importResultsDrawer" aria-hidden="true" aria-labelledby="importResultsTitle">
+  <div class="import-drawer-head">
+    <div><h3 id="importResultsTitle">Import results</h3><p id="importResultsFilename">No file processed yet</p></div>
+    <button class="x" id="closeImportResults" type="button" aria-label="Close import results"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="import-drawer-body">
+    <div class="import-summary">
+      <div class="import-stat"><span>Rows checked</span><strong id="importRowsRead">0</strong></div>
+      <div class="import-stat"><span>Imported</span><strong id="importRowsAccepted" style="color:var(--ok)">0</strong></div>
+      <div class="import-stat"><span>Not imported</span><strong id="importRowsRejected" style="color:var(--bad)">0</strong></div>
+    </div>
+    <div class="note"><b>Why are these records listed?</b><br>Each skipped row shows its Excel row number, record identifier when available, and the validation issue that prevented import.</div>
+    <div class="import-failed-title"><h4>Records not imported</h4><span class="pill warn" id="importIssueCount">0 issues</span></div>
+    <div id="importFailedCards"><div class="note">Choose an Excel file and click <b>Start import</b> to see skipped records and reasons here.</div></div>
+  </div>
+  <div class="import-drawer-foot"><button class="btn" id="closeImportResultsBottom" type="button">Close</button><button class="btn primary" id="retryImport" type="button">Import corrected file</button></div>
+</aside>
+
 <div class="modal" id="modalImport">
   <div class="modalbox">
     <div class="modalhead">
@@ -1045,23 +1170,25 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
       <button class="x" data-close><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="modalbody">
-      <div class="drop">
+      <div class="drop" id="recordImportDrop" role="button" tabindex="0" aria-label="Choose Excel file to import">
         <svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L8 8m4-4l4 4"/><path d="M4 16v4h16v-4"/></svg>
         <b>Drop the record sheet here</b>
-        <span>.xlsx from the locked template · up to 25 MB</span>
+        <span id="recordImportFileLabel">Choose an .xlsx, .xls, or .csv file · up to 25 MB</span>
+        <input id="recordImportFile" type="file" accept=".xlsx,.xls,.csv" hidden />
+        <button class="btn" id="chooseRecordImportFile" type="button" style="margin:14px auto 0">Choose file</button>
       </div>
       <div class="panel" style="margin:18px 0 0">
-        <div class="panelhead"><div><h3>Last import</h3><div class="sub">18 Oct 2026 · records-oct-18.xlsx</div></div><span class="pill warn">6 issues</span></div>
+        <div class="panelhead"><div><h3>Import summary</h3><div class="sub" id="importModalSummary">Select an Excel file to begin.</div></div><span class="pill" id="importModalIssueBadge">No file</span></div>
         <div class="panelbody" style="display:flex;gap:26px;flex-wrap:wrap">
-          <div><div class="kl" style="font-size:11px;color:var(--muted);font-weight:700">Rows read</div><div class="tnum" style="font:700 22px var(--display);margin-top:5px">412</div></div>
-          <div><div class="kl" style="font-size:11px;color:var(--muted);font-weight:700">Accepted</div><div class="tnum" style="font:700 22px var(--display);margin-top:5px;color:var(--ok)">406</div></div>
-          <div><div class="kl" style="font-size:11px;color:var(--muted);font-weight:700">Rejected</div><div class="tnum" style="font:700 22px var(--display);margin-top:5px;color:var(--bad)">6</div></div>
+          <div><div class="kl" style="font-size:11px;color:var(--muted);font-weight:700">Rows read</div><div id="importModalRowsRead" class="tnum" style="font:700 22px var(--display);margin-top:5px">0</div></div>
+          <div><div class="kl" style="font-size:11px;color:var(--muted);font-weight:700">Accepted</div><div id="importModalAccepted" class="tnum" style="font:700 22px var(--display);margin-top:5px;color:var(--ok)">0</div></div>
+          <div><div class="kl" style="font-size:11px;color:var(--muted);font-weight:700">Rejected</div><div id="importModalRejected" class="tnum" style="font:700 22px var(--display);margin-top:5px;color:var(--bad)">0</div></div>
         </div>
       </div>
     </div>
     <div class="modalfoot">
       <button class="btn" data-close>Close</button>
-      <button class="btn primary" data-close>Start import</button>
+      <button class="btn primary" id="startImportProcess" type="button">Start import</button>
     </div>
   </div>
 </div>
@@ -1069,7 +1196,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 <div class="modal" id="modalAdmin">
   <div class="modalbox">
     <div class="modalhead">
-      <div><h3>Add admin</h3><p>Admin accounts use a second factor at sign-in.</p></div>
+      <div><h3>Add User</h3><p>Create a user account and assign the appropriate role and permissions.</p></div>
       <button class="x" data-close><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="modalbody">
@@ -1187,9 +1314,82 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
     <div class="modalfoot"><button class="btn" data-close>Cancel</button><button class="btn primary" data-close>Save campaign</button></div>
   </div>
 </div>
+
+<div class="modal" id="modalBlockPlayer" aria-hidden="true">
+  <div class="modalbox" role="dialog" aria-modal="true" aria-labelledby="blockModalTitle" style="width:min(560px,100%)">
+    <div class="modalhead">
+      <div><div class="eyebrow" id="blockStepLabel">STEP 1 OF 2</div><h3 id="blockModalTitle">Block player</h3><p id="blockModalSubtitle">Choose a reason and add context for the audit log.</p></div>
+      <button class="x" data-close aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modalbody">
+      <div class="note" style="margin-bottom:16px"><b>Player:</b> <span id="blockPlayerName"></span> <span class="cellsub" id="blockPlayerHandle"></span></div>
+      <div id="blockStepOne">
+        <div class="field"><label for="blockReason">Reason for blocking <span style="color:var(--danger)">*</span></label><select class="select" id="blockReason" required><option value="">Choose a reason</option><option>Abusive conduct</option><option>Dishonest behavior</option><option>Bullying</option><option>Threats to the system</option><option>Other</option></select><div class="hint">Select the primary reason. It will be recorded in Blocking History.</div></div>
+        <div class="field" id="blockOtherReasonWrap" style="display:none"><label for="blockOtherReason">Specify other reason <span style="color:var(--danger)">*</span></label><input class="input" id="blockOtherReason" type="text" maxlength="180" placeholder="Describe the reason for blocking…"><div class="hint">Required when you select Other.</div></div>
+        <div class="field"><label for="blockReasonNotes">Additional details <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label><textarea class="area" id="blockReasonNotes" rows="3" placeholder="Add context, evidence, or a report reference…"></textarea><div class="hint">The selected reason, specification, and details will be saved to Blocking History.</div></div>
+      </div>
+      <div id="blockStepTwo" style="display:none">
+        <div class="note" style="margin-bottom:14px"><b>Review before blocking</b><p style="margin:8px 0 0">This action will block the player from participating and record the reason in the Admin Console audit history.</p></div>
+        <div class="field"><label>Reason</label><div id="blockReviewReason" class="tag"></div></div>
+        <div class="field"><label>Details</label><div id="blockReviewNotes" class="cellsub" style="margin:0;white-space:pre-wrap"></div></div>
+      </div>
+    </div>
+    <div class="modalfoot"><button class="btn" id="blockCancel" data-close>Cancel</button><button class="btn primary" id="blockContinue">Continue to confirmation</button><button class="btn danger" id="blockConfirm" style="display:none">Confirm block</button></div>
+  </div>
+</div>
+
+
+
+<div class="drawer-scrim" id="profileDrawerScrim"></div>
+<aside class="profile-drawer" id="profileDrawer" aria-label="Dov profile menu" aria-hidden="true">
+  <div class="drawer-top"><div class="drawer-avatar">D</div><div class="drawer-identity"><b>Dov</b><span>Administrator</span><small>Admin Console</small></div><button class="iconbtn" id="closeProfileDrawer" aria-label="Close profile menu">×</button></div>
+  <div class="drawer-section-label">ACCOUNT</div>
+  <button class="drawer-action" id="openProfileEdit"><span class="drawer-action-icon">♙</span><span><b>Edit profile</b><small>Update your name and email</small></span><span class="drawer-chevron">›</span></button>
+  <button class="drawer-action" id="openPasswordChange"><span class="drawer-action-icon">⌑</span><span><b>Change password</b><small>Update your sign-in password</small></span><span class="drawer-chevron">›</span></button>
+  <div class="drawer-section-label">PREFERENCES</div>
+  <button class="drawer-action" id="openDashboardConfig"><span class="drawer-action-icon">▦</span><span><b>Dashboard configuration</b><small>Choose which tiles are visible</small></span><span class="drawer-chevron">›</span></button>
+  <div class="drawer-bottom"><button class="drawer-logout" id="profileLogout"><span>↪</span> Log out</button><small>Admin Console · Release 1.0</small></div>
+</aside>
+
+<div class="modal" id="modalProfileEdit" aria-hidden="true"><div class="modalbox" role="dialog" aria-modal="true" aria-labelledby="profileEditTitle">
+  <div class="modalhead"><div><h3 id="profileEditTitle">Edit profile</h3><p class="sub">Manage your administrator profile details.</p></div><button class="iconbtn" data-close aria-label="Close">×</button></div>
+  <div class="modalbody"><div class="formgrid"><div class="field"><label for="profileName">Full name</label><input id="profileName" value="Dov Treiman" autocomplete="name"></div><div class="field"><label for="profileEmail">Email address</label><input id="profileEmail" type="email" value="dov@horriblegamesllc.com" autocomplete="email"></div></div></div>
+  <div class="modalfoot"><button class="btn" data-close>Cancel</button><button class="btn primary" id="saveProfileEdit">Save changes</button></div>
+</div></div>
+
+<div class="modal" id="modalPasswordChange" aria-hidden="true"><div class="modalbox" role="dialog" aria-modal="true" aria-labelledby="passwordChangeTitle">
+  <div class="modalhead"><div><h3 id="passwordChangeTitle">Change password</h3><p class="sub">Choose a strong password for your account.</p></div><button class="iconbtn" data-close aria-label="Close">×</button></div>
+  <div class="modalbody"><div class="formgrid"><div class="field span2"><label for="currentPassword">Current password</label><input id="currentPassword" type="password" autocomplete="current-password" placeholder="Enter current password"></div><div class="field"><label for="newPassword">New password</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="At least 8 characters"></div><div class="field"><label for="confirmPassword">Confirm new password</label><input id="confirmPassword" type="password" autocomplete="new-password" placeholder="Re-enter new password"></div><p class="sub" id="passwordChangeMessage" style="grid-column:1/-1;margin:0"></p></div></div>
+  <div class="modalfoot"><button class="btn" data-close>Cancel</button><button class="btn primary" id="savePasswordChange">Update password</button></div>
+</div></div>
+
+<div class="modal" id="modalDashboardConfig" aria-hidden="true"><div class="modalbox" role="dialog" aria-modal="true" aria-labelledby="dashboardConfigTitle">
+  <div class="modalhead"><div><h3 id="dashboardConfigTitle">Dashboard configuration</h3><p class="sub">Select the tiles you want to see on Game Pulse. Your choices are saved on this device.</p></div><button class="iconbtn" data-close aria-label="Close">×</button></div>
+  <div class="modalbody"><div class="dashboard-config-tools"><span>Dashboard tiles</span><div><button class="btn sm" id="selectAllDashboardTiles">Select all</button><button class="btn sm" id="resetDashboardTiles">Reset defaults</button></div></div><div class="dashboard-tile-options" id="dashboardTileOptions"></div></div>
+  <div class="modalfoot"><button class="btn" data-close>Cancel</button><button class="btn primary" id="saveDashboardConfig">Save configuration</button></div>
+</div></div>
+
+<div class="modal" id="modalLogoutConfirm" aria-hidden="true"><div class="modalbox" role="dialog" aria-modal="true" aria-labelledby="logoutTitle">
+  <div class="modalhead"><div><h3 id="logoutTitle">Log out of Admin Console?</h3><p class="sub">You may need to sign in again to access the console.</p></div><button class="iconbtn" data-close aria-label="Close">×</button></div>
+  <div class="modalfoot"><button class="btn" data-close>Cancel</button><button class="btn danger" id="confirmProfileLogout">Log out</button></div>
+</div></div>
+
+<div class="export-format-menu" id="exportFormatMenu" role="menu" aria-label="Export format" hidden>
+  <button type="button" class="export-menu-option" role="menuitem" data-export-format="pdf" title="Export as PDF" aria-label="Export as PDF">
+    <span class="export-menu-icon pdf-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 2.75h8l4 4v14.5H6z"/><path d="M14 2.75v4h4M8.5 13h7M8.5 16h5"/></svg></span><span>PDF</span>
+  </button>
+  <button type="button" class="export-menu-option" role="menuitem" data-export-format="word" title="Export as Word document" aria-label="Export as Word document">
+    <span class="export-menu-icon word-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h14v18H5z"/><path d="M8 8l2 8 2-5 2 5 2-8"/></svg></span><span>Word</span>
+  </button>
+  <button type="button" class="export-menu-option" role="menuitem" data-export-format="excel" title="Export as Excel spreadsheet" aria-label="Export as Excel spreadsheet">
+    <span class="export-menu-icon excel-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 3h14v18H5z"/><path d="M5 8h14M5 13h14M10 8v13M15 8v13"/></svg></span><span>Excel</span>
+  </button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 /* ===========================================================================
-   Did I Say That Outloud??? — admin console
+   Did I Say That Outloud??? — Admin Console
    Demonstration build: every figure below is generated sample data.
    =========================================================================== */
 (function () {
@@ -1309,6 +1509,7 @@ DATA.players = (function(){
     var premium = rnd()<0.128;
     var blocked = rnd()<0.007;
     out.push({
+      id: 'player-'+String(i+1),
       name: f+' '+l,
       handle: pick(HANDLES)+between(1,99),
       email: (f+'.'+l).toLowerCase()+'@'+pick(['gmail.com','outlook.com','icloud.com','yahoo.com','hey.com']),
@@ -1401,13 +1602,13 @@ DATA.payments = (function(){
 })();
 
 DATA.coupons = [
-  {code:'GLIMMER', purpose:'10% of revenue donated to the Glimmerglass Opera Festival', store:'Both', redemptions:412, revenue:7284.56, donation:728.46, runs:'1 Sep 2026 — 31 Dec 2026', status:'Running'},
-  {code:'LAUNCH25', purpose:'First month free on a monthly plan', store:'Both', redemptions:1038, revenue:0, donation:0, runs:'12 Aug 2026 — 30 Sep 2026', status:'Ended'},
-  {code:'OPERA', purpose:'Three months at the annual rate', store:'Apple App Store', redemptions:146, revenue:2918.54, donation:0, runs:'1 Oct 2026 — 30 Nov 2026', status:'Running'},
-  {code:'PODCAST', purpose:'Two free months, read out on the show', store:'Both', redemptions:287, revenue:1243.77, donation:0, runs:'20 Sep 2026 — 20 Oct 2026', status:'Running'},
-  {code:'DOVART', purpose:'Free deck expansion, from the artist’s mailing list', store:'Google Play', redemptions:94, revenue:469.06, donation:0, runs:'5 Oct 2026 — 5 Nov 2026', status:'Running'},
-  {code:'FAMILY', purpose:'Free month for anyone in the beta', store:'Both', redemptions:61, revenue:0, donation:0, runs:'1 Jul 2026 — 31 Jul 2026', status:'Ended'},
-  {code:'HOLIDAY', purpose:'Party Pass trial — not launched', store:'Both', redemptions:0, revenue:0, donation:0, runs:'Not scheduled', status:'Draft'}
+  {code:'GLIMMER', purpose:'10% of revenue donated to the Glimmerglass Opera Festival', store:'Both', redemptions:412, revenue:7284.56, donation:728.46, donationPaid:0, runs:'1 Sep 2026 — 31 Dec 2026', status:'Running'},
+  {code:'LAUNCH25', purpose:'First month free on a monthly plan', store:'Both', redemptions:1038, revenue:0, donation:0, donationPaid:0, runs:'12 Aug 2026 — 30 Sep 2026', status:'Ended'},
+  {code:'OPERA', purpose:'Three months at the annual rate', store:'Apple App Store', redemptions:146, revenue:2918.54, donation:0, donationPaid:0, runs:'1 Oct 2026 — 30 Nov 2026', status:'Running'},
+  {code:'PODCAST', purpose:'Two free months, read out on the show', store:'Both', redemptions:287, revenue:1243.77, donation:0, donationPaid:0, runs:'20 Sep 2026 — 20 Oct 2026', status:'Running'},
+  {code:'DOVART', purpose:'Free deck expansion, from the artist’s mailing list', store:'Google Play', redemptions:94, revenue:469.06, donation:0, donationPaid:0, runs:'5 Oct 2026 — 5 Nov 2026', status:'Running'},
+  {code:'FAMILY', purpose:'Free month for anyone in the beta', store:'Both', redemptions:61, revenue:0, donation:0, donationPaid:0, runs:'1 Jul 2026 — 31 Jul 2026', status:'Ended'},
+  {code:'HOLIDAY', purpose:'Party Pass trial — not launched', store:'Both', redemptions:0, revenue:0, donation:0, donationPaid:0, runs:'Not scheduled', status:'Draft'}
 ];
 
 DATA.dbr = [
@@ -1452,7 +1653,7 @@ DATA.activity = (function(){
       players: premium?between(5,20):between(3,7),
       rounds: between(4,38),
       minutes: between(12,210),
-      ended: pick(['Host ended','Question limit','Duration reached','Host left','Too few players','Idle for an hour']),
+      ended: pick(['Host ended','Question limit','Duration reached','Host left','Too few players','Idle > 3.0 hours']),
       when: daysAgo(between(0,30))
     });
   }
@@ -1515,7 +1716,7 @@ DATA.adSettings = { rotation:'Random (weighted)', perLobby:2, format:'Banner' };
    timers and Lightning Games are a 2.0 feature (GP-14). */
 DATA.setup = {
   answerWindow:180, voteWindow:180, readerReminder:60, readerDiscard:120,
-  idleMinutes:60, maxHours:8, disconnectGrace:20,
+  idleMinutes:180, maxHours:8, disconnectGrace:20,
   handSize:10, minPlayers:3,
   defaults:{ orientation:'Neutral', politics:3, sex:'Kids', language:'US English' },
   endConditions:{ questionCount:true, duration:true, clockTime:true, untilHost:true },
@@ -1580,6 +1781,7 @@ function Grid(mount, cfg){
   this.dir = cfg.dir || 'asc';
   this.filters = {};
   this.render();
+  if(typeof GRIDS!=='undefined') GRIDS[mount] = this;
 }
 Grid.prototype.filtered = function(){
   var self=this, rows=this.rows, q=this.q.trim().toLowerCase();
@@ -1868,12 +2070,12 @@ function renderKpis(){
   var s=[112,98,104,131,126,119,147,152,138,129,161,158,144,168];
   document.getElementById('kpis').innerHTML=[
     {label:'Games today',icon:'games',value:'168',delta:'11%',dir:'up',note:'vs same day last week',spark:s},
-    {label:'Playing right now',icon:'players',value:'342',delta:'24',dir:'up',note:'across 24 live games',spark:[210,254,231,288,264,301,342]},
+    {label:'Active games',icon:'players',value:'24',delta:'6',dir:'up',note:'342 players online now',spark:[12,15,14,18,17,21,24]},
     {label:'Premium subscribers',icon:'card',value:'617',delta:'38',dir:'up',note:'12.8% of 4,812 players',spark:[498,512,531,547,566,579,594,617]},
     {label:'Monthly recurring revenue',icon:'money',value:'$3,284',delta:'6.4%',dir:'up',note:'net of store commission',spark:[2410,2588,2704,2810,2967,3061,3188,3284]},
-    {label:'Average game length',icon:'clock',value:'47 min',delta:'3 min',dir:'up',note:'median 41 minutes',spark:[38,40,39,42,44,43,46,47]},
+    {label:'Average game duration',icon:'clock',value:'47 min',delta:'3 min',dir:'up',note:'14-day average · median 41 min',spark:[38,40,39,42,44,43,46,47]},
     {label:'Rounds played today',icon:'round',value:'1,184',delta:'2.1%',dir:'down',note:'7.0 rounds per game',spark:[1240,1198,1265,1302,1221,1209,1184]}
-  ].map(kpiCard).join('');
+  ].map(function(k){ var el=kpiCard(k); var ids={'Games today':'gamesToday','Active games':'activeGames','Premium subscribers':'premiumSubscribers','Monthly recurring revenue':'monthlyRevenue','Average game duration':'averageDuration','Rounds played today':'roundsToday'}; return el.replace('class="kpi"','class="kpi" data-dashboard-tile="'+ids[k.label]+'"'); }).join('');
 }
 
 /* ---------------------------------------------------------------- dashboard */
@@ -1902,7 +2104,7 @@ function renderDashboard(days){
     {n:'Duration reached',v:311},
     {n:'Host left',v:187,c:'var(--yellow)'},
     {n:'Fewer than three players',v:96,c:'var(--yellow)'},
-    {n:'Idle for an hour',v:64,c:'var(--red)'}
+    {n:'Idle > 3.0 hours',v:64,c:'var(--red)'}
   ]);
 
   new Grid('liveGrid',{
@@ -1975,7 +2177,8 @@ function buildGrids(){
       {key:'lastSeen',label:'Last seen',sortValue:function(r){return r.lastSeen;},cell:function(r){return '<span class="tnum">'+fmtDate(r.lastSeen)+'</span>';}},
       {key:'status',label:'Status',cell:function(r){return pillFor(r.status);}},
       {key:'act',label:'',sortable:false,search:false,cell:function(r){
-        return rowBtns([{label:'View'},{label:r.status==='Blocked'?'Unblock':'Block',kind:r.status==='Blocked'?'':'danger'}]);
+        return '<div class="rowactions"><button class="btn sm" data-player-view="'+esc(r.id)+'">View</button>'+
+          (r.status==='Blocked' ? '<button class="btn sm" data-player-unblock="'+esc(r.id)+'">Unblock</button>' : '<button class="btn sm danger" data-player-block="'+esc(r.id)+'">Block</button>')+'</div>';
       }}
     ]
   });
@@ -2071,8 +2274,10 @@ function buildGrids(){
       {key:'store',label:'Store',cell:function(r){return '<span class="tag">'+esc(r.store)+'</span>';}},
       {key:'redemptions',label:'Redemptions',align:'right',cell:function(r){return '<span class="tnum">'+num(r.redemptions)+'</span>';}},
       {key:'revenue',label:'Attributed revenue',align:'right',cell:function(r){return '<span class="tnum">'+(r.revenue?money(r.revenue):'—')+'</span>';}},
-      {key:'donation',label:'Donation owed',align:'right',cell:function(r){return r.donation?'<span class="tnum cellmain" style="color:var(--purple-deep)">'+money(r.donation)+'</span>':'<span class="cellsub">—</span>';}},
-      {key:'runs',label:'Runs',cell:function(r){return '<span class="cellsub" style="margin:0">'+esc(r.runs)+'</span>';}},
+      {key:'donation',label:'Net Donation Owed',align:'right',cell:function(r){return '<label class="donation-edit"><span class="currency">$</span><input type="number" min="0" step="0.01" value="'+Number(r.donation||0).toFixed(2)+'" data-donation-owed="'+esc(r.code)+'" aria-label="Net donation owed for '+esc(r.code)+'"></label>'; }},
+      {key:'donationPaid',label:'Donation Paid',align:'right',cell:function(r){return '<label class="donation-edit"><span class="currency">$</span><input type="number" min="0" step="0.01" value="'+Number(r.donationPaid||0).toFixed(2)+'" data-donation-paid="'+esc(r.code)+'" aria-label="Donation paid for '+esc(r.code)+'"></label>'; }},
+      {key:'netDonation',label:'Net Donation',align:'right',cell:function(r){return '<span class="donation-net" data-net-donation="'+esc(r.code)+'">'+money(Number(r.donation||0)-Number(r.donationPaid||0))+'</span>'; }},
+      {key:'runs',label:'Campaign dates',cell:function(r){return '<span class="cellsub" style="margin:0">'+esc(r.runs)+'</span>';}},
       {key:'status',label:'Status',cell:function(r){return pillFor(r.status);}}
     ]
   });
@@ -2219,7 +2424,7 @@ function buildGrids(){
     searchLabel:'Search by code or host',
     filters:[
       {key:'tier',label:'All plans',options:['Free','Premium'],test:function(r,v){return r.tier===v;}},
-      {key:'ended',label:'All endings',options:['Host ended','Question limit','Duration reached','Host left','Too few players','Idle for an hour'],test:function(r,v){return r.ended===v;}}
+      {key:'ended',label:'All endings',options:['Host ended','Question limit','Duration reached','Host left','Too few players','Idle > 3.0 hours'],test:function(r,v){return r.ended===v;}}
     ],
     columns:[
       {key:'code',label:'Code',cell:function(r){return '<span class="mono cellmain">'+esc(r.code)+'</span>';}},
@@ -2229,7 +2434,7 @@ function buildGrids(){
       {key:'rounds',label:'Rounds',align:'right',cell:function(r){return '<span class="tnum">'+r.rounds+'</span>';}},
       {key:'minutes',label:'Length',align:'right',cell:function(r){return '<span class="tnum">'+r.minutes+' min</span>';}},
       {key:'ended',label:'How it ended',cell:function(r){
-        var bad=r.ended==='Host left'||r.ended==='Too few players'||r.ended==='Idle for an hour';
+        var bad=r.ended==='Host left'||r.ended==='Too few players'||r.ended==='Idle > 3.0 hours';
         return '<span class="pill '+(bad?'warn':'ok')+'">'+esc(r.ended)+'</span>';
       }},
       {key:'when',label:'Date',sortValue:function(r){return r.when;},cell:function(r){return '<span class="tnum">'+fmtDate(r.when)+'</span>';}}
@@ -2840,8 +3045,197 @@ function wireSetup(){
   });
 }
 
+
+/* Favorite reports, export formats, and editable donation reconciliation */
+function exportCurrent(format){
+  var activeSection = document.querySelector('.section.active');
+  var activePane = activeSection && activeSection.querySelector('.tabpane.on');
+  var source = activePane || activeSection;
+  var title = (activeSection && activeSection.querySelector('h1') ? activeSection.querySelector('h1').textContent : 'Admin Console').trim();
+  var table = source ? source.querySelector('table') : null;
+  var rows = [];
+  if(table){
+    table.querySelectorAll('tr').forEach(function(tr){
+      rows.push(Array.from(tr.querySelectorAll('th,td')).map(function(td){
+        return td.innerText.replace(/\s+/g,' ').trim();
+      }));
+    });
+  }
+  if(!rows.length && source){
+    rows = [['Section',title],['Exported at',new Date().toLocaleString()]];
+    source.querySelectorAll('.kpi').forEach(function(k){
+      rows.push([k.querySelector('.kl') ? k.querySelector('.kl').innerText.trim() : 'Metric',
+                 k.querySelector('.kv') ? k.querySelector('.kv').innerText.trim() : '']);
+    });
+  }
+  if(format==='pdf'){
+    var printable = window.open('', '_blank');
+    if(!printable){ alert('Allow pop-ups to print this report as PDF.'); return; }
+    printable.document.write('<!doctype html><html><head><title>'+title+' — Admin Console</title><style>body{font:13px Arial,sans-serif;padding:28px;color:#222}h1{font-size:22px}table{border-collapse:collapse;width:100%;margin-top:18px}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#f2f0f8}</style></head><body><h1>'+title+'</h1><p>Admin Console · Exported '+new Date().toLocaleString()+'</p>');
+    if(table) printable.document.write(table.outerHTML);
+    else printable.document.write('<table>'+rows.map(function(row,i){return '<tr>'+row.map(function(v){return (i===0?'<th>':'<td>')+String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+(i===0?'</th>':'</td>');}).join('')+'</tr>';}).join('')+'</table>');
+    printable.document.write('</body></html>'); printable.document.close(); printable.focus(); setTimeout(function(){ printable.print(); },350);
+  } else if(format==='word'){
+    var wordRows = rows.map(function(row,i){return '<tr>'+row.map(function(v){return '<'+(i===0?'th':'td')+'>'+String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</'+(i===0?'th':'td')+'>';}).join('')+'</tr>';}).join('');
+    var doc = '<html><head><meta charset="utf-8"><title>'+title+'</title></head><body><h1>'+title+'</h1><p>Admin Console · Exported '+new Date().toLocaleString()+'</p><table border="1" cellspacing="0" cellpadding="5">'+wordRows+'</table></body></html>';
+    downloadBlob(new Blob(['\ufeff',doc],{type:'application/msword'}), title.replace(/[^a-z0-9]+/gi,'_')+'.doc');
+  } else {
+    var csv = rows.map(function(row){return row.map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\r\n');
+    downloadBlob(new Blob(['\ufeff',csv],{type:'text/csv;charset=utf-8;'}), title.replace(/[^a-z0-9]+/gi,'_')+'.csv');
+  }
+  var menu = document.getElementById('exportFormatMenu');
+  if(menu) menu.hidden = true;
+  document.querySelectorAll('.export-trigger[aria-expanded="true"]').forEach(function(el){el.setAttribute('aria-expanded','false');});
+}
+function downloadBlob(blob, filename){
+  var url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);
+}
+function wireRequirementEnhancements(){
+  /* Export + donation tracking remain active. */
+  document.addEventListener('click',function(e){
+    var fmt=e.target.closest('[data-export-format]');
+    if(fmt){ e.preventDefault(); e.stopPropagation(); exportCurrent(fmt.getAttribute('data-export-format')); return; }
+    var btn=e.target.closest('button');
+    if(btn && /^(Export|Export CSV)$/i.test(btn.textContent.trim())){
+      e.preventDefault();
+      var menu=document.getElementById('exportFormatMenu');
+      if(!menu) return;
+      var wasOpen=!menu.hidden && menu.dataset.anchorId===String(btn.dataset.exportAnchor||'');
+      document.querySelectorAll('.export-trigger[aria-expanded="true"]').forEach(function(el){el.setAttribute('aria-expanded','false');});
+      if(wasOpen){menu.hidden=true;return;}
+      document.querySelectorAll('.export-trigger').forEach(function(el){el.classList.remove('export-trigger');});
+      btn.classList.add('export-trigger'); btn.setAttribute('aria-expanded','true');
+      if(!btn.dataset.exportAnchor) btn.dataset.exportAnchor='export-'+Math.random().toString(36).slice(2,9);
+      menu.dataset.anchorId=btn.dataset.exportAnchor;
+      btn.parentElement.appendChild(menu);
+      menu.hidden=false;
+    }
+  });
+  document.addEventListener('click',function(e){
+    var menu=document.getElementById('exportFormatMenu');
+    if(menu && !menu.hidden && !e.target.closest('#exportFormatMenu') && !e.target.closest('.export-trigger')){
+      menu.hidden=true;
+      document.querySelectorAll('.export-trigger[aria-expanded="true"]').forEach(function(el){el.setAttribute('aria-expanded','false');});
+    }
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      var menu=document.getElementById('exportFormatMenu');
+      if(menu) menu.hidden=true;
+      document.querySelectorAll('.export-trigger[aria-expanded="true"]').forEach(function(el){el.setAttribute('aria-expanded','false');});
+    }
+  });
+  function updateNetDonation(code){
+    var c=DATA.coupons.filter(function(x){return x.code===code;})[0];if(!c)return;
+    var out=document.querySelector('[data-net-donation="'+code+'"]');
+    if(out)out.textContent=money(Number(c.donation||0)-Number(c.donationPaid||0));
+  }
+  document.addEventListener('input',function(e){
+    var owed=e.target.closest('[data-donation-owed]'), paid=e.target.closest('[data-donation-paid]');
+    if(!owed&&!paid)return;
+    var code=(owed||paid).getAttribute(owed?'data-donation-owed':'data-donation-paid');
+    var c=DATA.coupons.filter(function(x){return x.code===code;})[0];if(!c)return;
+    var value=Number((owed||paid).value);if(!Number.isFinite(value)||value<0)value=0;
+    if(owed)c.donation=value;else c.donationPaid=value;
+    updateNetDonation(code);
+  });
+  document.addEventListener('change',function(e){
+    var owed=e.target.closest('[data-donation-owed]'), paid=e.target.closest('[data-donation-paid]');
+    if(!owed&&!paid)return;
+    var code=(owed||paid).getAttribute(owed?'data-donation-owed':'data-donation-paid');
+    var c=DATA.coupons.filter(function(x){return x.code===code;})[0];if(!c)return;
+    var value=Number((owed||paid).value);
+    if(!Number.isFinite(value)||value<0){value=0;(owed||paid).value='0.00';}
+    value=+value.toFixed(2);
+    if(owed)c.donation=value;else c.donationPaid=value;
+    updateNetDonation(code);
+    DATA.audit.unshift({when:daysAgo(0),admin:'Dov Treiman',action:owed?'Net donation owed updated':'Donation paid updated',entity:'Coupon',detail:c.code+' — '+(owed?'owed ':'paid ')+money(value),ref:c.code});
+    if(GRIDS.audit)GRIDS.audit.render();
+  });
+  var durationByRange={7:{value:'45 min',note:'7-day average · median 39 min'},14:{value:'47 min',note:'14-day average · median 41 min'}};
+  var range=document.getElementById('rangeSeg');
+  if(range)range.addEventListener('click',function(e){
+    var b=e.target.closest('[data-range]');if(!b)return;
+    range.querySelectorAll('[data-range]').forEach(function(x){x.classList.toggle('on',x===b);});
+    var data=durationByRange[Number(b.getAttribute('data-range'))]||durationByRange[14];
+    var card=Array.from(document.querySelectorAll('#kpis .kpi')).find(function(k){return /Average game duration/.test(k.innerText);});
+    if(card){var v=card.querySelector('.kv');var note=card.querySelector('.kd span:last-child');if(v)v.textContent=data.value;if(note)note.textContent=data.note;}
+    var label=document.getElementById('customRangeLabel');if(label)label.textContent='Date range';
+  });
+  var dateTrigger=document.getElementById('btnCustomDateRange'), datePopover=document.getElementById('customDateRangePopover');
+  var startInput=document.getElementById('dashboardStartDate'), endInput=document.getElementById('dashboardEndDate'), dateError=document.getElementById('customRangeError');
+  function closeDateRange(){if(datePopover)datePopover.hidden=true;if(dateTrigger)dateTrigger.setAttribute('aria-expanded','false');}
+  if(dateTrigger&&datePopover){
+    dateTrigger.addEventListener('click',function(){
+      datePopover.hidden=!datePopover.hidden;dateTrigger.setAttribute('aria-expanded',String(!datePopover.hidden));
+      if(!datePopover.hidden){
+        var today=new Date(),end=today.toISOString().slice(0,10),start=new Date(today);start.setDate(start.getDate()-13);
+        if(startInput&&!startInput.value)startInput.value=start.toISOString().slice(0,10);
+        if(endInput&&!endInput.value)endInput.value=end;
+        if(dateError)dateError.textContent='';
+      }
+    });
+    document.getElementById('cancelCustomRange').addEventListener('click',closeDateRange);
+    document.getElementById('applyCustomRange').addEventListener('click',function(){
+      if(!startInput.value||!endInput.value){dateError.textContent='Choose both a start date and an end date.';return;}
+      if(startInput.value>endInput.value){dateError.textContent='Start date must be on or before the end date.';return;}
+      var start=new Date(startInput.value+'T00:00:00'),end=new Date(endInput.value+'T23:59:59');
+      var days=Math.max(1,Math.round((end-start)/86400000)+1);
+      range.querySelectorAll('[data-range]').forEach(function(b){b.classList.remove('on');});
+      var label=document.getElementById('customRangeLabel');if(label)label.textContent=startInput.value+' – '+endInput.value;
+      var card=Array.from(document.querySelectorAll('#kpis .kpi')).find(function(k){return /Average game duration/.test(k.innerText);});
+      if(card){var note=card.querySelector('.kd span:last-child');if(note)note.textContent=days+'-day range · custom dates';}
+      closeDateRange();
+    });
+    document.addEventListener('click',function(e){if(!e.target.closest('.date-range-wrap'))closeDateRange();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDateRange();});
+  }
+  wireProfileDrawer();
+}
+
 /* ---------------------------------------------------------------- shell */
 var TITLES={dashboard:'Game Pulse',records:'Record Library',people:'Players & Admins',payments:'Payments & Discounts',coupons:'Coupons',reports:'Game Reports',setup:'Game Setup',ads:'Ads',dbr:'DBRs'};
+
+var DASHBOARD_TILE_DEFS=[
+ {id:'gamesToday',name:'Games today',desc:'Number of games played today',group:'Metrics',on:true},
+ {id:'activeGames',name:'Active games',desc:'Currently active games and online players',group:'Metrics',on:true},
+ {id:'premiumSubscribers',name:'Premium subscribers',desc:'Premium membership count',group:'Metrics',on:true},
+ {id:'monthlyRevenue',name:'Monthly recurring revenue',desc:'Subscription revenue after store commissions',group:'Metrics',on:true},
+ {id:'averageDuration',name:'Average game duration',desc:'Average session duration for selected period',group:'Metrics',on:true},
+ {id:'roundsToday',name:'Rounds played today',desc:'Total rounds completed today',group:'Metrics',on:true},
+ {id:'gamesPlayed',name:'Games played',desc:'Daily games and player trend chart',group:'Charts',on:true},
+ {id:'hostingPlan',name:'Who is hosting',desc:'Free versus Premium host share',group:'Charts',on:true},
+ {id:'startTimes',name:'When games start',desc:'Distribution of game start times',group:'Charts',on:true},
+ {id:'subscriptionRevenue',name:'Subscription revenue',desc:'Monthly revenue trend chart',group:'Charts',on:true},
+ {id:'gameEndReasons',name:'How games end',desc:'Game completion and ending reasons',group:'Charts',on:true}
+];
+var DASHBOARD_CONFIG_KEY='adminConsole.dashboardTiles.v1';
+function getDashboardTiles(){try{var saved=JSON.parse(localStorage.getItem(DASHBOARD_CONFIG_KEY)||'null');if(Array.isArray(saved))return saved;}catch(e){}return DASHBOARD_TILE_DEFS.filter(function(t){return t.on;}).map(function(t){return t.id;});}
+function applyDashboardTiles(){var selected=getDashboardTiles();document.querySelectorAll('#dashboard [data-dashboard-tile]').forEach(function(el){el.style.display=selected.indexOf(el.getAttribute('data-dashboard-tile'))>=0?'':'none';});}
+function renderDashboardTileOptions(){var selected=getDashboardTiles(),wrap=document.getElementById('dashboardTileOptions');if(!wrap)return;wrap.innerHTML=DASHBOARD_TILE_DEFS.map(function(t){return '<label class="dashboard-tile-option"><input type="checkbox" value="'+t.id+'" '+(selected.indexOf(t.id)>=0?'checked':'')+'><span><b>'+t.name+'</b><small>'+t.desc+'</small></span></label>';}).join('');}
+function setProfileDrawer(open){var drawer=document.getElementById('profileDrawer'),scrim=document.getElementById('profileDrawerScrim'),toggle=document.getElementById('profileMenuToggle');drawer.classList.toggle('open',open);scrim.classList.toggle('open',open);drawer.setAttribute('aria-hidden',open?'false':'true');toggle.setAttribute('aria-expanded',open?'true':'false');document.body.style.overflow=open?'hidden':'';}
+function openAccountModal(id){setProfileDrawer(false);openModal(id);document.getElementById(id).setAttribute('aria-hidden','false');}
+function wireProfileDrawer(){
+ var toggle=document.getElementById('profileMenuToggle'),scrim=document.getElementById('profileDrawerScrim');
+ toggle.addEventListener('click',function(){setProfileDrawer(true);});document.getElementById('closeProfileDrawer').addEventListener('click',function(){setProfileDrawer(false);});scrim.addEventListener('click',function(){setProfileDrawer(false);});
+ document.getElementById('openProfileEdit').addEventListener('click',function(){openAccountModal('modalProfileEdit');});
+ document.getElementById('openPasswordChange').addEventListener('click',function(){document.getElementById('passwordChangeMessage').textContent='';document.getElementById('currentPassword').value='';document.getElementById('newPassword').value='';document.getElementById('confirmPassword').value='';openAccountModal('modalPasswordChange');});
+ document.getElementById('openDashboardConfig').addEventListener('click',function(){renderDashboardTileOptions();openAccountModal('modalDashboardConfig');});
+ document.getElementById('selectAllDashboardTiles').addEventListener('click',function(){document.querySelectorAll('#dashboardTileOptions input').forEach(function(i){i.checked=true;});});
+ document.getElementById('resetDashboardTiles').addEventListener('click',function(){document.querySelectorAll('#dashboardTileOptions input').forEach(function(i){i.checked=DASHBOARD_TILE_DEFS.filter(function(t){return t.on;}).some(function(t){return t.id===i.value;});});});
+ document.getElementById('saveDashboardConfig').addEventListener('click',function(){var selected=Array.from(document.querySelectorAll('#dashboardTileOptions input:checked')).map(function(i){return i.value;});try{localStorage.setItem(DASHBOARD_CONFIG_KEY,JSON.stringify(selected));}catch(e){}applyDashboardTiles();document.getElementById('modalDashboardConfig').classList.remove('open');document.getElementById('modalDashboardConfig').setAttribute('aria-hidden','true');});
+ document.getElementById('saveProfileEdit').addEventListener('click',function(){var name=document.getElementById('profileName').value.trim(),email=document.getElementById('profileEmail').value.trim();if(!name||!email||!/^\S+@\S+\.\S+$/.test(email)){alert('Enter a valid name and email address.');return;}document.querySelector('#profileMenuToggle > span:last-child').textContent=name.split(/\s+/)[0];document.querySelector('.drawer-identity b').textContent=name;document.querySelector('.drawer-identity small').textContent=email;document.getElementById('modalProfileEdit').classList.remove('open');document.getElementById('modalProfileEdit').setAttribute('aria-hidden','true');});
+ document.getElementById('savePasswordChange').addEventListener('click',function(){var current=document.getElementById('currentPassword').value,n=document.getElementById('newPassword').value,c=document.getElementById('confirmPassword').value,msg=document.getElementById('passwordChangeMessage');if(!current){msg.textContent='Enter your current password.';return;}if(n.length<8){msg.textContent='New password must be at least 8 characters.';return;}if(n!==c){msg.textContent='The new passwords do not match.';return;}msg.textContent='Password validation passed in this prototype. Connect to your authentication service to securely change the password.';msg.style.color='var(--green,#16805d)';});
+ document.getElementById('profileLogout').addEventListener('click',function(){setProfileDrawer(false);openModal('modalLogoutConfirm');document.getElementById('modalLogoutConfirm').setAttribute('aria-hidden','false');});
+ document.getElementById('confirmProfileLogout').addEventListener('click',function(){document.getElementById('modalLogoutConfirm').classList.remove('open');document.getElementById('modalLogoutConfirm').setAttribute('aria-hidden','true');alert('Logout action is a prototype. Connect this button to your authentication/session endpoint.');});
+ document.querySelectorAll('[data-close]').forEach(function(b){b.addEventListener('click',function(){var modal=b.closest('.modal');if(modal){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');}});});
+ document.querySelectorAll('.modal').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m){m.classList.remove('open');m.setAttribute('aria-hidden','true');}});});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'){setProfileDrawer(false);document.querySelectorAll('.modal.open').forEach(function(m){m.classList.remove('open');m.setAttribute('aria-hidden','true');});}});
+ applyDashboardTiles();
+}
+
 function go(id){
   document.querySelectorAll('.section').forEach(function(s){ s.classList.toggle('active', s.id===id); });
   document.querySelectorAll('.nav').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-sec')===id); });
@@ -2862,6 +3256,10 @@ function tabGroup(wrap){
     wrap.querySelectorAll('.tab').forEach(function(x){ x.classList.toggle('on', x===t); });
     var scope=wrap.parentElement;
     scope.querySelectorAll(':scope > .tabpane').forEach(function(p){ p.classList.toggle('on', p.id===pane); });
+    if(wrap.id==='peopleTabs'){
+      var addUser=document.getElementById('btnAddAdmin');
+      if(addUser) addUser.hidden = pane !== 'tabAdmins';
+    }
   });
 }
 tabGroup(document.getElementById('peopleTabs'));
@@ -2874,20 +3272,213 @@ document.getElementById('rangeSeg').addEventListener('click', function(e){
 });
 
 function openModal(id){ document.getElementById(id).classList.add('open'); }
+/* ---- two-step player blocking with reason audit log */
+var pendingBlockPlayer = null;
+function findPlayerById(id){ return DATA.players.filter(function(p){ return p.id===id; })[0]; }
+function closeBlockModal(){
+  document.getElementById('modalBlockPlayer').classList.remove('open');
+  document.getElementById('modalBlockPlayer').setAttribute('aria-hidden','true');
+  pendingBlockPlayer=null;
+  document.getElementById('blockStepOne').style.display='block';
+  document.getElementById('blockStepTwo').style.display='none';
+  document.getElementById('blockStepLabel').textContent='STEP 1 OF 2';
+  document.getElementById('blockModalTitle').textContent='Block player';
+  document.getElementById('blockModalSubtitle').textContent='Choose a reason and add context for the audit log.';
+  document.getElementById('blockContinue').style.display='';
+  document.getElementById('blockConfirm').style.display='none';
+  document.getElementById('blockReason').value='';
+  document.getElementById('blockOtherReason').value='';
+  document.getElementById('blockOtherReasonWrap').style.display='none';
+  document.getElementById('blockReasonNotes').value='';
+}
+function beginBlockPlayer(player){
+  if(!player) return;
+  pendingBlockPlayer=player;
+  document.getElementById('blockPlayerName').textContent=player.name;
+  document.getElementById('blockPlayerHandle').textContent='@'+player.handle;
+  document.getElementById('blockReason').value='';
+  document.getElementById('blockOtherReason').value='';
+  document.getElementById('blockOtherReasonWrap').style.display='none';
+  document.getElementById('blockReasonNotes').value='';
+  document.getElementById('blockStepOne').style.display='block';
+  document.getElementById('blockStepTwo').style.display='none';
+  document.getElementById('blockStepLabel').textContent='STEP 1 OF 2';
+  document.getElementById('blockModalTitle').textContent='Block player';
+  document.getElementById('blockModalSubtitle').textContent='Choose a reason and add context for the audit log.';
+  document.getElementById('blockContinue').style.display='';
+  document.getElementById('blockConfirm').style.display='none';
+  var m=document.getElementById('modalBlockPlayer'); m.classList.add('open'); m.setAttribute('aria-hidden','false');
+}
+document.getElementById('playersGrid').addEventListener('click',function(e){
+  var b=e.target.closest('[data-player-block]');
+  var u=e.target.closest('[data-player-unblock]');
+  var v=e.target.closest('[data-player-view]');
+  if(b){ beginBlockPlayer(findPlayerById(b.getAttribute('data-player-block'))); return; }
+  if(u){
+    var player=findPlayerById(u.getAttribute('data-player-unblock')); if(!player) return;
+    player.status='Active';
+    DATA.blocks.unshift({player:player.name,handle:player.handle,action:'Unblocked',admin:'Dov Treiman',when:new Date(),reason:'Unblocked by admin'});
+    if(GRIDS.blocksGrid){GRIDS.blocksGrid.rows=DATA.blocks;GRIDS.blocksGrid.render();}
+    GRIDS.playersGrid.rows=DATA.players; GRIDS.playersGrid.render(); return;
+  }
+  if(v){ var player=findPlayerById(v.getAttribute('data-player-view')); if(player) alert('Player: '+player.name+' (@'+player.handle+')\nStatus: '+player.status+'\nPlan: '+player.tier); }
+});
+document.getElementById('blockReason').addEventListener('change',function(){
+  var isOther=this.value==='Other';
+  document.getElementById('blockOtherReasonWrap').style.display=isOther?'':'none';
+  document.getElementById('blockOtherReason').required=isOther;
+  if(!isOther) document.getElementById('blockOtherReason').value='';
+});
+document.getElementById('blockContinue').addEventListener('click',function(){
+  var reason=document.getElementById('blockReason').value;
+  var otherReason=document.getElementById('blockOtherReason').value.trim();
+  if(!reason){document.getElementById('blockReason').focus();document.getElementById('blockReason').setCustomValidity('Choose a reason to continue.');document.getElementById('blockReason').reportValidity();return;}
+  document.getElementById('blockReason').setCustomValidity('');
+  if(reason==='Other'&&!otherReason){document.getElementById('blockOtherReason').setCustomValidity('Please specify the reason for blocking.');document.getElementById('blockOtherReason').reportValidity();return;}
+  document.getElementById('blockOtherReason').setCustomValidity('');
+  var reasonForLog=reason==='Other'?'Other: '+otherReason:reason;
+  document.getElementById('blockReviewReason').textContent=reasonForLog;
+  document.getElementById('blockReviewNotes').textContent=document.getElementById('blockReasonNotes').value.trim()||'No additional details provided.';
+  document.getElementById('blockStepOne').style.display='none';
+  document.getElementById('blockStepTwo').style.display='block';
+  document.getElementById('blockStepLabel').textContent='STEP 2 OF 2';
+  document.getElementById('blockModalTitle').textContent='Confirm player block';
+  document.getElementById('blockModalSubtitle').textContent='Review the reason before applying this action.';
+  this.style.display='none'; document.getElementById('blockConfirm').style.display='';
+});
+document.getElementById('blockConfirm').addEventListener('click',function(){
+  if(!pendingBlockPlayer) return;
+  var player=pendingBlockPlayer;
+  var reason=document.getElementById('blockReason').value;
+  var otherReason=document.getElementById('blockOtherReason').value.trim();
+  var notes=document.getElementById('blockReasonNotes').value.trim();
+  var reasonForLog=reason==='Other'?'Other: '+otherReason:reason;
+  player.status='Blocked';
+  DATA.blocks.unshift({player:player.name,handle:player.handle,action:'Blocked',admin:'Dov Treiman',when:new Date(),reason:reasonForLog+(notes?' — '+notes:'')});
+  if(GRIDS.blocksGrid){GRIDS.blocksGrid.rows=DATA.blocks;GRIDS.blocksGrid.render();}
+  GRIDS.playersGrid.rows=DATA.players; GRIDS.playersGrid.render();
+  closeBlockModal();
+});
+document.getElementById('blockCancel').addEventListener('click',closeBlockModal);
+
 document.getElementById('btnAddRecord').addEventListener('click', function(){
   document.getElementById('recordModalTitle').textContent='Add record';
   openModal('modalRecord');
 });
 document.getElementById('btnImport').addEventListener('click', function(){ openModal('modalImport'); });
+var recordImportFile=null;
+var recordImportPreview=null;
+var recordImportIssues=[];
+function openImportResults(){
+  var modal=document.getElementById('modalImport');
+  modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
+  var backdrop=document.getElementById('importResultsBackdrop');
+  var drawer=document.getElementById('importResultsDrawer');
+  backdrop.classList.add('open'); drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false');
+}
+function closeImportResults(){
+  document.getElementById('importResultsBackdrop').classList.remove('open');
+  var drawer=document.getElementById('importResultsDrawer'); drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true');
+}
+function setImportStats(read,accepted,rejected){
+  [['importRowsRead',read],['importRowsAccepted',accepted],['importRowsRejected',rejected],['importModalRowsRead',read],['importModalAccepted',accepted],['importModalRejected',rejected]].forEach(function(pair){var el=document.getElementById(pair[0]);if(el)el.textContent=pair[1];});
+  document.getElementById('importIssueCount').textContent=rejected+' issue'+(rejected===1?'':'s');
+  document.getElementById('importModalIssueBadge').textContent=rejected?rejected+' issues':'Ready';
+}
+function normalizeHeader(v){return String(v==null?'':v).trim().toLowerCase().replace(/[^a-z0-9]/g,'');}
+function importField(row, aliases){
+  var keys=Object.keys(row||{}); for(var i=0;i<keys.length;i++){var nk=normalizeHeader(keys[i]);if(aliases.indexOf(nk)!==-1)return row[keys[i]];} return '';
+}
+function renderImportIssues(issues){
+  var host=document.getElementById('importFailedCards');
+  if(!issues.length){host.innerHTML='<div class="note"><b>All records imported successfully.</b><br>No records were skipped.</div>';return;}
+  host.innerHTML=issues.map(function(it){return '<div class="import-fail-card"><div class="import-fail-icon">!</div><div><span class="import-row-tag">Excel row '+it.row+(it.id?' · Record '+escapeHtml(String(it.id)):'')+'</span><b>'+escapeHtml(it.title)+'</b><p>'+escapeHtml(it.reason)+'</p></div></div>';}).join('');
+}
+function escapeHtml(value){return String(value).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
+function readRecordImportFile(file){
+  if(!file)return;
+  if(file.size>25*1024*1024){alert('File is larger than 25 MB. Please choose a smaller file.');return;}
+  if(!/\.(xlsx|xls|csv)$/i.test(file.name)){alert('Please choose an .xlsx, .xls, or .csv file.');return;}
+  recordImportFile=file; recordImportPreview=null;
+  document.getElementById('recordImportFileLabel').textContent=file.name+' · '+Math.max(1,Math.round(file.size/1024))+' KB';
+  document.getElementById('importResultsFilename').textContent=file.name+' · Processing results';
+  document.getElementById('importModalSummary').textContent='Selected: '+file.name;
+  var start=document.getElementById('startImportProcess');start.disabled=false;start.textContent='Start import';
+}
+var importDrop=document.getElementById('recordImportDrop');
+var importInput=document.getElementById('recordImportFile');
+document.getElementById('chooseRecordImportFile').addEventListener('click',function(e){e.stopPropagation();importInput.click();});
+importDrop.addEventListener('click',function(e){if(e.target.id!=='chooseRecordImportFile')importInput.click();});
+importDrop.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();importInput.click();}});
+importInput.addEventListener('change',function(){readRecordImportFile(this.files&&this.files[0]);});
+['dragenter','dragover'].forEach(function(ev){importDrop.addEventListener(ev,function(e){e.preventDefault();importDrop.style.borderColor='var(--purple)';});});
+['dragleave','drop'].forEach(function(ev){importDrop.addEventListener(ev,function(e){e.preventDefault();importDrop.style.borderColor='';});});
+importDrop.addEventListener('drop',function(e){readRecordImportFile(e.dataTransfer.files&&e.dataTransfer.files[0]);});
+function runRecordImport(){
+  if(!recordImportFile){alert('Choose an Excel or CSV file first.');return;}
+  if(typeof XLSX==='undefined'){alert('The Excel reader could not load. Check your internet connection and try again.');return;}
+  var start=document.getElementById('startImportProcess');start.disabled=true;start.textContent='Reading file…';
+  var reader=new FileReader();
+  reader.onload=function(evt){
+    try{
+      var wb=XLSX.read(evt.target.result,{type:'array'});var sheet=wb.Sheets[wb.SheetNames[0]];
+      var matrix=XLSX.utils.sheet_to_json(sheet,{header:1,defval:'',raw:false});
+      if(!matrix.length)throw new Error('The worksheet is empty.');
+      var headerRow=matrix[0].map(function(v){return String(v||'').trim();});
+      var known=headerRow.some(function(h){return ['text','record','question','answer','recordtext','questiontext','answertext','type','category','language'].indexOf(normalizeHeader(h))!==-1;});
+      var headers=known?headerRow: ['Serial','Text','Type','Category','Language','Political Spectrum','Orientation','Mature Content','Status'];
+      var dataRows=known?matrix.slice(1):matrix;
+      var rowOffset=known?2:1; var accepted=[],issues=[],seen={};
+      var existing={};(DATA.records||[]).forEach(function(r){existing[String(r.text||'').trim().toLowerCase()]=true;});
+      dataRows.forEach(function(vals,index){
+        var rowNum=rowOffset+index;var row={};headers.forEach(function(h,i){row[h]=vals[i]==null?'':vals[i];});
+        if(!vals.some(function(v){return String(v==null?'':v).trim()!=='';}))return;
+        var id=importField(row,['serial','recordid','id','cardid']);
+        var txt=importField(row,['text','record','recordtext','question','answer','questiontext','answertext','content']);
+        var typ=String(importField(row,['type','recordtype'])||'').trim();
+        var category=importField(row,['category']);var language=importField(row,['language','lang']);
+        var problems=[];
+        if(!String(txt||'').trim())problems.push(['Missing record text','The Text/Question/Answer field is blank. Add the record content.']);
+        if(known && !typ)problems.push(['Missing record type','The Type field is blank. Set the record type to Question or Answer.']);
+        if(typ && !/^(question|answer)$/i.test(typ))problems.push(['Invalid record type','Type must be Question or Answer; found “'+typ+'”.']);
+        if(normalizeHeader('Category') in Object.fromEntries(headers.map(function(h){return [normalizeHeader(h),1];})) && !String(category||'').trim())problems.push(['Missing category','The Category field is blank. Add a valid category.']);
+        if(String(language||'').trim() && !/^(english|spanish|french|german|italian|portuguese|dutch|polish|russian|ukrainian|hindi|japanese|korean|chinese|arabic|other)$/i.test(String(language).trim()))problems.push(['Unsupported language','The Language value “'+language+'” is not recognized by the import validator.']);
+        var key=String(txt||'').trim().toLowerCase();
+        if(key && (existing[key]||seen[key]))problems.push(['Duplicate record','A record with the same text already exists in the library or appears earlier in this file.']);
+        if(problems.length){problems.forEach(function(pr){issues.push({row:rowNum,id:id,title:pr[0],reason:pr[1]});});return;}
+        if(key)seen[key]=true;
+        accepted.push({serial:String(id||''),serialRaw:0,text:String(txt).trim(),type:typ?typ[0].toUpperCase()+typ.slice(1).toLowerCase():(normalizeHeader(headers[1])==='question'?'Question':'Answer'),answers:0,dbr:'',orientation:String(importField(row,['orientation'])||''),orientCode:'',sex:String(importField(row,['sex','gender'])||''),sexCode:'',politics:importField(row,['politicalspectrum','politics'])||'',status:String(importField(row,['status'])||'Active'),freeRank:null,plays:0,schedule:'Always on',category:String(category||''),language:String(language||'')});
+      });
+      accepted.forEach(function(r){r.serialRaw=(DATA.records.length?Math.max.apply(null,DATA.records.map(function(x){return Number(x.serialRaw)||0;})):0)+1; if(!r.serial)r.serial='IMP-'+String(r.serialRaw).padStart(6,'0'); DATA.records.push(r);});
+      buildGrids();
+      recordImportPreview={read:accepted.length+issues.filter(function(x,i,a){return a.findIndex(function(y){return y.row===x.row;})===i;}).length,accepted:accepted.length,issues:issues};
+      document.getElementById('importResultsFilename').textContent=recordImportFile.name+' · Import finished';
+      document.getElementById('importModalSummary').textContent='Finished processing '+recordImportFile.name;
+      var rejectedRows=issues.reduce(function(list,it){if(list.indexOf(it.row)===-1)list.push(it.row);return list;},[]).length;
+      setImportStats(recordImportPreview.read,accepted.length,rejectedRows);
+      document.getElementById('importIssueCount').textContent=issues.length+' issue'+(issues.length===1?'':'s');
+      renderImportIssues(issues);
+      openImportResults();
+    }catch(err){alert('Could not read this file: '+err.message);}
+    finally{start.disabled=false;start.textContent='Start import';}
+  };
+  reader.onerror=function(){alert('Could not read the selected file. Please try again.');start.disabled=false;start.textContent='Start import';};
+  reader.readAsArrayBuffer(recordImportFile);
+}
+document.getElementById('startImportProcess').addEventListener('click',runRecordImport);
+document.getElementById('closeImportResults').addEventListener('click', closeImportResults);
+document.getElementById('closeImportResultsBottom').addEventListener('click', closeImportResults);
+document.getElementById('importResultsBackdrop').addEventListener('click', closeImportResults);
+document.getElementById('retryImport').addEventListener('click', function(){ closeImportResults(); openModal('modalImport'); });
 document.getElementById('btnAddAdmin').addEventListener('click', function(){ openModal('modalAdmin'); });
 document.getElementById('btnAddCoupon').addEventListener('click', function(){ openModal('modalCoupon'); });
 document.querySelectorAll('.modal').forEach(function(m){
   m.addEventListener('click', function(e){
-    if(e.target===m || e.target.closest('[data-close]')) m.classList.remove('open');
+    if(e.target===m || e.target.closest('[data-close]')) { if(m.id==='modalBlockPlayer') closeBlockModal(); else m.classList.remove('open'); }
   });
 });
 document.addEventListener('keydown', function(e){
-  if(e.key==='Escape') document.querySelectorAll('.modal.open').forEach(function(m){ m.classList.remove('open'); });
+  if(e.key==='Escape'){ document.querySelectorAll('.modal.open').forEach(function(m){ m.classList.remove('open'); }); closeImportResults(); }
 });
 document.getElementById('railtoggle').addEventListener('click', function(){ document.body.classList.toggle('navopen'); });
 document.getElementById('scrim').addEventListener('click', function(){ document.body.classList.remove('navopen'); });
@@ -2907,8 +3498,10 @@ renderDashboard(14);
 buildGrids();
 wireSetup();
 wireAds();
+wireRequirementEnhancements();
 
 })();
+
 </script>
 </body>
 </html>
