@@ -269,6 +269,15 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .modalbody{padding:20px}
 .modalfoot{display:flex;justify-content:flex-end;gap:9px;padding:15px 20px;border-top:1px solid var(--line);background:var(--surface-2);position:sticky;bottom:0}
 
+
+/* Game Reports tab visibility configuration */
+.report-tab-config-list{display:grid;gap:9px}
+.report-tab-config-option{display:flex;align-items:center;gap:11px;padding:13px 14px;border:1px solid var(--line);border-radius:11px;cursor:pointer;background:var(--surface)}
+.report-tab-config-option:has(input:checked){border-color:var(--purple-line);background:var(--purple-wash)}
+.report-tab-config-option input{accent-color:var(--purple);width:16px;height:16px}
+.report-tab-config-option span{font-size:13px;font-weight:650}
+.report-tab-config-help{padding:12px;border-radius:10px;background:var(--surface-2);font-size:12px;line-height:1.5;color:var(--muted);margin-bottom:14px}
+
 /* Import results side drawer */
 .import-drawer-backdrop{position:fixed;inset:0;background:rgba(23,22,38,.28);z-index:89;opacity:0;pointer-events:none;transition:opacity .18s ease}
 .import-drawer-backdrop.open{opacity:1;pointer-events:auto}
@@ -1340,6 +1349,20 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 
 
 
+<div class="import-drawer-backdrop" id="reportTabsConfigBackdrop"></div>
+<aside class="import-drawer" id="reportTabsConfigDrawer" aria-hidden="true" aria-labelledby="reportTabsConfigTitle">
+  <div class="import-drawer-head">
+    <div><h3 id="reportTabsConfigTitle">Game Reports configuration</h3><p>Choose which report tabs appear in Game Reports.</p></div>
+    <button class="x" id="closeReportTabsConfig" type="button" aria-label="Close configuration"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="import-drawer-body">
+    <div class="report-tab-config-help">Check the tabs you want to see. Your selection will be saved on this device and applied whenever you open Game Reports.</div>
+    <div style="display:flex;gap:8px;margin-bottom:13px"><button class="btn sm" id="selectAllReportTabs" type="button">Select all</button><button class="btn sm" id="resetReportTabs" type="button">Reset defaults</button></div>
+    <div class="report-tab-config-list" id="reportTabConfigOptions"></div>
+  </div>
+  <div class="import-drawer-foot"><button class="btn" id="cancelReportTabsConfig" type="button">Cancel</button><button class="btn primary" id="saveReportTabsConfig" type="button">Save configuration</button></div>
+</aside>
+
 <div class="drawer-scrim" id="profileDrawerScrim"></div>
 <aside class="profile-drawer" id="profileDrawer" aria-label="Dov profile menu" aria-hidden="true">
   <div class="drawer-top"><div class="drawer-avatar">D</div><div class="drawer-identity"><b>Dov</b><span>Administrator</span><small>Admin Console</small></div><button class="iconbtn" id="closeProfileDrawer" aria-label="Close profile menu">×</button></div>
@@ -1348,6 +1371,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
   <button class="drawer-action" id="openPasswordChange"><span class="drawer-action-icon">⌑</span><span><b>Change password</b><small>Update your sign-in password</small></span><span class="drawer-chevron">›</span></button>
   <div class="drawer-section-label">PREFERENCES</div>
   <button class="drawer-action" id="openDashboardConfig"><span class="drawer-action-icon">▦</span><span><b>Dashboard configuration</b><small>Choose which tiles are visible</small></span><span class="drawer-chevron">›</span></button>
+  <button class="drawer-action" id="openReportTabsConfig" type="button" title="Choose which Game Reports tabs are visible"><span class="drawer-action-icon">☷</span><span><b>Game Reports configuration</b><small>Choose which report tabs are visible</small></span><span class="drawer-chevron">›</span></button>
   <div class="drawer-bottom"><button class="drawer-logout" id="profileLogout"><span>↪</span> Log out</button><small>Admin Console · Release 1.0</small></div>
 </aside>
 
@@ -3193,6 +3217,7 @@ function wireRequirementEnhancements(){
     document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDateRange();});
   }
   wireProfileDrawer();
+  wireReportTabsConfig();
 }
 
 /* ---------------------------------------------------------------- shell */
@@ -3232,9 +3257,17 @@ function wireProfileDrawer(){
  document.getElementById('confirmProfileLogout').addEventListener('click',function(){document.getElementById('modalLogoutConfirm').classList.remove('open');document.getElementById('modalLogoutConfirm').setAttribute('aria-hidden','true');alert('Logout action is a prototype. Connect this button to your authentication/session endpoint.');});
  document.querySelectorAll('[data-close]').forEach(function(b){b.addEventListener('click',function(){var modal=b.closest('.modal');if(modal){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');}});});
  document.querySelectorAll('.modal').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m){m.classList.remove('open');m.setAttribute('aria-hidden','true');}});});
- document.addEventListener('keydown',function(e){if(e.key==='Escape'){setProfileDrawer(false);document.querySelectorAll('.modal.open').forEach(function(m){m.classList.remove('open');m.setAttribute('aria-hidden','true');});}});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'){setProfileDrawer(false);setReportTabsConfigOpen(false);document.querySelectorAll('.modal.open').forEach(function(m){m.classList.remove('open');m.setAttribute('aria-hidden','true');});}});
  applyDashboardTiles();
 }
+
+var REPORT_TABS_CONFIG_KEY='adminConsole.gameReportTabs.v1';
+function getReportTabDefaults(){return Array.from(document.querySelectorAll('#reportTabs .tab')).map(function(tab){return tab.dataset.pane;});}
+function getVisibleReportTabs(){var defaults=getReportTabDefaults();try{var saved=JSON.parse(localStorage.getItem(REPORT_TABS_CONFIG_KEY)||'null');if(Array.isArray(saved))return saved.filter(function(id){return defaults.indexOf(id)>=0;});}catch(e){}return defaults;}
+function renderReportTabConfig(){var wrap=document.getElementById('reportTabConfigOptions');if(!wrap)return;var selected=getVisibleReportTabs();wrap.innerHTML=Array.from(document.querySelectorAll('#reportTabs .tab')).map(function(tab){var id=tab.dataset.pane;var label=tab.textContent.trim();return '<label class="report-tab-config-option"><input type="checkbox" value="'+id+'" '+(selected.indexOf(id)>=0?'checked':'')+'><span>'+label+'</span></label>';}).join('');}
+function applyReportTabConfig(selected){var tabs=Array.from(document.querySelectorAll('#reportTabs .tab'));tabs.forEach(function(tab){tab.style.display=selected.indexOf(tab.dataset.pane)>=0?'':'none';});var panes=Array.from(document.querySelectorAll('#reports .tabpane'));panes.forEach(function(pane){if(selected.indexOf(pane.id)<0){pane.classList.remove('on');}});var active=tabs.find(function(tab){return selected.indexOf(tab.dataset.pane)>=0&&tab.classList.contains('on');});if(!active){active=tabs.find(function(tab){return selected.indexOf(tab.dataset.pane)>=0;});if(active){tabs.forEach(function(tab){tab.classList.toggle('on',tab===active);});panes.forEach(function(pane){pane.classList.toggle('on',pane.id===active.dataset.pane);});}}}
+function setReportTabsConfigOpen(open){var drawer=document.getElementById('reportTabsConfigDrawer'),backdrop=document.getElementById('reportTabsConfigBackdrop');drawer.classList.toggle('open',open);backdrop.classList.toggle('open',open);drawer.setAttribute('aria-hidden',open?'false':'true');}
+function wireReportTabsConfig(){var open=document.getElementById('openReportTabsConfig');if(!open)return;open.addEventListener('click',function(){renderReportTabConfig();setReportTabsConfigOpen(true);});document.getElementById('closeReportTabsConfig').addEventListener('click',function(){setReportTabsConfigOpen(false);});document.getElementById('cancelReportTabsConfig').addEventListener('click',function(){setReportTabsConfigOpen(false);});document.getElementById('reportTabsConfigBackdrop').addEventListener('click',function(){setReportTabsConfigOpen(false);});document.getElementById('selectAllReportTabs').addEventListener('click',function(){document.querySelectorAll('#reportTabConfigOptions input').forEach(function(i){i.checked=true;});});document.getElementById('resetReportTabs').addEventListener('click',function(){document.querySelectorAll('#reportTabConfigOptions input').forEach(function(i){i.checked=true;});});document.getElementById('saveReportTabsConfig').addEventListener('click',function(){var selected=Array.from(document.querySelectorAll('#reportTabConfigOptions input:checked')).map(function(i){return i.value;});if(!selected.length){alert('Select at least one Game Reports tab.');return;}try{localStorage.setItem(REPORT_TABS_CONFIG_KEY,JSON.stringify(selected));}catch(e){}applyReportTabConfig(selected);setReportTabsConfigOpen(false);});applyReportTabConfig(getVisibleReportTabs());}
 
 function go(id){
   document.querySelectorAll('.section').forEach(function(s){ s.classList.toggle('active', s.id===id); });
